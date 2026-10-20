@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,99 +32,195 @@
         @font-face { font-family: 'Pacifico'; src: url(fonts/Pacifico.woff2) format('woff2'); font-weight: 400; }
         @font-face { font-family: 'Caveat'; src: url(fonts/Caveat.woff2) format('woff2'); font-weight: 400 700; }
 
+        /* ---------- themes ---------- */
+        :root, [data-theme="dark"] {
+            --bg: #0f172a; --panel: #1e293b; --card: #334155; --field: #0f172a; --inset: #0f172a;
+            --line: #334155; --line2: #475569; --line3: #64748b;
+            --text: #f8fafc; --text2: #cbd5e1; --muted: #94a3b8;
+            --accent: #38bdf8; --accent-ink: #0f172a; --accent-soft: rgba(56, 189, 248, 0.15);
+            --ok: #10b981; --ok-hover: #059669; --danger: #ef4444; --warn: #fbbf24;
+            --btn: #475569; --btn-hover: #64748b; --stage: #475569; --shadow: rgba(0, 0, 0, 0.5);
+            color-scheme: dark;
+        }
+        [data-theme="light"] {
+            --bg: #eef2f7; --panel: #ffffff; --card: #f8fafc; --field: #ffffff; --inset: #f1f5f9;
+            --line: #e2e8f0; --line2: #cbd5e1; --line3: #94a3b8;
+            --text: #0f172a; --text2: #334155; --muted: #64748b;
+            --accent: #0284c7; --accent-ink: #ffffff; --accent-soft: rgba(2, 132, 199, 0.12);
+            --ok: #059669; --ok-hover: #047857; --danger: #dc2626; --warn: #b45309;
+            --btn: #e2e8f0; --btn-hover: #cbd5e1; --stage: #cbd5e1; --shadow: rgba(15, 23, 42, 0.18);
+            color-scheme: light;
+        }
+
         * { box-sizing: border-box; }
-        body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; background: #0f172a; margin: 0; color: #f8fafc; }
+        body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; background: var(--bg); margin: 0; color: var(--text); }
+        :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        button { font-family: inherit; }
 
-        .topbar { display: flex; align-items: center; gap: 14px; padding: 10px 20px; background: #1e293b; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 10; flex-wrap: wrap; }
-        .brand { display: flex; align-items: center; gap: 10px; min-width: 230px; }
-        .brand img { width: 34px; height: 34px; }
-        .brand h1 { font-size: 1.05rem; margin: 0; color: #38bdf8; }
-        .brand h1 span { color: #64748b; font-weight: 600; font-size: 0.75rem; }
-        #docTitle { color: #94a3b8; font-size: 0.8rem; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        /* ---------- top bar ---------- */
+        .topbar { display: flex; align-items: center; gap: 12px; padding: 9px 18px; background: var(--panel); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; flex-wrap: wrap; }
+        .brand { display: flex; align-items: center; gap: 10px; min-width: 220px; }
+        .brand img { width: 32px; height: 32px; }
+        .brand h1 { font-size: 1.02rem; margin: 0; color: var(--accent); }
+        .brand h1 span { color: var(--muted); font-weight: 600; font-size: 0.72rem; }
+        #docTitle { color: var(--muted); font-size: 0.78rem; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .toolbar { display: flex; gap: 6px; align-items: center; flex: 1; flex-wrap: wrap; }
-        .toolbar .sep { width: 1px; height: 24px; background: #334155; margin: 0 4px; }
-        .tbtn { background: #0f172a; border: 1px solid #475569; color: #e2e8f0; padding: 6px 11px; border-radius: 6px; cursor: pointer; font-size: 0.82rem; font-weight: 600; font-family: inherit; }
-        .tbtn:hover:not(:disabled) { border-color: #38bdf8; }
+        .toolbar .sep { width: 1px; height: 22px; background: var(--line); margin: 0 3px; }
+        .tbtn { background: var(--field); border: 1px solid var(--line2); color: var(--text); padding: 6px 11px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
+        .tbtn:hover:not(:disabled) { border-color: var(--accent); }
         .tbtn:disabled { opacity: 0.4; cursor: default; }
-        .pill { font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; border: 1px solid #475569; color: #cbd5e1; white-space: nowrap; }
-        .pill.on { background: #064e3b; border-color: #10b981; color: #6ee7b7; }
-        .pill.off { background: #451a03; border-color: #f59e0b; color: #fcd34d; }
+        .tbtn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+        .pill { font-size: 0.74rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line2); color: var(--text2); white-space: nowrap; cursor: default; }
+        .pill.on { background: rgba(16, 185, 129, 0.15); border-color: var(--ok); color: var(--ok); }
+        .pill.off { background: rgba(245, 158, 11, 0.12); border-color: #f59e0b; color: var(--warn); }
 
-        .layout { display: grid; grid-template-columns: minmax(440px, 1fr) minmax(420px, 1fr); gap: 18px; padding: 18px 20px; max-width: 1560px; margin: 0 auto; }
-        @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
-        .side-col { position: sticky; top: 70px; align-self: start; max-height: calc(100vh - 86px); overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
-        @media (max-width: 980px) { .side-col { position: static; max-height: none; } }
+        /* ---------- layout ---------- */
+        .layout { display: grid; grid-template-columns: minmax(440px, 1fr) minmax(420px, 1fr); gap: 16px; padding: 16px 18px; max-width: 1600px; margin: 0 auto; }
+        .side-col { position: sticky; top: 64px; align-self: start; height: calc(100vh - 80px); display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+        .side-scroll { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; min-height: 0; padding-right: 2px; }
+        @media (max-width: 980px) {
+            .layout { grid-template-columns: 1fr; padding-bottom: 120px; }
+            .side-col { position: static; height: auto; }
+            .side-scroll { overflow: visible; }
+            .print-bar { position: fixed; left: 0; right: 0; bottom: 0; border-radius: 0; z-index: 15; }
+        }
 
-        .panel { background: #1e293b; border: 1px solid #334155; padding: 12px 14px; border-radius: 10px; margin-bottom: 14px; }
+        .panel { background: var(--panel); border: 1px solid var(--line); padding: 12px 14px; border-radius: 10px; margin-bottom: 12px; }
         .side-col .panel { margin-bottom: 0; }
-        .panel h3 { margin: 0 0 10px; font-size: 0.9rem; color: #38bdf8; }
-        .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 0.85rem; margin-bottom: 9px; }
+        .panel h3 { margin: 0 0 10px; font-size: 0.88rem; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+        .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 0.84rem; margin-bottom: 9px; }
         .row:last-child { margin-bottom: 0; }
-        .row label { display: inline-flex; align-items: center; gap: 6px; }
-        .seg { display: inline-flex; border: 1px solid #475569; border-radius: 7px; overflow: hidden; }
-        .seg button { background: #0f172a; border: none; color: #e2e8f0; padding: 7px 13px; font-weight: 600; cursor: pointer; font-size: 0.83rem; font-family: inherit; }
-        .seg button + button { border-left: 1px solid #475569; }
-        .seg button.active { background: #38bdf8; color: #0f172a; }
-        .subtle-box { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-top: 4px; }
-
-        .system-font-btn { background: #8b5cf6; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.85rem; }
-        .system-font-btn:hover { background: #7c3aed; }
-
-        .action-bar { display: flex; gap: 10px; margin-bottom: 14px; }
-        .add-btn { flex: 1; padding: 11px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; font-size: 0.92rem; color: white; font-family: inherit; }
-        .add-text-btn { background: #0284c7; } .add-text-btn:hover { background: #0369a1; }
-        .add-img-btn { background: #475569; } .add-img-btn:hover { background: #334155; }
-        .add-code-btn { background: #0f766e; } .add-code-btn:hover { background: #115e59; }
-
-        .blocks-container { display: flex; flex-direction: column; gap: 12px; }
-        .block-item { background: #334155; border: 1px solid #475569; border-radius: 8px; padding: 12px; }
-        .block-item.drag-over { border-color: #38bdf8; box-shadow: 0 0 0 2px #38bdf8 inset; }
-        .block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.8rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; gap: 6px; }
-        .block-header .handle { cursor: grab; color: #94a3b8; font-size: 1rem; padding: 0 4px; user-select: none; }
-        .controls-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; font-size: 0.85rem; }
-        .controls-row label { display: inline-flex; align-items: center; gap: 5px; color: #cbd5e1; }
-
-        select, input[type="number"], input[type="text"] { padding: 6px; border: 1px solid #64748b; background: #0f172a; color: white; border-radius: 4px; font-size: 0.85rem; font-family: inherit; }
-        input[type="number"] { width: 70px; }
-        input[type="range"] { accent-color: #38bdf8; }
-        .toggle-btn { background: #1e293b; border: 1px solid #64748b; color: white; padding: 6px 10px; font-weight: 600; border-radius: 4px; cursor: pointer; font-size: 0.85rem; min-width: 34px; }
-        .toggle-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
-        .toggle-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-        .btn-move, .btn-delete, .btn-small { border: none; cursor: pointer; padding: 5px 9px; border-radius: 4px; font-size: 0.82rem; font-weight: bold; font-family: inherit; }
-        .btn-move, .btn-small { background: #475569; color: white; }
-        .btn-small:hover, .btn-move:hover { background: #64748b; }
-        .btn-delete { background: #ef4444; color: white; }
-        textarea { width: 100%; padding: 8px; border: 1px solid #64748b; background: #0f172a; color: white; border-radius: 6px; font-size: 0.95rem; font-family: inherit; resize: vertical; }
-        .muted { color: #94a3b8; font-size: 0.8rem; }
-        code { background: #0f172a; padding: 1px 5px; border-radius: 4px; color: #7dd3fc; font-size: 0.78rem; }
-        .exp { font-size: 0.68rem; color: #fbbf24; border: 1px solid #92400e; border-radius: 4px; padding: 0 4px; margin-left: 4px; }
-
-        .print-actions { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-top: 12px; }
-        .print-btn { background: #10b981; color: white; border: none; padding: 13px; font-weight: 800; font-size: 1rem; border-radius: 8px; cursor: pointer; font-family: inherit; }
-        .print-btn:hover { background: #059669; }
-        .print-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
-        .cancel-btn { background: #ef4444; } .cancel-btn:hover { background: #dc2626; }
-        .save-btn { background: #475569; color: white; border: none; padding: 13px; font-weight: 700; border-radius: 8px; cursor: pointer; font-family: inherit; }
-        .save-btn:hover { background: #64748b; }
-        .progress { height: 8px; background: #0f172a; border-radius: 999px; overflow: hidden; margin-top: 12px; border: 1px solid #334155; }
-        .progress > div { height: 100%; width: 0%; background: #10b981; transition: width 0.2s; }
-        #statusText { margin-top: 8px; font-size: 0.85rem; color: #cbd5e1; }
-        details { margin-top: 8px; }
-        summary { cursor: pointer; font-size: 0.82rem; color: #94a3b8; }
-        #logBox { background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 8px; font-family: Consolas, monospace; font-size: 0.75rem; color: #cbd5e1; max-height: 140px; overflow-y: auto; white-space: pre-wrap; margin-top: 6px; }
-
-        .preview-box { text-align: center; }
-        #canvasLabel { display: block; font-weight: 600; font-size: 0.8rem; margin-bottom: 6px; color: #94a3b8; }
-        #previewInfo { font-size: 0.8rem; color: #cbd5e1; margin-bottom: 8px; }
-        #previewWarn { font-size: 0.8rem; color: #fbbf24; margin-bottom: 8px; }
-        .canvas-wrap { max-height: 72vh; overflow-y: auto; border-radius: 4px; background: #475569; padding: 6px; }
-        canvas#canvas { width: 100%; height: auto; background: #ffffff; image-rendering: pixelated; display: block; }
-
-        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #38bdf8; color: #f8fafc; padding: 10px 18px; border-radius: 8px; font-size: 0.9rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity 0.25s; max-width: 80vw; z-index: 50; }
-        #toast.show { opacity: 1; }
-        #toast.error { border-color: #ef4444; }
-        #toast.ok { border-color: #10b981; }
+        .row label, .controls-row label { display: inline-flex; align-items: center; gap: 6px; }
+        .seg { display: inline-flex; border: 1px solid var(--line2); border-radius: 7px; overflow: hidden; }
+        .seg button { background: var(--field); border: none; color: var(--text); padding: 6px 12px; font-weight: 600; cursor: pointer; font-size: 0.8rem; }
+        .seg button + button { border-left: 1px solid var(--line2); }
+        .seg button.active { background: var(--accent); color: var(--accent-ink); }
+        .subtle-box { background: var(--inset); border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin-top: 4px; }
+        .muted { color: var(--muted); font-size: 0.79rem; }
+        code { background: var(--inset); padding: 1px 5px; border-radius: 4px; color: var(--accent); font-size: 0.77rem; border: 1px solid var(--line); }
+        .exp { font-size: 0.66rem; color: var(--warn); border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; margin-left: 2px; opacity: 0.85; }
+        details > summary { cursor: pointer; font-size: 0.82rem; color: var(--muted); user-select: none; }
+        details[open] > summary { margin-bottom: 8px; }
         .hidden { display: none !important; }
+
+        /* ---------- inputs ---------- */
+        select, input[type="number"], input[type="text"], input[type="search"] { padding: 6px; border: 1px solid var(--line3); background: var(--field); color: var(--text); border-radius: 5px; font-size: 0.84rem; font-family: inherit; }
+        input[type="number"] { width: 68px; }
+        input[type="range"] { accent-color: var(--accent); }
+        textarea { width: 100%; padding: 8px; border: 1px solid var(--line3); background: var(--field); color: var(--text); border-radius: 6px; font-size: 0.94rem; font-family: inherit; resize: vertical; }
+        .toggle-btn { background: var(--field); border: 1px solid var(--line3); color: var(--text); padding: 5px 10px; font-weight: 600; border-radius: 5px; cursor: pointer; font-size: 0.84rem; min-width: 32px; }
+        .toggle-btn.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+        .toggle-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .btn-small, .btn-icon { border: none; cursor: pointer; padding: 5px 9px; border-radius: 5px; font-size: 0.8rem; font-weight: 700; background: var(--btn); color: var(--text); }
+        .btn-small:hover, .btn-icon:hover { background: var(--btn-hover); }
+        .btn-icon { padding: 4px 8px; min-width: 28px; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger:hover { background: #b91c1c; }
+        .slider { display: inline-flex; align-items: center; gap: 6px; }
+        .slider input[type="number"] { width: 58px; }
+        .font-btn { background: var(--field); border: 1px solid var(--line3); color: var(--text); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.95rem; min-width: 170px; max-width: 240px; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .font-btn::after { content: ' ▾'; font-family: "Segoe UI", sans-serif; color: var(--muted); font-size: 0.75rem; float: right; }
+
+        /* ---------- add bar + blocks ---------- */
+        .action-bar { display: flex; gap: 8px; margin-bottom: 10px; }
+        .add-btn { flex: 1; padding: 10px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; color: white; }
+        .add-text-btn { background: #0284c7; } .add-text-btn:hover { background: #0369a1; }
+        .add-img-btn { background: #64748b; } .add-img-btn:hover { background: #475569; }
+        .add-code-btn { background: #0f766e; } .add-code-btn:hover { background: #115e59; }
+        .blocks-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
+        .blocks-container { display: flex; flex-direction: column; gap: 10px; }
+        .block-item { background: var(--card); border: 1px solid var(--line2); border-radius: 8px; padding: 9px 11px; transition: border-color 0.15s, box-shadow 0.15s; }
+        .block-item.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+        .block-item.flash { animation: flash 0.9s; }
+        @keyframes flash { 0%, 60% { box-shadow: 0 0 0 4px var(--accent); } 100% { box-shadow: 0 0 0 2px var(--accent-soft); } }
+        .block-item.drag-over { border-color: var(--accent); border-style: dashed; }
+        .block-header { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+        .block-header .handle { cursor: grab; color: var(--muted); font-size: 1rem; padding: 0 2px; }
+        .block-header .chev { color: var(--muted); font-size: 0.75rem; width: 12px; transition: transform 0.15s; }
+        .block-item.open .chev { transform: rotate(90deg); }
+        .block-header .kind { font-size: 0.72rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+        .block-header .summary { flex: 1; min-width: 0; font-size: 0.84rem; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .block-header .tools { display: flex; gap: 4px; }
+        .block-body { margin-top: 9px; }
+        .block-item:not(.open) .block-body { display: none; }
+        .controls-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; font-size: 0.83rem; color: var(--text2); }
+        .thumb { width: 64px; height: 48px; object-fit: contain; background: #fff; border-radius: 4px; border: 1px solid var(--line2); }
+        .empty-state { text-align: center; padding: 26px 10px; border: 2px dashed var(--line2); border-radius: 10px; color: var(--muted); font-size: 0.88rem; }
+        .empty-state button { margin-top: 10px; }
+
+        /* ---------- label picker ---------- */
+        .label-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; margin-bottom: 9px; }
+        .label-opt { background: var(--field); border: 1px solid var(--line2); border-radius: 7px; padding: 6px 4px 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text2); font-size: 0.7rem; font-weight: 600; }
+        .label-opt:hover { border-color: var(--accent); }
+        .label-opt.active { border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
+        .label-opt .shape-box { height: 40px; display: flex; align-items: center; justify-content: center; }
+        .label-opt .shape { border: 2px solid currentColor; border-radius: 3px; background: var(--panel); }
+        .label-opt .shape.round { border-radius: 50%; }
+
+        /* ---------- printer + preview ---------- */
+        .printer-help { background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 8px; padding: 9px 12px; font-size: 0.82rem; margin-top: 4px; color: var(--text2); }
+        .printer-help ol { margin: 6px 0 0 18px; padding: 0; }
+        .printer-help li { margin-bottom: 3px; }
+        .preview-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; font-size: 0.8rem; }
+        #previewInfo { font-size: 0.8rem; color: var(--text2); margin-bottom: 6px; }
+        #previewWarn { font-size: 0.8rem; color: var(--warn); margin-bottom: 6px; }
+        .canvas-wrap { overflow: auto; border-radius: 6px; background: var(--stage); padding: 8px; max-height: 64vh; text-align: center; }
+        .stage { position: relative; display: inline-block; vertical-align: top; width: 100%; }
+        .stage canvas { width: 100%; height: auto; background: #fff; image-rendering: pixelated; display: block; cursor: pointer; }
+        .hl { position: absolute; pointer-events: none; border: 2px dashed #f97316; background: rgba(249, 115, 22, 0.08); border-radius: 2px; }
+        .hl.sel { border: 2px solid #0ea5e9; background: rgba(14, 165, 233, 0.12); }
+
+        .print-bar { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; box-shadow: 0 -6px 20px var(--shadow); }
+        .print-bar .top { display: flex; align-items: center; gap: 10px; }
+        #printSummary { flex: 1; font-size: 0.82rem; color: var(--text2); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .print-btn { background: var(--ok); color: white; border: none; padding: 11px 24px; font-weight: 800; font-size: 0.98rem; border-radius: 8px; cursor: pointer; }
+        .print-btn:hover { background: var(--ok-hover); }
+        .print-btn:disabled { background: var(--line2); color: var(--muted); cursor: not-allowed; }
+        .print-btn.cancel-btn { background: var(--danger); }
+        .save-btn { background: var(--btn); color: var(--text); border: none; padding: 11px 14px; font-weight: 700; border-radius: 8px; cursor: pointer; }
+        .save-btn:hover { background: var(--btn-hover); }
+        .progress { height: 6px; background: var(--inset); border-radius: 999px; overflow: hidden; margin-top: 9px; border: 1px solid var(--line); }
+        .progress > div { height: 100%; width: 0%; background: var(--ok); transition: width 0.2s; }
+        #statusText { margin-top: 6px; font-size: 0.8rem; color: var(--text2); }
+        #logBox { background: var(--inset); border: 1px solid var(--line); border-radius: 6px; padding: 8px; font-family: Consolas, monospace; font-size: 0.74rem; color: var(--text2); max-height: 120px; overflow-y: auto; white-space: pre-wrap; }
+
+        /* ---------- popovers / modals ---------- */
+        .popover { position: fixed; z-index: 60; background: var(--panel); border: 1px solid var(--line2); border-radius: 8px; box-shadow: 0 14px 34px var(--shadow); width: 300px; max-height: 380px; display: flex; flex-direction: column; }
+        .popover input { margin: 8px; }
+        #fontList { overflow-y: auto; padding-bottom: 6px; }
+        .font-group { font-size: 0.68rem; font-weight: 800; color: var(--muted); text-transform: uppercase; padding: 8px 12px 3px; letter-spacing: 0.05em; font-family: "Segoe UI", sans-serif; }
+        .font-opt { padding: 6px 12px; cursor: pointer; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+        .font-opt:hover, .font-opt.active { background: var(--accent-soft); }
+
+        .modal-back { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.6); z-index: 70; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .modal { background: var(--panel); border: 1px solid var(--line2); border-radius: 12px; width: min(980px, 100%); max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px var(--shadow); }
+        .modal-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+        .modal-head h2 { margin: 0; font-size: 1.05rem; flex: 1; }
+        .modal-body { padding: 14px 18px; overflow-y: auto; }
+        .tpl-group { font-size: 0.8rem; font-weight: 800; color: var(--accent); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .tpl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin-bottom: 16px; }
+        .tpl-card { background: var(--card); border: 1px solid var(--line2); border-radius: 9px; padding: 8px; cursor: pointer; text-align: left; color: var(--text); }
+        .tpl-card:hover { border-color: var(--accent); }
+        .tpl-card .tpl-thumb { height: 120px; display: flex; align-items: center; justify-content: center; background: var(--stage); border-radius: 6px; margin-bottom: 7px; }
+        .tpl-card .tpl-thumb img { max-width: 92%; max-height: 108px; background: #fff; box-shadow: 0 2px 6px var(--shadow); }
+        .tpl-card .tpl-thumb img.round { border-radius: 50%; }
+        .tpl-card b { font-size: 0.86rem; display: block; }
+        .tpl-card span { font-size: 0.74rem; color: var(--muted); }
+        .bottle-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 760px) { .bottle-form { grid-template-columns: 1fr; } }
+        .bottle-form .fields { display: grid; grid-template-columns: 120px 1fr; gap: 8px 10px; align-items: center; font-size: 0.84rem; }
+        .bottle-form .fields input[type="text"], .bottle-form .fields input[type="number"] { width: 100%; }
+        .bottle-form .preview { background: var(--stage); border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 12px; min-height: 240px; }
+        .bottle-form .preview img { max-width: 100%; max-height: 360px; background: #fff; box-shadow: 0 2px 8px var(--shadow); }
+        .bottle-form .preview img.round { border-radius: 50%; }
+        .units-box { grid-column: 1 / -1; background: var(--inset); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font-size: 0.82rem; color: var(--text2); }
+
+        .drop-veil { position: fixed; inset: 0; z-index: 80; background: var(--accent-soft); border: 4px dashed var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; color: var(--accent); pointer-events: none; }
+
+        #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--panel); border: 1px solid var(--accent); color: var(--text); padding: 10px 18px; border-radius: 8px; font-size: 0.88rem; box-shadow: 0 10px 25px var(--shadow); opacity: 0; pointer-events: none; transition: opacity 0.25s; max-width: 80vw; z-index: 90; }
+        #toast.show { opacity: 1; }
+        #toast.error { border-color: var(--danger); }
+        #toast.ok { border-color: var(--ok); }
     </style>
 </head>
 <body>
@@ -138,17 +234,24 @@
         </div>
     </div>
     <div class="toolbar">
-        <button class="tbtn" onclick="newLayout()" title="New layout">New</button>
+        <button class="tbtn primary" onclick="openTemplates()" title="Start from a ready-made design">✦ Templates</button>
+        <button class="tbtn" onclick="newLayout()" title="Blank layout">New</button>
         <button class="tbtn" onclick="openLayout()" title="Open layout (Ctrl+O)">Open…</button>
-        <select id="recentSelect" class="hidden" onchange="openRecent(this.value)" style="max-width:170px"></select>
+        <select id="recentSelect" class="hidden" onchange="openRecent(this.value)" style="max-width:160px"></select>
         <button class="tbtn" onclick="saveLayout(false)" title="Save (Ctrl+S)">Save</button>
-        <button class="tbtn" onclick="saveLayout(true)">Save As…</button>
+        <button class="tbtn" onclick="saveLayout(true)" title="Save As (Ctrl+Shift+S)">Save As…</button>
         <input type="file" id="openFileInput" accept=".orgbro,.json" class="hidden" onchange="openFromFileInput(event)">
         <span class="sep"></span>
         <button id="undoBtn" class="tbtn" onclick="undo()" title="Undo (Ctrl+Z)" disabled>↶ Undo</button>
         <button id="redoBtn" class="tbtn" onclick="redo()" title="Redo (Ctrl+Y)" disabled>↷ Redo</button>
+        <span class="sep"></span>
+        <select id="themeSelect" title="Theme" onchange="setTheme(this.value)">
+            <option value="auto">Theme: Auto</option>
+            <option value="dark">Theme: Dark</option>
+            <option value="light">Theme: Light</option>
+        </select>
     </div>
-    <span id="backendPill" class="pill">Connecting…</span>
+    <span id="printerPill" class="pill" title="Printer status">Connecting…</span>
 </header>
 
 <main class="layout">
@@ -157,14 +260,12 @@
         <div class="panel">
             <h3>Paper &amp; Stickers</h3>
             <div class="row">
-                <span style="width:70px">Roll width</span>
+                <span style="width:66px">Roll width</span>
                 <div class="seg">
                     <button id="roll80" onclick="setDoc('roll','80')">80 mm</button>
                     <button id="roll57" onclick="setDoc('roll','57')">57 mm</button>
                 </div>
-            </div>
-            <div class="row">
-                <span style="width:70px">Media</span>
+                <span style="width:10px"></span>
                 <div class="seg">
                     <button id="mediaContinuous" onclick="setDoc('media','continuous')">Continuous roll</button>
                     <button id="mediaLabels" onclick="setDoc('media','labels')">Sticker labels</button>
@@ -172,12 +273,8 @@
             </div>
 
             <div id="labelSettings" class="subtle-box">
-                <div class="row">
-                    <label>Label size
-                        <select id="labelPreset" onchange="chooseLabelPreset(this.value)"></select>
-                    </label>
-                </div>
-                <div class="row">
+                <div id="labelGrid" class="label-grid"></div>
+                <div class="row" id="customRow">
                     <label>Width <input type="number" id="labelW" min="10" max="80" step="0.5" onchange="setLabelCustom()"> mm</label>
                     <label id="labelHWrap">Height <input type="number" id="labelH" min="10" max="300" step="0.5" onchange="setLabelCustom()"> mm</label>
                     <label>Shape
@@ -198,16 +295,16 @@
                 <label id="bannerWrap">Length along roll <input type="number" id="bannerLength" min="10" max="1000" step="1" onchange="setDoc('bannerLength', num(this.value, 100))"> mm</label>
             </div>
             <div class="row">
-                <label><span id="repeatLabel">Repeat layout</span> <input type="number" id="repeats" min="1" max="100" onchange="setDoc('repeats', clampInt(this.value, 1, 100, 1))"> ×</label>
-                <label>Start number <input type="number" id="startNumber" onchange="setDoc('startNumber', clampInt(this.value, -999999, 9999999, 1))"></label>
+                <label><span id="repeatLabel">Copies</span> <input type="number" id="repeats" min="1" max="100" onchange="setDoc('repeats', clampInt(this.value, 1, 100, 1))"></label>
+                <label title="The first value of {n}">Start number <input type="number" id="startNumber" onchange="setDoc('startNumber', clampInt(this.value, -999999, 9999999, 1))"></label>
             </div>
             <div class="row" id="continuousSettings">
                 <label><input type="checkbox" id="showCutLines" onchange="setDoc('showCutLines', this.checked)"> Cut-line dividers</label>
                 <label>Gap between copies <input type="number" id="stickerGap" min="0" max="500" onchange="setDoc('stickerGap', clampInt(this.value, 0, 500, 30))"> px</label>
             </div>
-            <div class="muted">Fields you can type in text and codes: <code>{n}</code> number, <code>{n:3}</code> zero-padded (001), <code>{total}</code>, <code>{date}</code>, <code>{time}</code></div>
+            <div class="muted">Fields for text and codes: <code>{n}</code> number · <code>{n:3}</code> 001 · <code>{total}</code> · <code>{date}</code> · <code>{time}</code></div>
 
-            <details>
+            <details id="calibDetails" style="margin-top:8px">
                 <summary>Calibration</summary>
                 <div class="subtle-box">
                     <div class="row">
@@ -215,108 +312,155 @@
                         <label title="Print-head resolution">Dots per mm <input type="number" id="dotsPerMm" min="7" max="13" step="0.01" onchange="setDevice('dotsPerMm', num(this.value, 10.8))"></label>
                     </div>
                     <div class="row">
-                        <button class="btn-small" onclick="printTest('calibration')">🖨 Print calibration sheet</button>
-                        <button class="btn-small" onclick="printTest('long')">🖨 Print long-print test</button>
+                        <button class="btn-small" onclick="printTest('calibration')">🖨 Calibration sheet</button>
+                        <button class="btn-small" onclick="printTest('long')">🖨 Long-print test</button>
                     </div>
-                    <div class="muted">The calibration sheet has rulers and the 57 mm paper edges, so you can check the offset and dots-per-mm. The long-print test prints past the 256-packet mark; if it stops or garbles there, turn on <i>Split long prints</i>.</div>
+                    <div class="muted">The calibration sheet has rulers and the 57 mm paper edges, so you can check the offset and dots per mm. If the long-print test stops or garbles at the black band, turn on <i>Split long prints</i> under Printer → Advanced.</div>
                 </div>
             </details>
         </div>
 
-        <div class="panel">
-            <h3>Fonts</h3>
-            <div class="row">
-                <span class="muted" style="flex:1">13 fonts are built in and work offline. Add every font installed on this PC:</span>
-                <button class="system-font-btn" onclick="loadSystemFonts()">🔍 Scan System Fonts</button>
-            </div>
-        </div>
-
         <div class="action-bar">
             <button class="add-btn add-text-btn" onclick="addTextBlock()">+ Text</button>
-            <button class="add-btn add-img-btn" onclick="triggerImageUpload()">+ Image</button>
+            <button class="add-btn add-img-btn" onclick="triggerImageUpload()" title="Or paste (Ctrl+V) / drag an image onto the window">+ Image</button>
             <button class="add-btn add-code-btn" onclick="addCodeBlock()">+ QR / Barcode</button>
             <input type="file" id="hiddenFileInput" accept="image/*" style="display: none;" onchange="addImageBlock(event)">
         </div>
-
+        <div class="blocks-tools">
+            <span class="muted">Click a block to edit · drag ⠿ to reorder · click the preview to select · paste or drop images</span>
+            <span style="white-space:nowrap">
+                <button class="btn-small" onclick="setAllCollapsed(false)">Expand all</button>
+                <button class="btn-small" onclick="setAllCollapsed(true)">Collapse all</button>
+            </span>
+        </div>
         <div id="blocksContainer" class="blocks-container"></div>
+
+        <div class="panel" style="margin-top:12px">
+            <h3>Fonts</h3>
+            <div class="row">
+                <span class="muted" style="flex:1">13 fonts are built in and work offline. Add every font installed on this PC to the font picker:</span>
+                <button class="btn-small" onclick="loadSystemFonts()">🔍 Scan system fonts</button>
+            </div>
+        </div>
     </section>
 
     <!-- ================= RIGHT: printer + preview ================= -->
     <aside class="side-col">
-        <div class="panel">
-            <h3>Printer</h3>
-            <div class="row">
-                <select id="portSelect" style="flex:1; min-width: 200px;" onchange="setDevice('port', this.value)">
-                    <option value="">No COM ports found</option>
-                </select>
-                <button class="btn-small" onclick="refreshPorts(true)" title="Refresh the list">↻</button>
-                <button class="btn-small" onclick="findPrinter()" title="Ask each port whether the printer answers">Find printer</button>
-            </div>
-            <div class="row">
-                <label>Images
-                    <select id="ditherMode" onchange="setDevice('dither', this.value)">
-                        <option value="floyd">Floyd–Steinberg dithering</option>
-                        <option value="threshold">Threshold (no dithering)</option>
+        <div class="side-scroll">
+            <div class="panel">
+                <h3>Printer</h3>
+                <div class="row">
+                    <select id="portSelect" style="flex:1; min-width: 190px;" onchange="setDevice('port', this.value); updatePrinterStatus()">
+                        <option value="">No COM ports found</option>
                     </select>
-                </label>
-                <label><input type="checkbox" id="invertBW" onchange="setDevice('invert', this.checked)"> Invert</label>
-            </div>
-            <div class="row">
-                <label style="flex:1">Threshold
-                    <input type="range" id="threshold" min="1" max="254" style="flex:1"
-                           oninput="document.getElementById('thresholdVal').innerText = this.value; setDevice('threshold', +this.value)">
-                    <span id="thresholdVal" style="width:28px; text-align:right"></span>
-                </label>
-            </div>
-            <div class="row">
-                <label>Density<span class="exp">experimental</span>
-                    <select id="density" onchange="setDevice('density', +this.value)">
-                        <option value="48">Light</option>
-                        <option value="69">Medium-light</option>
-                        <option value="85">Normal (app default)</option>
-                        <option value="106">Dark</option>
-                        <option value="128">Darker</option>
-                    </select>
-                </label>
-                <label>Feed after<span class="exp">experimental</span>
-                    <select id="feed" onchange="setDevice('feed', this.value)">
-                        <option value="auto">Auto</option>
-                        <option value="0">None</option>
-                        <option value="100">Short</option>
-                        <option value="200">Normal</option>
-                        <option value="350">Long</option>
-                    </select>
-                </label>
-            </div>
-            <div class="row">
-                <label>Packet delay <input type="number" id="packetDelay" min="0" max="0.5" step="0.01" onchange="setDevice('delay', num(this.value, 0.02))"> s</label>
-                <label title="Sends prints longer than ~9 cm as several jobs so the packet counter never wraps"><input type="checkbox" id="splitLong" onchange="setDevice('split', this.checked)"> Split long prints<span class="exp">experimental</span></label>
-            </div>
-            <div class="row">
-                <label><input type="checkbox" id="showMono" onchange="setDevice('showMono', this.checked)"> Show exact 1-bit print preview</label>
+                    <button class="btn-small" onclick="refreshPorts(true)" title="Refresh the list">↻</button>
+                    <button class="btn-small" onclick="findPrinter()" title="Ask each port whether the printer answers">Find printer</button>
+                </div>
+                <div id="printerHelp" class="printer-help hidden"></div>
+
+                <details id="advDetails" style="margin-top:6px" ontoggle="lsSet('advOpen', this.open ? '1' : '')">
+                    <summary>Advanced print settings</summary>
+                    <div class="row">
+                        <label>Images
+                            <select id="ditherMode" onchange="setDevice('dither', this.value)">
+                                <option value="floyd">Floyd–Steinberg dithering</option>
+                                <option value="threshold">Threshold (no dithering)</option>
+                            </select>
+                        </label>
+                        <label><input type="checkbox" id="invertBW" onchange="setDevice('invert', this.checked)"> Invert</label>
+                    </div>
+                    <div class="row">
+                        <label title="Grey levels darker than this print black">Threshold
+                            <span class="slider">
+                                <input type="range" id="threshold" min="1" max="254" oninput="setDevice('threshold', +this.value); $('thresholdNum').value = this.value">
+                                <input type="number" id="thresholdNum" min="1" max="254" onchange="const v = clampInt(this.value, 1, 254, 160); this.value = v; $('threshold').value = v; setDevice('threshold', v)">
+                            </span>
+                        </label>
+                    </div>
+                    <div class="row">
+                        <label>Density<span class="exp">experimental</span>
+                            <select id="density" onchange="setDevice('density', +this.value)">
+                                <option value="48">Light</option>
+                                <option value="69">Medium-light</option>
+                                <option value="85">Normal (app default)</option>
+                                <option value="106">Dark</option>
+                                <option value="128">Darker</option>
+                            </select>
+                        </label>
+                        <label>Feed after<span class="exp">experimental</span>
+                            <select id="feed" onchange="setDevice('feed', this.value)">
+                                <option value="auto">Auto</option>
+                                <option value="0">None</option>
+                                <option value="100">Short</option>
+                                <option value="200">Normal</option>
+                                <option value="350">Long</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="row">
+                        <label>Packet delay <input type="number" id="packetDelay" min="0" max="0.5" step="0.01" onchange="setDevice('delay', num(this.value, 0.02))"> s</label>
+                        <label title="Sends prints longer than ~9 cm as several jobs so the packet counter never wraps"><input type="checkbox" id="splitLong" onchange="setDevice('split', this.checked)"> Split long prints<span class="exp">experimental</span></label>
+                    </div>
+                    <details>
+                        <summary>Log</summary>
+                        <div id="logBox"></div>
+                    </details>
+                </details>
             </div>
 
-            <div class="print-actions">
-                <button id="printBtn" class="print-btn" onclick="startPrint()">🖨 Print</button>
-                <button class="save-btn" onclick="downloadImage()">Save PNG</button>
+            <div class="panel">
+                <div class="preview-head">
+                    <b style="color: var(--accent); font-size: 0.88rem; flex: 1">Preview</b>
+                    <div class="seg" title="Zoom">
+                        <button id="zoomFit" onclick="setDevice('zoom', 'fit')">Fit</button>
+                        <button id="zoom100" onclick="setDevice('zoom', '100')">100%</button>
+                        <button id="zoom200" onclick="setDevice('zoom', '200')">200%</button>
+                    </div>
+                    <label title="Preview only the first copy / label"><input type="checkbox" id="previewSingle" onchange="setDevice('previewSingle', this.checked)"> <span id="singleLabel">One copy</span></label>
+                    <label title="Show exactly what the printer will print (black and white)"><input type="checkbox" id="showMono" onchange="setDevice('showMono', this.checked)"> 1-bit</label>
+                </div>
+                <div id="previewInfo"></div>
+                <div id="previewWarn"></div>
+                <div class="canvas-wrap" id="canvasWrap">
+                    <div class="stage" id="stage">
+                        <canvas id="canvas" width="864" height="200"></canvas>
+                        <div id="overlay"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="print-bar">
+            <div class="top">
+                <div id="printSummary"></div>
+                <button class="save-btn" onclick="downloadImage()" title="Save the print image as PNG">PNG</button>
+                <button id="printBtn" class="print-btn" onclick="startPrint()" title="Print (Ctrl+P)">🖨 Print</button>
             </div>
             <div class="progress"><div id="progressBar"></div></div>
             <div id="statusText">Ready</div>
-            <details>
-                <summary>Log</summary>
-                <div id="logBox"></div>
-            </details>
-        </div>
-
-        <div class="panel preview-box">
-            <label id="canvasLabel">Preview</label>
-            <div id="previewInfo"></div>
-            <div id="previewWarn"></div>
-            <div class="canvas-wrap"><canvas id="canvas" width="864" height="200"></canvas></div>
         </div>
     </aside>
 </main>
 
+<!-- font picker -->
+<div id="fontPop" class="popover hidden">
+    <input type="search" id="fontSearch" placeholder="Search fonts…" oninput="fillFontList()">
+    <div id="fontList"></div>
+</div>
+
+<!-- modal (templates / bottle form) -->
+<div id="modalBack" class="modal-back hidden" onclick="if (event.target === this) closeModal()">
+    <div class="modal">
+        <div class="modal-head">
+            <button id="modalBackBtn" class="btn-small hidden" onclick="openTemplates()">← Templates</button>
+            <h2 id="modalTitle">Templates</h2>
+            <button class="btn-small" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+    </div>
+</div>
+
+<div id="dropVeil" class="drop-veil hidden">Drop images to add them · drop a .orgbro file to open it</div>
 <div id="toast"></div>
 
 <script>
@@ -332,7 +476,7 @@
         { id: '80x50', roll: '80', w: 80, h: 50, shape: 'rect' },
         { id: '80x60', roll: '80', w: 80, h: 60, shape: 'rect' },
         { id: '80x80', roll: '80', w: 80, h: 80, shape: 'rect' },
-        { id: '76x51', roll: '80', w: 76, h: 51, shape: 'rect', note: '3 × 2 in' },
+        { id: '76x51', roll: '80', w: 76, h: 51, shape: 'rect', note: '3×2 in' },
         { id: '70x50', roll: '80', w: 70, h: 50, shape: 'rect' },
         { id: '60x40', roll: '80', w: 60, h: 40, shape: 'rect' },
         { id: 'r70', roll: '80', w: 70, h: 70, shape: 'round' },
@@ -356,19 +500,19 @@
 
     // Built-in (bundled) fonts with the weights/styles actually available.
     const BUNDLED_FONTS = [
-        { name: 'Inter (Sans-Serif)', family: 'Inter', w: [100, 900], italic: true },
-        { name: 'Montserrat (Geometric Bold)', family: 'Montserrat', w: [100, 900], italic: true },
-        { name: 'Oswald (Tall Display)', family: 'Oswald', w: [200, 700], italic: false },
-        { name: 'Bungee (Block Poster)', family: 'Bungee', w: [400, 400], italic: false },
-        { name: 'Press Start 2P (8-Bit Retro)', family: "'Press Start 2P'", w: [400, 400], italic: false },
-        { name: 'VT323 (Arcade Pixel)', family: 'VT323', w: [400, 400], italic: false },
-        { name: 'Courier Prime (Typewriter)', family: "'Courier Prime'", w: [400, 700], italic: true, steps: [400, 700] },
-        { name: 'Special Elite (Vintage Stamp)', family: "'Special Elite'", w: [400, 400], italic: false },
-        { name: 'Fira Code (Code Mono)', family: "'Fira Code'", w: [300, 700], italic: false },
-        { name: 'Roboto Mono (Clean Mono)', family: "'Roboto Mono'", w: [100, 700], italic: true },
-        { name: 'Libre Baskerville (Serif)', family: "'Libre Baskerville'", w: [400, 700], italic: true },
-        { name: 'Pacifico (Cursive Script)', family: 'Pacifico', w: [400, 400], italic: false },
-        { name: 'Caveat (Handwritten)', family: 'Caveat', w: [400, 700], italic: false },
+        { name: 'Inter', family: 'Inter', w: [100, 900], italic: true },
+        { name: 'Montserrat', family: 'Montserrat', w: [100, 900], italic: true },
+        { name: 'Oswald', family: 'Oswald', w: [200, 700], italic: false },
+        { name: 'Bungee', family: 'Bungee', w: [400, 400], italic: false },
+        { name: 'Press Start 2P', family: "'Press Start 2P'", w: [400, 400], italic: false },
+        { name: 'VT323', family: 'VT323', w: [400, 400], italic: false },
+        { name: 'Courier Prime', family: "'Courier Prime'", w: [400, 700], italic: true, steps: [400, 700] },
+        { name: 'Special Elite', family: "'Special Elite'", w: [400, 400], italic: false },
+        { name: 'Fira Code', family: "'Fira Code'", w: [300, 700], italic: false },
+        { name: 'Roboto Mono', family: "'Roboto Mono'", w: [100, 700], italic: true },
+        { name: 'Libre Baskerville', family: "'Libre Baskerville'", w: [400, 700], italic: true },
+        { name: 'Pacifico', family: 'Pacifico', w: [400, 400], italic: false },
+        { name: 'Caveat', family: 'Caveat', w: [400, 700], italic: false },
     ];
     const WINDOWS_FONTS = ['Arial', 'Times New Roman', 'Courier New', 'Comic Sans MS', 'Impact', 'Georgia',
         'Verdana', 'Tahoma', 'Trebuchet MS', 'Consolas', 'Segoe UI'];
@@ -401,12 +545,24 @@
     function lsGet(k) { try { return localStorage.getItem('orgbro.' + k); } catch (e) { return null; } }
     function lsSet(k, v) { try { localStorage.setItem('orgbro.' + k, v); return true; } catch (e) { return false; } }
 
+    // ---- theme -----------------------------------------------------------
+    const darkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    function applyTheme() {
+        const pref = lsGet('theme') || 'auto';
+        const theme = pref === 'auto' ? (darkQuery && !darkQuery.matches ? 'light' : 'dark') : pref;
+        document.documentElement.dataset.theme = theme;
+        $('themeSelect').value = pref;
+    }
+    function setTheme(v) { lsSet('theme', v); applyTheme(); }
+    if (darkQuery && darkQuery.addEventListener) darkQuery.addEventListener('change', applyTheme);
+
     // =====================================================================
     //  Device settings (per PC, not saved in layout files)
     // =====================================================================
     const DEVICE_DEFAULTS = {
         port: '', dither: 'floyd', invert: false, threshold: 160, density: 85, feed: 'auto',
         delay: 0.02, split: false, showMono: true, zoneOffset: 249, dotsPerMm: 10.8,
+        zoom: 'fit', previewSingle: false,
     };
     let device = { ...DEVICE_DEFAULTS };
     try { Object.assign(device, JSON.parse(lsGet('device') || '{}')); } catch (e) {}
@@ -414,21 +570,30 @@
     function setDevice(key, value) {
         device[key] = value;
         lsSet('device', JSON.stringify(device));
-        if (key !== 'port' && key !== 'delay') renderCanvas();
+        if (key === 'zoom') applyZoom();
+        if (key !== 'port' && key !== 'delay' && key !== 'zoom') renderCanvas();
     }
     function syncDeviceControls() {
         $('ditherMode').value = device.dither;
         $('invertBW').checked = !!device.invert;
         $('threshold').value = device.threshold;
-        $('thresholdVal').innerText = device.threshold;
+        $('thresholdNum').value = device.threshold;
         $('density').value = String(device.density);
         if (!$('density').value) $('density').value = '85';
         $('feed').value = String(device.feed);
         $('packetDelay').value = device.delay;
         $('splitLong').checked = !!device.split;
         $('showMono').checked = !!device.showMono;
+        $('previewSingle').checked = !!device.previewSingle;
         $('zoneOffset').value = device.zoneOffset;
         $('dotsPerMm').value = device.dotsPerMm;
+        $('advDetails').open = !!lsGet('advOpen');
+        applyZoom();
+    }
+    function applyZoom() {
+        const z = device.zoom || 'fit';
+        ['Fit', '100', '200'].forEach(k => $('zoom' + k).classList.toggle('active', z === (k === 'Fit' ? 'fit' : k)));
+        $('stage').style.width = z === 'fit' ? '100%' : (HEAD_WIDTH * (z === '200' ? 2 : 1)) + 'px';
     }
 
     function dpm() { return Math.min(13, Math.max(7, num(device.dotsPerMm, 10.8))); }
@@ -458,7 +623,15 @@
         return { id: nextId++, type: 'text', text: 'Type text here...', font: 'Inter', customFontName: '',
                  size: 28, weight: 400, isItalic: false, isUnderline: false, align: 'center', fit: false, spaceAfter: 15, ...extra };
     }
+    function newCode(extra = {}) {
+        return { id: nextId++, type: 'code', kind: 'qr', data: 'https://example.com', ecc: 'M',
+                 scalePercent: 45, align: 'center', showText: true, barHeight: 70, spaceAfter: 15, ...extra };
+    }
     let doc = defaultDoc();
+
+    // ---- UI-only state -------------------------------------------------------
+    let selectedId = null, hoverId = null;
+    const openBlocks = new Set(doc.blocks.map(b => b.id));
 
     // ---- undo / redo -----------------------------------------------------
     let history = [], future = [], lastSnap = JSON.stringify(doc);
@@ -504,6 +677,7 @@
     }
     function afterDocReplaced() {
         nextId = Math.max(nextId, ...doc.blocks.map(b => b.id + 1), 1);
+        if (selectedId && !findBlock(selectedId)) selectedId = null;
         syncDocControls(); renderUI(); renderCanvas(); updateUndoButtons();
     }
 
@@ -517,7 +691,7 @@
 
     // ---- labels ------------------------------------------------------------
     function presetLabel(p) {
-        return p.shape === 'round' ? `Round Ø ${p.w} mm` : `${p.w} × ${p.h} mm${p.note ? ' (' + p.note + ')' : ''}`;
+        return p.shape === 'round' ? `Ø ${p.w}` : `${p.w}×${p.h}`;
     }
     function ensurePresetForRoll() {
         const maxW = doc.roll === '80' ? 80 : 57;
@@ -552,6 +726,10 @@
         const w = doc.labelW, h = doc.labelShape === 'round' ? doc.labelW : doc.labelH;
         return { w, h };
     }
+    function shapeChip(w, h, round) {
+        const s = 36 / Math.max(w, h);
+        return `<div class="shape-box"><div class="shape ${round ? 'round' : ''}" style="width:${Math.max(8, Math.round(w * s))}px;height:${Math.max(8, Math.round(h * s))}px"></div></div>`;
+    }
 
     function syncDocControls() {
         ensurePresetForRoll();
@@ -563,15 +741,18 @@
         $('labelSettings').classList.toggle('hidden', !labels);
         $('continuousSettings').classList.toggle('hidden', labels);
         $('bannerWrap').classList.toggle('hidden', labels || !doc.rotate);
-        $('repeatLabel').textContent = labels ? 'Number of labels' : 'Repeat layout';
+        $('repeatLabel').textContent = labels ? 'Number of labels' : 'Copies';
+        $('singleLabel').textContent = labels ? 'One label' : 'One copy';
 
         const presets = LABEL_PRESETS.filter(p => p.roll === doc.roll);
-        const opt = p => `<option value="${p.id}">${escapeHtml(presetLabel(p))}</option>`;
-        $('labelPreset').innerHTML =
-            `<optgroup label="Rectangle">${presets.filter(p => p.shape === 'rect').map(opt).join('')}</optgroup>` +
-            `<optgroup label="Round">${presets.filter(p => p.shape === 'round').map(opt).join('')}</optgroup>` +
-            `<option value="custom">Custom size…</option>`;
-        $('labelPreset').value = doc.labelPreset;
+        $('labelGrid').innerHTML = presets.map(p =>
+            `<button class="label-opt ${doc.labelPreset === p.id ? 'active' : ''}" onclick="chooseLabelPreset('${p.id}')" title="${p.shape === 'round' ? 'Round ' : ''}${p.w} × ${p.h} mm${p.note ? ' (' + p.note + ')' : ''}">
+                ${shapeChip(p.w, p.h, p.shape === 'round')}${presetLabel(p)}${p.note ? '<span style="font-weight:400;opacity:.8">' + p.note + '</span>' : ''}
+            </button>`).join('') +
+            `<button class="label-opt ${doc.labelPreset === 'custom' ? 'active' : ''}" onclick="chooseLabelPreset('custom')" title="Your own size">
+                ${shapeChip(labelDims().w, labelDims().h, doc.labelShape === 'round')}Custom
+            </button>`;
+        $('customRow').classList.toggle('hidden', doc.labelPreset !== 'custom');
         $('labelW').value = doc.labelW;
         $('labelW').max = doc.roll === '80' ? 80 : 57;
         $('labelH').value = doc.labelH;
@@ -593,6 +774,8 @@
     const API_TOKEN = document.querySelector('meta[name="orgbro-token"]').content;
     let backendOnline = false;
     let backendNative = false;
+    let portList = [];
+    let probeDone = false;
 
     async function api(name, payload = {}) {
         const res = await fetch('/api/' + name, {
@@ -606,37 +789,64 @@
         return data;
     }
 
-    function setBackendPill(on) {
-        const p = $('backendPill');
-        p.className = 'pill ' + (on ? 'on' : 'off');
-        p.textContent = on ? 'Printer service ready' : 'Editor only — printing unavailable';
-        $('printBtn').disabled = !on;
+    function updatePrinterStatus() {
+        const pill = $('printerPill'), help = $('printerHelp');
+        const port = $('portSelect').value;
+        $('printBtn').disabled = !backendOnline && !printing;
+        if (!backendOnline) {
+            pill.className = 'pill off';
+            pill.textContent = 'Editor only';
+            pill.title = 'Printing works when this page is opened by the ORGBRO X3 Studio app.';
+            help.classList.add('hidden');
+            return;
+        }
+        if (port) {
+            const found = knownPrinters.has(port);
+            pill.className = 'pill on';
+            pill.textContent = `Printer: ${port}${found ? ' ✓' : ''}`;
+            pill.title = found ? 'The printer answered on this port.' : 'Selected port (use "Find printer" to confirm it is the printer).';
+        } else {
+            pill.className = 'pill off';
+            pill.textContent = 'No printer selected';
+            pill.title = '';
+        }
+        const needHelp = !portList.length || !port || (probeDone && !knownPrinters.size);
+        help.classList.toggle('hidden', !needHelp);
+        if (needHelp) {
+            help.innerHTML = `<b>${!portList.length ? 'No Bluetooth COM ports found.' : probeDone && !knownPrinters.size ? 'The printer did not answer.' : 'Choose your printer.'}</b>
+                <ol>
+                    <li>Turn the ORGBRO X3 on.</li>
+                    <li>Pair it in Windows <b>Settings → Bluetooth &amp; devices → Add device</b>.</li>
+                    <li>Disconnect your phone from the printer (it allows only one connection).</li>
+                    <li>Click <b>↻</b>, then <b>Find printer</b>.</li>
+                </ol>`;
+        }
     }
 
     async function initBackend() {
-        if (!location.protocol.startsWith('http') || API_TOKEN.startsWith('__')) { setBackendPill(false); return; }
+        if (!location.protocol.startsWith('http') || API_TOKEN.startsWith('__')) { updatePrinterStatus(); return; }
         try {
             const info = await api('ping');
             backendOnline = true;
             backendNative = !!info.native;
             $('appVersion').textContent = 'v' + info.version;
-            setBackendPill(true);
             await refreshPorts(false);
             refreshRecent();
-        } catch (e) {
-            setBackendPill(false);
-        }
+        } catch (e) { /* editor-only mode */ }
+        updatePrinterStatus();
     }
 
     let knownPrinters = new Set();
     function fillPorts(ports) {
+        portList = ports;
         const sel = $('portSelect');
         const saved = sel.value || device.port;
         sel.innerHTML = ports.length
             ? ports.map(p => `<option value="${escapeHtml(p.device)}">${knownPrinters.has(p.device) ? '✓ ' : ''}${escapeHtml(p.device)} — ${escapeHtml(p.description)}</option>`).join('')
-            : '<option value="">No COM ports found — pair the printer in Windows Bluetooth settings</option>';
+            : '<option value="">No COM ports found</option>';
         if (saved && ports.some(p => p.device === saved)) sel.value = saved;
         if (sel.value) setDevice('port', sel.value);
+        updatePrinterStatus();
     }
 
     async function refreshPorts(announce) {
@@ -657,6 +867,7 @@
             const { ports } = await api('probe');
             const found = ports.filter(p => p.responded);
             knownPrinters = new Set(found.map(p => p.device));
+            probeDone = true;
             fillPorts(ports);
             if (found.length) {
                 $('portSelect').value = found[0].device;
@@ -664,9 +875,10 @@
                 $('statusText').textContent = `Printer answered on ${found.map(p => p.device).join(', ')}.`;
                 toast(`Printer found on ${found[0].device}.`, 'ok');
             } else {
-                $('statusText').textContent = 'No port answered. Make sure the printer is on and your phone is disconnected from it.';
-                toast('No printer answered.', 'error');
+                $('statusText').textContent = 'No port answered.';
+                toast('No printer answered — see the checklist in the Printer panel.', 'error');
             }
+            updatePrinterStatus();
             pollLogOnce();
         } catch (e) {
             $('statusText').textContent = 'Search failed.';
@@ -678,32 +890,39 @@
     //  Fonts
     // =====================================================================
     let availableFonts = [
-        ...BUNDLED_FONTS.map(f => ({ name: f.name, family: f.family, meta: f })),
-        ...WINDOWS_FONTS.map(f => ({ name: `${f} (Windows)`, family: cssFamily(f), meta: null })),
-        { name: 'CUSTOM (Type Name)', family: 'CUSTOM', meta: null },
+        ...BUNDLED_FONTS.map(f => ({ name: f.name, family: f.family, meta: f, group: 'Built in (offline)' })),
+        ...WINDOWS_FONTS.map(f => ({ name: f, family: cssFamily(f), meta: null, group: 'Windows' })),
+        { name: 'Custom font name…', family: 'CUSTOM', meta: null, group: 'Other' },
     ];
     let systemFontsLoaded = false;
 
     async function loadSystemFonts() {
-        if (systemFontsLoaded) { toast('System fonts are already in the font lists.'); return; }
+        if (systemFontsLoaded) { toast('System fonts are already in the font picker.'); return; }
         let names = [];
         try {
             if (backendOnline) names = (await api('fonts')).fonts;
             else if ('queryLocalFonts' in window) names = [...new Set((await window.queryLocalFonts()).map(f => f.family))].sort();
-            else { toast('Font scanning is not available here. Choose "CUSTOM (Type Name)" and type a font name instead.', 'error'); return; }
+            else { toast('Font scanning is not available here. Choose "Custom font name…" and type a font name instead.', 'error'); return; }
         } catch (e) {
             toast('Font scan failed: ' + e.message, 'error');
             return;
         }
         const existing = new Set(availableFonts.map(f => f.family));
-        const scanned = names.map(f => ({ name: `[System] ${f}`, family: cssFamily(f), meta: null })).filter(f => !existing.has(f.family));
-        availableFonts = [...scanned, ...availableFonts];
+        const scanned = names.map(f => ({ name: f, family: cssFamily(f), meta: null, group: 'Installed on this PC' })).filter(f => !existing.has(f.family));
+        const other = availableFonts.pop();
+        availableFonts = [...availableFonts, ...scanned, other];
         systemFontsLoaded = true;
-        toast(`Added ${scanned.length} system fonts.`, 'ok');
+        toast(`Added ${scanned.length} system fonts to the font picker.`, 'ok');
         renderUI();
     }
 
-    function fontMeta(block) { const f = availableFonts.find(x => x.family === block.font); return f ? f.meta : null; }
+    function fontInfo(block) { return availableFonts.find(x => x.family === block.font); }
+    function fontMeta(block) { const f = fontInfo(block); return f ? f.meta : null; }
+    function fontName(block) {
+        if (block.font === 'CUSTOM') return block.customFontName || 'Custom font';
+        const f = fontInfo(block);
+        return f ? f.name : String(block.font).replace(/['"]/g, '');
+    }
     function weightOptions(block) {
         const m = fontMeta(block);
         if (!m) return WEIGHTS;
@@ -725,9 +944,9 @@
     }
 
     const requestedFonts = new Set();
-    function ensureFontsLoaded() {
+    function ensureFontsLoaded(blocks = doc.blocks) {
         const pending = [];
-        doc.blocks.filter(b => b.type === 'text').forEach(b => {
+        blocks.filter(b => b.type === 'text').forEach(b => {
             const f = fontStringFor(b, 20);
             if (!requestedFonts.has(f)) {
                 requestedFonts.add(f);
@@ -737,20 +956,61 @@
         return pending.length ? Promise.all(pending).then(() => true) : Promise.resolve(false);
     }
 
+    // ---- font picker popover ---------------------------------------------
+    let fontPickBlock = null;
+    function openFontPicker(id, btn) {
+        fontPickBlock = id;
+        const pop = $('fontPop');
+        pop.classList.remove('hidden');
+        const r = btn.getBoundingClientRect();
+        const top = Math.min(r.bottom + 4, window.innerHeight - 390);
+        pop.style.top = Math.max(8, top) + 'px';
+        pop.style.left = Math.min(r.left, window.innerWidth - 310) + 'px';
+        $('fontSearch').value = '';
+        fillFontList();
+        $('fontSearch').focus();
+    }
+    function closeFontPicker() { $('fontPop').classList.add('hidden'); fontPickBlock = null; }
+    function fillFontList() {
+        const q = $('fontSearch').value.trim().toLowerCase();
+        const b = findBlock(fontPickBlock);
+        let html = '', group = null;
+        availableFonts.filter(f => !q || f.name.toLowerCase().includes(q)).forEach(f => {
+            if (f.group !== group) { group = f.group; html += `<div class="font-group">${escapeHtml(group)}</div>`; }
+            const style = f.family === 'CUSTOM' ? 'font-family: inherit; font-style: italic;' : `font-family: ${escapeHtml(f.family)};`;
+            html += `<div class="font-opt ${b && b.font === f.family ? 'active' : ''}" style="${style}" data-family="${escapeHtml(f.family)}">${escapeHtml(f.name)}</div>`;
+        });
+        $('fontList').innerHTML = html || '<div class="muted" style="padding:10px 12px">No fonts match.</div>';
+    }
+    $('fontList').addEventListener('click', e => {
+        const opt = e.target.closest('.font-opt');
+        if (!opt || fontPickBlock == null) return;
+        const id = fontPickBlock;
+        closeFontPicker();
+        updateBlock(id, 'font', opt.dataset.family, { ui: true });
+    });
+    $('fontSearch').addEventListener('keydown', e => {
+        if (e.key === 'Enter') { const first = $('fontList').querySelector('.font-opt'); if (first) first.click(); }
+        if (e.key === 'Escape') closeFontPicker();
+    });
+    document.addEventListener('mousedown', e => {
+        if (!$('fontPop').classList.contains('hidden') && !e.target.closest('#fontPop') && !e.target.closest('.font-btn')) closeFontPicker();
+    });
+
     // =====================================================================
     //  Blocks
     // =====================================================================
     function findBlock(id) { return doc.blocks.find(b => b.id === id); }
 
-    function addTextBlock() {
-        doc.blocks.push(newText());
+    function addBlock(block) {
+        doc.blocks.push(block);
+        openBlocks.add(block.id);
+        selectedId = block.id;
         commit(); renderUI(); renderCanvas();
+        requestAnimationFrame(() => scrollToBlock(block.id));
     }
-    function addCodeBlock() {
-        doc.blocks.push({ id: nextId++, type: 'code', kind: 'qr', data: 'https://example.com', ecc: 'M',
-                          scalePercent: 45, align: 'center', showText: true, barHeight: 70, spaceAfter: 15 });
-        commit(); renderUI(); renderCanvas();
-    }
+    function addTextBlock() { addBlock(newText()); }
+    function addCodeBlock() { addBlock(newCode()); }
     function triggerImageUpload() { $('hiddenFileInput').click(); }
 
     function registerImage(src) {
@@ -765,29 +1025,39 @@
             el.src = src;
         });
     }
+    function addImageFile(file) {
+        return new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = async () => {
+                try {
+                    const imageId = await registerImage(reader.result);
+                    addBlock({ id: nextId++, type: 'image', imageId, fileName: file.name || 'Pasted image', scalePercent: 100,
+                               align: 'center', repeatImage: 1, spaceAfter: 15, brightness: 0, contrast: 0 });
+                } catch (e) { toast('That image could not be opened.', 'error'); }
+                resolve();
+            };
+            reader.readAsDataURL(file);
+        });
+    }
     function addImageBlock(event) {
         const file = event.target.files[0];
         event.target.value = '';
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async () => {
-            try {
-                const imageId = await registerImage(reader.result);
-                doc.blocks.push({ id: nextId++, type: 'image', imageId, fileName: file.name, scalePercent: 100,
-                                  align: 'center', repeatImage: 1, spaceAfter: 15 });
-                commit(); renderUI(); renderCanvas();
-            } catch (e) { toast('That image could not be opened.', 'error'); }
-        };
-        reader.readAsDataURL(file);
+        if (file) addImageFile(file);
     }
 
-    function deleteBlock(id) { doc.blocks = doc.blocks.filter(b => b.id !== id); commit(); renderUI(); renderCanvas(); }
+    function deleteBlock(id) {
+        doc.blocks = doc.blocks.filter(b => b.id !== id);
+        if (selectedId === id) selectedId = null;
+        commit(); renderUI(); renderCanvas();
+    }
     function duplicateBlock(id) {
         const i = doc.blocks.findIndex(b => b.id === id);
         if (i < 0) return;
         const copy = JSON.parse(JSON.stringify(doc.blocks[i]));
         copy.id = nextId++;
         doc.blocks.splice(i + 1, 0, copy);
+        openBlocks.add(copy.id);
+        selectedId = copy.id;
         commit(); renderUI(); renderCanvas();
     }
     function moveBlockTo(from, to) {
@@ -805,58 +1075,107 @@
         if (key === 'font') normaliseFontStyle(b);
         commit(!!opts.coalesce);
         if (opts.ui) renderUI();
+        else refreshSummary(id);
         renderCanvas();
     }
     function toggleBlock(id, key) { const b = findBlock(id); if (b) updateBlock(id, key, !b[key], { ui: true }); }
 
+    // ---- selection ---------------------------------------------------------
+    function selectBlock(id, opts = {}) {
+        selectedId = id;
+        if (id != null && opts.open) openBlocks.add(id);
+        document.querySelectorAll('.block-item').forEach(el => {
+            const isSel = +el.dataset.id === id;
+            el.classList.toggle('selected', isSel);
+            if (isSel && opts.open) el.classList.add('open');
+        });
+        if (id != null && opts.scroll) scrollToBlock(id, true);
+        updateOverlay();
+    }
+    function scrollToBlock(id, flash) {
+        const el = document.querySelector(`.block-item[data-id="${id}"]`);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (flash) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+    }
+    function toggleOpen(id) {
+        if (openBlocks.has(id)) openBlocks.delete(id); else openBlocks.add(id);
+        const el = document.querySelector(`.block-item[data-id="${id}"]`);
+        if (el) el.classList.toggle('open', openBlocks.has(id));
+        selectBlock(id);
+    }
+    function setAllCollapsed(collapsed) {
+        openBlocks.clear();
+        if (!collapsed) doc.blocks.forEach(b => openBlocks.add(b.id));
+        renderUI();
+    }
+
     // ---- block UI ----------------------------------------------------------
+    function blockSummary(b) {
+        if (b.type === 'text') {
+            const first = (b.text || '').split('\n')[0] || '(empty)';
+            const w = (WEIGHTS.find(([x]) => x === b.weight) || [, ''])[1];
+            return `${escapeHtml(first)}<span class="muted"> · ${escapeHtml(fontName(b))} ${w} ${b.size}px</span>`;
+        }
+        if (b.type === 'image') return `${escapeHtml(b.fileName || 'Image')}<span class="muted"> · ${b.scalePercent || 100}% wide${(b.repeatImage || 1) > 1 ? ' ×' + b.repeatImage : ''}</span>`;
+        const kind = (CODE_KINDS.find(k => k[0] === b.kind) || [, 'Code'])[1];
+        return `${escapeHtml(b.data || '(no data)')}<span class="muted"> · ${kind} ${b.scalePercent}%</span>`;
+    }
+    function refreshSummary(id) {
+        const b = findBlock(id);
+        const el = document.querySelector(`.block-item[data-id="${id}"] .summary`);
+        if (b && el) el.innerHTML = blockSummary(b);
+    }
     function alignSelect(block) {
-        return `<select onchange="updateBlock(${block.id}, 'align', this.value)">
+        return `<select title="Alignment" onchange="updateBlock(${block.id}, 'align', this.value)">
             ${[['center', 'Center'], ['left', 'Left'], ['right', 'Right']].map(([v, l]) =>
                 `<option value="${v}" ${block.align === v ? 'selected' : ''}>${l}</option>`).join('')}
         </select>`;
     }
     function spaceInput(block) {
-        return `<label title="Space below this block">Space after <input type="number" value="${block.spaceAfter ?? 15}" min="0" max="400" style="width:60px" onchange="updateBlock(${block.id}, 'spaceAfter', clampInt(this.value, 0, 400, 15))"> px</label>`;
+        return `<label title="Space below this block">Space after <input type="number" value="${block.spaceAfter ?? 15}" min="0" max="400" style="width:58px" onchange="updateBlock(${block.id}, 'spaceAfter', clampInt(this.value, 0, 400, 15))"> px</label>`;
     }
-    function blockHeader(label, block, index) {
-        return `<div class="block-header">
-            <span><span class="handle" title="Drag to reorder" onmousedown="armDrag(this)">⠿</span>${label} #${index + 1}</span>
-            <div>
-                <button class="btn-move" title="Move up" onclick="moveBlock(${index}, -1)">▲</button>
-                <button class="btn-move" title="Move down" onclick="moveBlock(${index}, 1)">▼</button>
-                <button class="btn-small" title="Duplicate" onclick="duplicateBlock(${block.id})">⧉</button>
-                <button class="btn-delete" onclick="deleteBlock(${block.id})">Delete</button>
-            </div>
-        </div>`;
+    // Range slider with a linked number box.
+    function slider(block, key, label, min, max, dflt, unit = '') {
+        const v = block[key] ?? dflt;
+        return `<label>${label}
+            <span class="slider">
+                <input type="range" min="${min}" max="${max}" value="${v}" oninput="this.nextElementSibling.value = this.value; updateBlock(${block.id}, '${key}', +this.value, {coalesce: true})">
+                <input type="number" min="${min}" max="${max}" value="${v}" onchange="const x = clampInt(this.value, ${min}, ${max}, ${dflt}); this.value = x; this.previousElementSibling.value = x; updateBlock(${block.id}, '${key}', x)">${unit}
+            </span></label>`;
     }
+    const KIND_LABEL = { text: 'Text', image: 'Image', code: 'Code' };
 
     function renderUI() {
         const container = $('blocksContainer');
         container.innerHTML = '';
         if (!doc.blocks.length) {
-            container.innerHTML = '<div class="muted" style="text-align:center; padding: 20px;">Add a text, image or QR/barcode block to start.</div>';
+            container.innerHTML = `<div class="empty-state">This layout is empty.<br>Add a block above, paste or drop an image, or
+                <br><button class="tbtn primary" onclick="openTemplates()">✦ Start from a template</button></div>`;
+            return;
         }
 
         doc.blocks.forEach((block, index) => {
             const item = document.createElement('div');
-            item.className = 'block-item';
+            const open = openBlocks.has(block.id);
+            item.className = 'block-item' + (open ? ' open' : '') + (block.id === selectedId ? ' selected' : '');
             item.dataset.index = index;
+            item.dataset.id = block.id;
+            const kind = block.type === 'code' ? (block.kind === 'qr' ? 'QR' : 'Barcode') : KIND_LABEL[block.type];
 
+            let body = '';
             if (block.type === 'text') {
-                const fontOptions = availableFonts.map(f =>
-                    `<option value="${escapeHtml(f.family)}" ${block.font === f.family ? 'selected' : ''}>${escapeHtml(f.name)}</option>`).join('');
                 const m = fontMeta(block);
                 const weightOpts = weightOptions(block).map(([w, l]) => `<option value="${w}" ${block.weight === w ? 'selected' : ''}>${l}</option>`).join('');
                 const noItalic = m && !m.italic;
-                item.innerHTML = `
-                    ${blockHeader('Text', block, index)}
+                const fam = block.font === 'CUSTOM' ? 'inherit' : block.font;
+                body = `
                     <textarea rows="2" oninput="updateBlock(${block.id}, 'text', this.value, {coalesce: true})">${escapeHtml(block.text)}</textarea>
                     <div class="controls-row">
-                        <select style="max-width: 230px;" onchange="updateBlock(${block.id}, 'font', this.value, {ui: true})">${fontOptions}</select>
-                        <input type="text" placeholder="Font name (e.g. Segoe UI)" value="${escapeHtml(block.customFontName)}" class="${block.font === 'CUSTOM' ? '' : 'hidden'}" style="width: 160px;" oninput="updateBlock(${block.id}, 'customFontName', this.value, {coalesce: true})">
-                        <select title="Weight" onchange="updateBlock(${block.id}, 'weight', +this.value)" ${weightOptions(block).length < 2 ? 'disabled' : ''}>${weightOpts}</select>
-                        <input type="number" title="Font size (px)" value="${block.size}" min="6" max="400" style="width: 64px;" onchange="updateBlock(${block.id}, 'size', clampInt(this.value, 6, 400, 28))">
+                        <button class="font-btn" style="font-family: ${escapeHtml(fam)}; font-weight: ${block.weight}" onclick="openFontPicker(${block.id}, this)" title="Font">${escapeHtml(fontName(block))}</button>
+                        <input type="text" placeholder="Font name (e.g. Segoe UI)" value="${escapeHtml(block.customFontName)}" class="${block.font === 'CUSTOM' ? '' : 'hidden'}" style="width: 150px;" oninput="updateBlock(${block.id}, 'customFontName', this.value, {coalesce: true})">
+                        <select title="Weight" onchange="updateBlock(${block.id}, 'weight', +this.value, {ui: true})" ${weightOptions(block).length < 2 ? 'disabled' : ''}>${weightOpts}</select>
+                        <label title="Font size">Size <input type="number" value="${block.size}" min="6" max="400" style="width: 60px;" onchange="updateBlock(${block.id}, 'size', clampInt(this.value, 6, 400, 28))"></label>
                         <button class="toggle-btn ${block.isItalic ? 'active' : ''}" ${noItalic ? 'disabled title="This font has no italic style"' : 'title="Italic"'} onclick="toggleBlock(${block.id}, 'isItalic')"><i>I</i></button>
                         <button class="toggle-btn ${block.isUnderline ? 'active' : ''}" title="Underline" onclick="toggleBlock(${block.id}, 'isUnderline')"><u>U</u></button>
                         ${alignSelect(block)}
@@ -866,53 +1185,71 @@
                         ${spaceInput(block)}
                     </div>`;
             } else if (block.type === 'image') {
-                item.innerHTML = `
-                    ${blockHeader('Image', block, index)}
-                    <div class="muted">${escapeHtml(block.fileName || '')}${images[block.imageId] ? '' : ' — image missing'}</div>
+                const img = images[block.imageId];
+                body = `
+                    <div class="controls-row" style="margin-top:0">
+                        ${img ? `<img class="thumb" src="${img.src}" alt="">` : '<span class="muted">Image missing</span>'}
+                        <div style="display:flex; flex-direction:column; gap:6px">
+                            ${slider(block, 'scalePercent', 'Width', 5, 100, 100, '%')}
+                            <span style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">${alignSelect(block)}
+                            <label>Repeat <input type="number" value="${block.repeatImage || 1}" min="1" max="50" style="width: 52px;" onchange="updateBlock(${block.id}, 'repeatImage', clampInt(this.value, 1, 50, 1))"> ×</label></span>
+                        </div>
+                    </div>
                     <div class="controls-row">
-                        <label>Width
-                            <input type="range" min="5" max="100" value="${block.scalePercent || 100}" oninput="updateBlock(${block.id}, 'scalePercent', parseInt(this.value, 10), {coalesce: true}); this.nextElementSibling.innerText=this.value+'%';">
-                            <span>${block.scalePercent || 100}%</span>
-                        </label>
-                        ${alignSelect(block)}
-                        <label>Repeat <input type="number" value="${block.repeatImage || 1}" min="1" max="50" style="width: 55px;" onchange="updateBlock(${block.id}, 'repeatImage', clampInt(this.value, 1, 50, 1))"> ×</label>
-                        ${spaceInput(block)}
-                    </div>`;
+                        ${slider(block, 'brightness', 'Brightness', -100, 100, 0)}
+                        ${slider(block, 'contrast', 'Contrast', -100, 100, 0)}
+                    </div>
+                    <div class="controls-row">${spaceInput(block)}</div>`;
             } else if (block.type === 'code') {
                 const isQr = block.kind === 'qr';
-                item.innerHTML = `
-                    ${blockHeader(isQr ? 'QR code' : 'Barcode', block, index)}
-                    <div class="controls-row">
+                body = `
+                    <div class="controls-row" style="margin-top:0">
                         <select onchange="updateBlock(${block.id}, 'kind', this.value, {ui: true})">
                             ${CODE_KINDS.map(([v, l]) => `<option value="${v}" ${block.kind === v ? 'selected' : ''}>${l}</option>`).join('')}
                         </select>
-                        <input type="text" style="flex:1; min-width: 200px" value="${escapeHtml(block.data)}" placeholder="${isQr ? 'Text or URL' : 'Barcode data'}" oninput="updateBlock(${block.id}, 'data', this.value, {coalesce: true})">
+                        <input type="text" style="flex:1; min-width: 180px" value="${escapeHtml(block.data)}" placeholder="${isQr ? 'Text or URL' : 'Barcode data'}" oninput="updateBlock(${block.id}, 'data', this.value, {coalesce: true})">
                     </div>
                     <div class="controls-row">
-                        <label>Size
-                            <input type="range" min="10" max="100" value="${block.scalePercent}" oninput="updateBlock(${block.id}, 'scalePercent', parseInt(this.value, 10), {coalesce: true}); this.nextElementSibling.innerText=this.value+'%';">
-                            <span>${block.scalePercent}%</span>
-                        </label>
+                        ${slider(block, 'scalePercent', 'Size', 10, 100, 45, '%')}
                         ${isQr ? `<label title="Higher levels survive more damage but make the code denser">Error correction
                             <select onchange="updateBlock(${block.id}, 'ecc', this.value)">
                                 ${['L', 'M', 'Q', 'H'].map(l => `<option ${block.ecc === l ? 'selected' : ''}>${l}</option>`).join('')}
                             </select></label>`
-                        : `<label>Bar height <input type="number" value="${block.barHeight}" min="20" max="400" style="width:60px" onchange="updateBlock(${block.id}, 'barHeight', clampInt(this.value, 20, 400, 70))"> px</label>
+                        : `<label>Bar height <input type="number" value="${block.barHeight}" min="20" max="400" style="width:58px" onchange="updateBlock(${block.id}, 'barHeight', clampInt(this.value, 20, 400, 70))"> px</label>
                            <label><input type="checkbox" ${block.showText ? 'checked' : ''} onchange="updateBlock(${block.id}, 'showText', this.checked)"> Show digits</label>`}
-                        ${alignSelect(block)}
-                        ${spaceInput(block)}
-                    </div>`;
+                    </div>
+                    <div class="controls-row">${alignSelect(block)} ${spaceInput(block)}</div>`;
             }
 
+            item.innerHTML = `
+                <div class="block-header" onclick="if (!event.target.closest('button, .handle')) toggleOpen(${block.id})">
+                    <span class="handle" title="Drag to reorder" onmousedown="armDrag(this)">⠿</span>
+                    <span class="chev">▶</span>
+                    <span class="kind">${kind}</span>
+                    <span class="summary">${blockSummary(block)}</span>
+                    <span class="tools">
+                        <button class="btn-icon" title="Move up (Alt+↑)" onclick="moveBlock(${index}, -1)">▲</button>
+                        <button class="btn-icon" title="Move down (Alt+↓)" onclick="moveBlock(${index}, 1)">▼</button>
+                        <button class="btn-icon" title="Duplicate (Ctrl+D)" onclick="duplicateBlock(${block.id})">⧉</button>
+                        <button class="btn-icon btn-danger" title="Delete (Del)" onclick="deleteBlock(${block.id})">✕</button>
+                    </span>
+                </div>
+                <div class="block-body">${body}</div>`;
+
+            item.addEventListener('mouseenter', () => { hoverId = block.id; updateOverlay(); });
+            item.addEventListener('mouseleave', () => { if (hoverId === block.id) { hoverId = null; updateOverlay(); } });
+            item.addEventListener('focusin', () => { if (selectedId !== block.id) selectBlock(block.id); });
             // drag-to-reorder (armed from the ⠿ handle so text selection still works)
-            item.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', String(index)); e.dataTransfer.effectAllowed = 'move'; });
+            item.addEventListener('dragstart', e => { e.dataTransfer.setData('application/x-orgbro-block', String(index)); e.dataTransfer.effectAllowed = 'move'; });
             item.addEventListener('dragend', () => { item.draggable = false; });
-            item.addEventListener('dragover', e => { e.preventDefault(); item.classList.add('drag-over'); });
+            item.addEventListener('dragover', e => { if (e.dataTransfer.types.includes('application/x-orgbro-block')) { e.preventDefault(); item.classList.add('drag-over'); } });
             item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
             item.addEventListener('drop', e => {
-                e.preventDefault();
+                const from = e.dataTransfer.getData('application/x-orgbro-block');
+                if (from === '') return;
+                e.preventDefault(); e.stopPropagation();
                 item.classList.remove('drag-over');
-                moveBlockTo(parseInt(e.dataTransfer.getData('text/plain'), 10), index);
+                moveBlockTo(parseInt(from, 10), index);
             });
             container.appendChild(item);
         });
@@ -981,7 +1318,7 @@
         return v;
     }
 
-    function processImage(el, w, h, settings) {
+    function processImage(el, w, h, settings, brightness = 0, contrast = 0) {
         const c = document.createElement('canvas');
         c.width = w; c.height = h;
         const x = c.getContext('2d', { willReadFrequently: true });
@@ -991,7 +1328,12 @@
         const imgData = x.getImageData(0, 0, w, h);
         const d = imgData.data;
         const gray = new Float32Array(w * h);
-        for (let i = 0, p = 0; p < gray.length; i += 4, p++) gray[p] = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+        const cf = contrast >= 0 ? 1 + contrast / 50 : 1 + contrast / 100;   // 0 … 3
+        const bo = brightness * 1.28;
+        for (let i = 0, p = 0; p < gray.length; i += 4, p++) {
+            const g = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+            gray[p] = Math.min(255, Math.max(0, (g - 128) * cf + 128 + bo));
+        }
         if (settings.dither === 'floyd') {
             for (let yy = 0; yy < h; yy++) {
                 for (let xx = 0; xx < w; xx++) {
@@ -1071,9 +1413,11 @@
 
     // Lays out the blocks top-to-bottom in a column designW wide.
     // When draw=false only measures. Returns content height (without the last block's trailing space).
-    function layoutContent(ctx, designW, sideMargin, n, total, settings, draw, warns) {
+    // When regions is an array, each drawn block's box is recorded (design coordinates).
+    function layoutContent(ctx, designW, sideMargin, n, total, settings, draw, warns, regions) {
         const maxTextWidth = Math.max(10, designW - sideMargin * 2);
         let y = 0, lastSpace = 0;
+        const rec = (id, x, yy, w, h) => { if (regions) regions.push({ id, x, y: yy, w, h }); };
         doc.blocks.forEach(block => {
             const space = block.spaceAfter ?? 15;
             if (block.type === 'image') {
@@ -1084,10 +1428,11 @@
                 let x = (designW - tw) / 2;
                 if (block.align === 'left') x = Math.min(sideMargin, designW - tw);
                 if (block.align === 'right') x = Math.max(0, designW - sideMargin - tw);
-                const bmp = draw ? cacheGet(`img|${block.imageId}|${tw}|${th}|${settings.dither}|${settings.threshold}`,
-                                            () => processImage(img.el, tw, th, settings)) : null;
+                const br = block.brightness || 0, ct = block.contrast || 0;
+                const bmp = draw ? cacheGet(`img|${block.imageId}|${tw}|${th}|${settings.dither}|${settings.threshold}|${br}|${ct}`,
+                                            () => processImage(img.el, tw, th, settings, br, ct)) : null;
                 for (let i = 0; i < (block.repeatImage || 1); i++) {
-                    if (draw) ctx.drawImage(bmp, Math.round(x), Math.round(y));
+                    if (draw) { ctx.drawImage(bmp, Math.round(x), Math.round(y)); rec(block.id, x, y, tw, th); }
                     y += th + space; lastSpace = space;
                 }
             } else if (block.type === 'code') {
@@ -1100,7 +1445,7 @@
                 let x = (designW - c.width) / 2;
                 if (block.align === 'left') x = Math.min(sideMargin, designW - c.width);
                 if (block.align === 'right') x = Math.max(0, designW - sideMargin - c.width);
-                if (draw) ctx.drawImage(c, Math.round(x), Math.round(y));
+                if (draw) { ctx.drawImage(c, Math.round(x), Math.round(y)); rec(block.id, x, y, c.width, c.height); }
                 if (c.width > designW) warns.add('A QR/barcode is wider than the label — reduce its size.');
                 y += c.height + space; lastSpace = space;
             } else if (block.type === 'text') {
@@ -1118,6 +1463,8 @@
                 ctx.textBaseline = 'top';
                 ctx.fillStyle = '#000000';
                 const lineHeight = size * 1.35;
+                const y0 = y;
+                let minX = Infinity, maxX = -Infinity;
                 lines.forEach(line => {
                     if (draw) {
                         let x = designW / 2;
@@ -1125,14 +1472,14 @@
                         if (block.align === 'left') { ctx.textAlign = 'left'; x = sideMargin; }
                         if (block.align === 'right') { ctx.textAlign = 'right'; x = designW - sideMargin; }
                         ctx.fillText(line, x, y);
-                        if (block.isUnderline) {
-                            const lw = ctx.measureText(line).width;
-                            const ux = block.align === 'left' ? x : block.align === 'right' ? x - lw : x - lw / 2;
-                            ctx.fillRect(ux, y + size + 3, lw, Math.max(2, size / 14));
-                        }
+                        const lw = Math.max(12, ctx.measureText(line).width);
+                        const lx = block.align === 'left' ? x : block.align === 'right' ? x - lw : x - lw / 2;
+                        minX = Math.min(minX, lx); maxX = Math.max(maxX, lx + lw);
+                        if (block.isUnderline) ctx.fillRect(lx, y + size + 3, lw, Math.max(2, size / 14));
                     }
                     y += lineHeight;
                 });
+                if (draw) rec(block.id, minX, y0, maxX - minX, y - y0);
                 y += space; lastSpace = space;
             }
         });
@@ -1162,7 +1509,7 @@
 
     const measureCtx = document.createElement('canvas').getContext('2d');
 
-    // One sticker / copy. Returns { canvas, round }.
+    // One sticker / copy. Returns { canvas, round, regions } (regions in cell coordinates).
     function renderCell(n, total, settings, mono, warns) {
         const z = zone();
         const labels = doc.media === 'labels';
@@ -1170,7 +1517,8 @@
         if (labels) {
             const d = labelDims();
             outW = mm(d.w); outH = mm(d.h); round = doc.labelShape === 'round';
-            if (outW > z.w) { warns.add(`The label is wider than the ${doc.roll} mm roll — it has been trimmed.`); outW = z.w; if (round) outH = outW; }
+            if (d.w > (doc.roll === '80' ? 80 : 57)) warns.add(`The label is wider than the ${doc.roll} mm roll — it has been trimmed.`);
+            if (outW > z.w) { outW = z.w; if (round) outH = outW; }   // also absorbs 1-dot rounding at full roll width
         } else {
             outW = z.w;
             if (doc.rotate) outH = mm(Math.max(10, doc.bannerLength));
@@ -1179,7 +1527,7 @@
         let designH = doc.rotate ? outW : outH;      // null = grow to fit the content
 
         const side = round ? Math.round(designW * 0.15) : labels ? Math.max(8, mm(2)) : 15;
-        const contentH = layoutContent(measureCtx, designW, side, n, total, settings, false, warns);
+        const contentH = layoutContent(measureCtx, designW, side, n, total, settings, false, warns, null);
 
         let scale = 1, offY = 0;
         if (designH == null) {
@@ -1200,36 +1548,44 @@
         ctx.fillStyle = '#fff';
         ctx.fillRect(0, 0, designW, designH);
         const circle = round ? { cx: designW / 2, cy: designH / 2, r: Math.min(designW, designH) / 2 } : null;
+        const tx = (designW - designW * scale) / 2;
+        const raw = [];
         ctx.save();
         if (circle) { ctx.beginPath(); ctx.arc(circle.cx, circle.cy, circle.r, 0, Math.PI * 2); ctx.clip(); }
-        ctx.translate((designW - designW * scale) / 2, offY);
+        ctx.translate(tx, offY);
         ctx.scale(scale, scale);
-        layoutContent(ctx, designW, side, n, total, settings, true, warns);
+        layoutContent(ctx, designW, side, n, total, settings, true, warns, raw);
         ctx.restore();
         finalizePixels(ctx, designW, designH, settings, mono, circle);
 
-        if (!doc.rotate) return { canvas: design, round };
+        // design coords -> (scaled) cell coords
+        let regions = raw.map(r => ({ id: r.id, x: tx + r.x * scale, y: offY + r.y * scale, w: r.w * scale, h: r.h * scale }));
+        if (!doc.rotate) return { canvas: design, round, regions };
+
         const out = document.createElement('canvas');
         out.width = outW; out.height = designW;   // designW == outH when rotated
         const o = out.getContext('2d');
         o.translate(outW, 0);
         o.rotate(Math.PI / 2);
         o.drawImage(design, 0, 0);
-        return { canvas: out, round };
+        // rotation maps design (x, y) to (outW - y, x)
+        regions = regions.map(r => ({ id: r.id, x: outW - (r.y + r.h), y: r.x, w: r.h, h: r.w }));
+        return { canvas: out, round, regions };
     }
 
     // Full print image. forPrint => exact 1-bit output with no on-screen guides.
-    function renderPage(target, forPrint) {
+    function renderPage(target, forPrint, opts = {}) {
         const settings = renderSettings();
         const mono = forPrint || settings.showMono;
         const warns = new Set();
         const z = zone();
         const labels = doc.media === 'labels';
         const total = Math.max(1, doc.repeats | 0);
+        const count = opts.single ? 1 : total;
 
         const cells = [];
         const reuse = !docUsesFields();
-        for (let r = 0; r < total; r++) {
+        for (let r = 0; r < count; r++) {
             cells.push(reuse && r > 0 ? cells[0] : renderCell(doc.startNumber + r, total, settings, mono, warns));
         }
 
@@ -1238,10 +1594,10 @@
             const pitch = mm(labelDims().h) + mm(doc.labelGap);
             const top = mm(doc.topOffset);
             positions = cells.map((c, i) => top + i * pitch);
-            height = Math.max(total * pitch, positions[positions.length - 1] + cells[cells.length - 1].canvas.height);
+            height = Math.max(count * pitch, positions[positions.length - 1] + cells[cells.length - 1].canvas.height);
         } else {
             let y = 20;
-            cells.forEach((c, i) => { positions.push(y); y += c.canvas.height + (i < total - 1 ? doc.stickerGap : 0); });
+            cells.forEach((c, i) => { positions.push(y); y += c.canvas.height + (i < count - 1 ? doc.stickerGap : 0); });
             height = y + 20;
         }
         height = Math.ceil(height);
@@ -1253,14 +1609,16 @@
         ctx.fillStyle = '#fff';
         ctx.fillRect(0, 0, target.width, target.height);
 
+        const regions = [];
         cells.forEach((c, i) => {
-            const x = z.x + Math.round((z.w - c.canvas.width) / 2);
-            ctx.drawImage(c.canvas, x, Math.round(positions[i]));
+            const x = z.x + Math.round((z.w - c.canvas.width) / 2), y = Math.round(positions[i]);
+            ctx.drawImage(c.canvas, x, y);
+            c.regions.forEach(r => regions.push({ id: r.id, x: r.x + x, y: r.y + y, w: r.w, h: r.h }));
         });
 
         if (!labels && doc.showCutLines) {
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.setLineDash([8, 8]);
-            for (let i = 0; i < total - 1; i++) {
+            for (let i = 0; i < count - 1; i++) {
                 const y = Math.round(positions[i] + cells[i].canvas.height + doc.stickerGap / 2) + 0.5;
                 ctx.beginPath(); ctx.moveTo(z.x + 10, y); ctx.lineTo(z.x + z.w - 10, y); ctx.stroke();
             }
@@ -1284,7 +1642,52 @@
             }
             ctx.setLineDash([]);
         }
-        return { canvas: target, warns: [...warns], total };
+        return { canvas: target, warns: [...warns], total, regions, cellCanvas: cells[0].canvas };
+    }
+
+    // ---- preview + overlay -----------------------------------------------
+    let previewRegions = [];
+    function updateOverlay() {
+        const ov = $('overlay'), cv = $('canvas');
+        let html = '';
+        const add = (id, cls) => {
+            if (id == null) return;
+            previewRegions.filter(r => r.id === id).slice(0, 30).forEach(r => {
+                html += `<div class="hl ${cls}" style="left:${(r.x - 3) / cv.width * 100}%; top:${(r.y - 3) / cv.height * 100}%; width:${(r.w + 6) / cv.width * 100}%; height:${(r.h + 6) / cv.height * 100}%"></div>`;
+            });
+        };
+        add(selectedId, 'sel');
+        if (hoverId !== selectedId) add(hoverId, '');
+        ov.innerHTML = html;
+    }
+    function canvasPoint(e) {
+        const cv = $('canvas'), rect = cv.getBoundingClientRect();
+        return { x: (e.clientX - rect.left) / rect.width * cv.width, y: (e.clientY - rect.top) / rect.height * cv.height };
+    }
+    function hitAt(p) {
+        return previewRegions.filter(r => p.x >= r.x - 4 && p.x <= r.x + r.w + 4 && p.y >= r.y - 4 && p.y <= r.y + r.h + 4)
+                             .sort((a, b) => a.w * a.h - b.w * b.h)[0];
+    }
+    $('canvas').addEventListener('click', e => {
+        const hit = hitAt(canvasPoint(e));
+        if (hit) selectBlock(hit.id, { open: true, scroll: true });
+        else selectBlock(null);
+    });
+    $('canvas').addEventListener('mousemove', e => {
+        const hit = hitAt(canvasPoint(e));
+        const id = hit ? hit.id : null;
+        if (id !== hoverId) { hoverId = id; updateOverlay(); }
+    });
+    $('canvas').addEventListener('mouseleave', () => { hoverId = null; updateOverlay(); });
+
+    function printSummaryText(total, heightPx) {
+        const labels = doc.media === 'labels';
+        const d = labelDims();
+        const lengthMm = Math.round(heightPx / dpm());
+        const what = labels
+            ? `${total} × ${doc.labelShape === 'round' ? 'Ø' + d.w + ' mm round' : d.w + '×' + d.h + ' mm'} label${total > 1 ? 's' : ''}`
+            : `${total} cop${total > 1 ? 'ies' : 'y'}`;
+        return { what, lengthMm };
     }
 
     let renderQueued = false;
@@ -1293,19 +1696,24 @@
         renderQueued = true;
         requestAnimationFrame(() => {
             renderQueued = false;
-            const { canvas, warns, total } = renderPage($('canvas'), false);
-            const labels = doc.media === 'labels';
-            const d = labelDims();
-            const lengthMm = (canvas.height / dpm()).toFixed(0);
-            const what = labels
-                ? `${total} × ${doc.labelShape === 'round' ? 'round Ø ' + d.w + ' mm' : d.w + ' × ' + d.h + ' mm'} label${total > 1 ? 's' : ''}`
-                : `${total} cop${total > 1 ? 'ies' : 'y'} on continuous paper`;
-            $('previewInfo').textContent = `${doc.roll} mm roll · ${what}${doc.rotate ? ' · rotated 90°' : ''} · about ${lengthMm} mm of paper`;
-            $('canvasLabel').textContent = doc.roll === '57'
-                ? `864 px print head — 57 mm paper starts at ${zone().x} px (dashed line)` : '864 px print head — full 80 mm width';
+            const single = !!device.previewSingle;
+            const { canvas, warns, total, regions } = renderPage($('canvas'), false, { single });
+            previewRegions = regions;
+            // paper length always reflects the full job
+            const fullHeight = single && total > 1 ? estimateFullHeight(canvas.height, total) : canvas.height;
+            const { what, lengthMm } = printSummaryText(total, fullHeight);
+            $('previewInfo').textContent = `${doc.roll} mm roll · ${what}${doc.rotate ? ' · rotated 90°' : ''} · about ${lengthMm} mm of paper` +
+                (single && total > 1 ? ' · showing the first one' : '');
+            $('printSummary').innerHTML = `<b>${escapeHtml(what)}</b> · ${doc.roll} mm roll · ~${lengthMm} mm`;
             $('previewWarn').innerHTML = warns.map(w => '⚠ ' + escapeHtml(w)).join('<br>');
+            updateOverlay();
             ensureFontsLoaded().then(changed => { if (changed) renderCanvas(); });
         });
+    }
+    function estimateFullHeight(singleHeight, total) {
+        if (doc.media === 'labels') return total * (mm(labelDims().h) + mm(doc.labelGap));
+        const cellH = singleHeight - 40;
+        return 40 + total * cellH + (total - 1) * doc.stickerGap;
     }
 
     async function buildPrintCanvas() {
@@ -1322,17 +1730,14 @@
         const x = c.getContext('2d');
         x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
         x.fillStyle = '#000'; x.strokeStyle = '#000';
-        // print-head edges and the 57 mm zone
         x.fillRect(0, 0, 3, c.height); x.fillRect(HEAD_WIDTH - 3, 0, 3, c.height);
         x.lineWidth = 3; x.strokeRect(z57.x + 1.5, Math.round(16 * D), z57.w - 3, Math.round(55 * D));
-        // horizontal ruler across the whole head
         x.font = '700 18px Inter'; x.textAlign = 'center'; x.textBaseline = 'top';
         for (let m = 0; m * D <= HEAD_WIDTH; m++) {
             const px = Math.round(m * D), len = m % 10 === 0 ? 40 : m % 5 === 0 ? 26 : 14;
             x.fillRect(px, 0, 2, len);
             if (m % 10 === 0 && m > 0) x.fillText(String(m), px, 44);
         }
-        // vertical 50 mm ruler inside the 57 mm zone
         const vx = z57.x + 30, vy = Math.round(18 * D);
         for (let m = 0; m <= 50; m++) {
             const py = vy + Math.round(m * D), len = m % 10 === 0 ? 34 : m % 5 === 0 ? 22 : 12;
@@ -1374,6 +1779,242 @@
     }
 
     // =====================================================================
+    //  Templates (incl. bottle labels)
+    // =====================================================================
+    function T(text, font, size, weight, extra = {}) { return newText({ text, font, size, weight, ...extra }); }
+    function ukUnits(abv, ml) { return Math.round(num(abv, 0) * num(ml, 0) / 100) / 10; }   // ABV % × ml ÷ 1000, 1 d.p.
+    function unitsText(abv, ml) {
+        const u = ukUnits(abv, ml);
+        return `${u.toFixed(1).replace(/\.0$/, '')} UK unit${u === 1 ? '' : 's'}`;
+    }
+    function volText(ml) { ml = num(ml, 0); return ml >= 1000 ? `${ml / 1000} L` : `${ml} ml`; }
+    function abvText(abv) { return `${num(abv, 0)}% vol`; }
+    function bottleFacts(v, sep = ' · ') {
+        return [abvText(v.abv), volText(v.ml), v.showUnits ? unitsText(v.abv, v.ml) : null].filter(Boolean).join(sep);
+    }
+    function bottledLine(v) {
+        return [v.showDate ? 'Bottled {date}' : null, v.numbered ? 'Batch #{n:2}' : null].filter(Boolean).join(' · ');
+    }
+    function opt(lines) { return lines.filter(Boolean); }
+
+    const TEMPLATES = [
+        { id: 'price', group: 'General', name: 'Price tag', size: '57 mm roll · 50×30 mm',
+          build: () => ({ roll: '57', media: 'labels', labelPreset: '50x30', labelW: 50, labelH: 30, labelShape: 'rect',
+            blocks: [T('PRODUCT NAME', 'Oswald', 38, 700, { fit: true, spaceAfter: 0 }), T('£4.99', 'Montserrat', 104, 900, { fit: true, spaceAfter: 2 }), T('SKU {n:4}', "'Roboto Mono'", 24, 500)] }) },
+        { id: 'address', group: 'General', name: 'Address label', size: '80 mm roll · 80×50 mm',
+          build: () => ({ roll: '80', media: 'labels', labelPreset: '80x50', labelW: 80, labelH: 50, labelShape: 'rect',
+            blocks: [T('TO:', 'Inter', 30, 800, { align: 'left', spaceAfter: 4 }), T('Jane Smith', 'Inter', 62, 700, { align: 'left', fit: true, spaceAfter: 8 }),
+                     T('12 Example Street\nManchester\nM1 1AA', 'Inter', 46, 400, { align: 'left' })] }) },
+        { id: 'badge', group: 'General', name: 'Name badge', size: '80 mm roll · 80×50 mm',
+          build: () => ({ roll: '80', media: 'labels', labelPreset: '80x50', labelW: 80, labelH: 50, labelShape: 'rect',
+            blocks: [T('HELLO', 'Montserrat', 76, 900, { spaceAfter: 0 }), T('my name is', 'Montserrat', 34, 600, { spaceAfter: 18 }), T('Alex', 'Pacifico', 120, 400, { fit: true })] }) },
+        { id: 'qr', group: 'General', name: 'QR sticker', size: '57 mm roll · Ø 40 mm round',
+          build: () => ({ roll: '57', media: 'labels', labelPreset: 'r40', labelW: 40, labelH: 40, labelShape: 'round',
+            blocks: [T('SCAN ME', 'Bungee', 30, 400, { spaceAfter: 8 }), newCode({ data: 'https://example.com', scalePercent: 60 })] }) },
+        { id: 'fragile', group: 'General', name: 'Fragile', size: '80 mm roll · 80×60 mm',
+          build: () => ({ roll: '80', media: 'labels', labelPreset: '80x60', labelW: 80, labelH: 60, labelShape: 'rect',
+            blocks: [T('FRAGILE', 'Bungee', 170, 400, { fit: true, spaceAfter: 8 }), T('HANDLE WITH CARE', 'Oswald', 64, 700, { fit: true, spaceAfter: 10 }), T('↑ THIS WAY UP ↑', 'Inter', 46, 800)] }) },
+        { id: 'batch', group: 'General', name: 'Numbered batch', size: '57 mm roll · 57×30 mm',
+          build: () => ({ roll: '57', media: 'labels', labelPreset: '57x30', labelW: 57, labelH: 30, labelShape: 'rect', repeats: 5,
+            blocks: [T('BATCH #{n:3}', 'Montserrat', 110, 900, { fit: true, spaceAfter: 4 }), T('{date}', "'Roboto Mono'", 46, 500)] }) },
+
+        // ---- bottle labels ----
+        { id: 'beer', group: 'Bottle labels', name: 'Beer bottle', size: '80 mm roll · printed sideways, 100 mm long', bottle: true,
+          defaults: { name: 'Hop Garden', style: 'Pale Ale', abv: 5.2, ml: 500, maker: 'Garage Brewery', notes: 'Citrus · Pine · Biscuit' },
+          build: v => ({ roll: '80', media: 'continuous', rotate: true, bannerLength: 100, repeats: 1, showCutLines: false,
+            blocks: opt([
+                v.maker && T(v.maker.toUpperCase(), 'Oswald', 38, 500, { spaceAfter: 4 }),
+                T(v.name.toUpperCase(), 'Bungee', 130, 400, { fit: true, spaceAfter: 4 }),
+                v.style && T(v.style, 'Oswald', 64, 700, { spaceAfter: 10 }),
+                v.notes && T(v.notes, 'Caveat', 56, 700, { spaceAfter: 14 }),
+                T(bottleFacts(v), 'Inter', 38, 700, { fit: true, spaceAfter: 6 }),
+                bottledLine(v) && T(bottledLine(v), 'Inter', 32, 400, { spaceAfter: 6 }),
+                v.responsibly && T('Please drink responsibly', 'Inter', 26, 400, { isItalic: true }),
+            ]) }) },
+        { id: 'wine', group: 'Bottle labels', name: 'Wine bottle', size: '80 mm roll · 80×100 mm', bottle: true,
+          defaults: { name: 'Château Garage', style: 'Red Wine', abv: 12.5, ml: 750, maker: '', notes: '2026', sulphites: true },
+          build: v => ({ roll: '80', media: 'labels', labelPreset: 'custom', labelW: 80, labelH: 100, labelShape: 'rect', labelGap: 3,
+            blocks: opt([
+                T('— ✦ —', "'Libre Baskerville'", 44, 400, { spaceAfter: 10 }),
+                T(v.name, "'Libre Baskerville'", 96, 700, { isItalic: true, fit: true, spaceAfter: 10 }),
+                v.style && T(v.style.toUpperCase(), "'Libre Baskerville'", 40, 400, { spaceAfter: 26 }),
+                v.notes && T(v.notes, "'Libre Baskerville'", 96, 700, { fit: true, spaceAfter: 26 }),
+                v.maker && T(v.maker, "'Libre Baskerville'", 34, 400, { isItalic: true, spaceAfter: 18 }),
+                T(bottleFacts(v), 'Inter', 32, 600, { fit: true, spaceAfter: 8 }),
+                v.sulphites && T('Contains sulphites', 'Inter', 28, 400, { spaceAfter: 6 }),
+                bottledLine(v) && T(bottledLine(v), 'Inter', 28, 400, { spaceAfter: 6 }),
+                v.responsibly && T('Please drink responsibly', 'Inter', 24, 400, { isItalic: true }),
+            ]) }) },
+        { id: 'gin', group: 'Bottle labels', name: 'Gin / spirits', size: '80 mm roll · 80×60 mm', bottle: true,
+          defaults: { name: 'Garden Gin', style: 'London Dry', abv: 40, ml: 700, maker: 'Small batch', notes: 'Juniper · Lemon peel · Rosemary', numbered: true },
+          build: v => ({ roll: '80', media: 'labels', labelPreset: '80x60', labelW: 80, labelH: 60, labelShape: 'rect', repeats: v.numbered ? 3 : 1,
+            blocks: opt([
+                v.maker && T(v.maker.toUpperCase(), 'Montserrat', 26, 700, { spaceAfter: 2 }),
+                T(v.name.toUpperCase(), 'Montserrat', 96, 900, { fit: true, spaceAfter: 0 }),
+                v.style && T(v.style, 'Caveat', 56, 700, { spaceAfter: 8 }),
+                v.notes && T(v.notes, 'Inter', 28, 500, { fit: true, spaceAfter: 12 }),
+                T(bottleFacts(v), 'Inter', 30, 700, { fit: true, spaceAfter: 4 }),
+                v.numbered ? T('Bottle {n} of {total}' + (v.showDate ? ' · {date}' : ''), 'Inter', 26, 400, { spaceAfter: 4 })
+                           : (v.showDate && T('Bottled {date}', 'Inter', 26, 400, { spaceAfter: 4 })),
+                v.responsibly && T('Please drink responsibly', 'Inter', 22, 400, { isItalic: true }),
+            ]) }) },
+        { id: 'cider', group: 'Bottle labels', name: 'Cider / mead', size: '57 mm roll · 57×50 mm', bottle: true,
+          defaults: { name: 'Orchard Cider', style: 'Medium dry', abv: 6, ml: 500, maker: '', notes: 'Bramley & Cox' },
+          build: v => ({ roll: '57', media: 'labels', labelPreset: '57x50', labelW: 57, labelH: 50, labelShape: 'rect',
+            blocks: opt([
+                T(v.name, 'Pacifico', 72, 400, { fit: true, spaceAfter: 0 }),
+                v.style && T(v.style.toUpperCase(), 'Oswald', 38, 700, { spaceAfter: 6 }),
+                v.notes && T(v.notes, 'Caveat', 40, 700, { fit: true, spaceAfter: 8 }),
+                v.maker && T(v.maker, 'Inter', 22, 500, { spaceAfter: 6 }),
+                T(bottleFacts(v), 'Inter', 24, 700, { fit: true, spaceAfter: 4 }),
+                bottledLine(v) && T(bottledLine(v), 'Inter', 21, 400, { spaceAfter: 3 }),
+                v.responsibly && T('Please drink responsibly', 'Inter', 18, 400, { isItalic: true }),
+            ]) }) },
+        { id: 'neck', group: 'Bottle labels', name: 'Neck band', size: '80 mm roll · 80×22 mm strip', bottle: true,
+          defaults: { name: 'Hop Garden', style: 'Pale Ale', abv: 5.2, ml: 500, maker: '', notes: '', showUnits: false },
+          build: v => ({ roll: '80', media: 'labels', labelPreset: 'custom', labelW: 80, labelH: 22, labelShape: 'rect',
+            blocks: opt([
+                T(`${v.name.toUpperCase()} · ${abvText(v.abv).toUpperCase()}`, 'Oswald', 96, 700, { fit: true, spaceAfter: 2 }),
+                (v.showDate || v.numbered) && T(bottledLine(v), 'Inter', 26, 500),
+            ]) }) },
+        { id: 'cap', group: 'Bottle labels', name: 'Cap / cork top', size: '57 mm roll · Ø 30 mm round', bottle: true,
+          defaults: { name: 'IPA', style: '', abv: 6.5, ml: 330, maker: '', notes: '', showUnits: false, numbered: true, showDate: false },
+          build: v => ({ roll: '57', media: 'labels', labelPreset: 'r30', labelW: 30, labelH: 30, labelShape: 'round', repeats: 6,
+            blocks: opt([
+                T(v.name.toUpperCase(), 'Bungee', 46, 400, { fit: true, spaceAfter: 2 }),
+                T(v.numbered ? '#{n:2}' : abvText(v.abv), 'Montserrat', 54, 900, { spaceAfter: 2 }),
+                v.numbered && T(abvText(v.abv), 'Inter', 24, 600),
+            ]) }) },
+    ];
+    const BOTTLE_BASE = { showUnits: true, showDate: true, numbered: false, responsibly: true, sulphites: false };
+
+    function templateDoc(tpl, values) {
+        const partial = tpl.build(values || { ...BOTTLE_BASE, ...(tpl.defaults || {}) });
+        return { ...defaultDoc(), ...partial };
+    }
+    // Render a doc's first copy without disturbing the editor.
+    function renderDocThumb(d) {
+        const saved = doc;
+        doc = d;
+        try {
+            const r = renderCell(d.startNumber, Math.max(1, d.repeats | 0), renderSettings(), true, new Set());
+            return { url: r.canvas.toDataURL('image/png'), round: r.round };
+        } finally { doc = saved; }
+    }
+    async function preloadDocFonts(d) { await ensureFontsLoaded(d.blocks); await document.fonts.ready; }
+
+    function showModal(title, html, back = false) {
+        $('modalTitle').textContent = title;
+        $('modalBody').innerHTML = html;
+        $('modalBackBtn').classList.toggle('hidden', !back);
+        $('modalBack').classList.remove('hidden');
+    }
+    function closeModal() { $('modalBack').classList.add('hidden'); }
+
+    async function openTemplates() {
+        showModal('Start from a template', '<div class="muted">Preparing previews…</div>');
+        const docs = TEMPLATES.map(t => templateDoc(t));
+        await Promise.all(docs.map(preloadDocFonts));
+        let html = '';
+        ['General', 'Bottle labels'].forEach(group => {
+            html += `<div class="tpl-group">${group === 'Bottle labels' ? '🍺 ' : ''}${group}</div><div class="tpl-grid">`;
+            TEMPLATES.forEach((t, i) => {
+                if (t.group !== group) return;
+                const th = renderDocThumb(docs[i]);
+                html += `<button class="tpl-card" onclick="chooseTemplate('${t.id}')">
+                    <div class="tpl-thumb"><img class="${th.round ? 'round' : ''}" src="${th.url}" alt=""></div>
+                    <b>${escapeHtml(t.name)}</b><span>${escapeHtml(t.size)}</span></button>`;
+            });
+            html += '</div>';
+        });
+        html += '<div class="muted">Templates replace the current layout (you can undo with Ctrl+Z). Bottle templates ask for the drink details and work out UK alcohol units (ABV % × ml ÷ 1000).</div>';
+        if (!$('modalBack').classList.contains('hidden')) showModal('Start from a template', html);
+    }
+
+    function chooseTemplate(id) {
+        const t = TEMPLATES.find(x => x.id === id);
+        if (!t) return;
+        if (t.bottle) return openBottleForm(t);
+        applyTemplate(t, templateDoc(t));
+    }
+
+    function applyTemplate(t, d) {
+        if (dirty && doc.blocks.length && !confirm('Replace the current layout with this template? (You can undo afterwards.)')) return;
+        commitNow();
+        doc = d;
+        selectedId = null;
+        openBlocks.clear();
+        if (doc.blocks[0]) openBlocks.add(doc.blocks[0].id);
+        commitNow();       // so the template itself can be undone
+        currentPath = null; currentName = null;
+        closeModal();
+        afterDocReplaced();
+        setDirty(true);
+        toast(`Template "${t.name}" applied — edit the text in the blocks on the left.`, 'ok');
+    }
+
+    // ---- bottle form -------------------------------------------------------
+    let bottleTpl = null;
+    function openBottleForm(t) {
+        bottleTpl = t;
+        const v = { ...BOTTLE_BASE, ...t.defaults };
+        const chk = (key, label) => `<label style="grid-column: 1 / -1"><input type="checkbox" id="bf_${key}" ${v[key] ? 'checked' : ''} onchange="updateBottlePreview()"> ${label}</label>`;
+        showModal(`${t.name} label`, `
+            <div class="bottle-form">
+                <div class="fields">
+                    <label for="bf_name">Name</label><input type="text" id="bf_name" value="${escapeHtml(v.name)}" oninput="updateBottlePreview()">
+                    <label for="bf_style">Style / type</label><input type="text" id="bf_style" value="${escapeHtml(v.style)}" oninput="updateBottlePreview()">
+                    <label for="bf_abv">ABV %</label><input type="number" id="bf_abv" value="${v.abv}" min="0" max="96" step="0.1" oninput="updateBottlePreview()">
+                    <label for="bf_ml">Bottle size (ml)</label>
+                    <span style="display:flex; gap:6px"><input type="number" id="bf_ml" value="${v.ml}" min="10" max="5000" step="10" oninput="updateBottlePreview()">
+                        <select onchange="if (this.value) { $('bf_ml').value = this.value; updateBottlePreview(); } this.value = ''">
+                            <option value="">Common…</option><option value="330">330 ml</option><option value="440">440 ml</option><option value="500">500 ml</option>
+                            <option value="568">568 ml (pint)</option><option value="700">700 ml</option><option value="750">750 ml</option><option value="1000">1 L</option>
+                        </select></span>
+                    <label for="bf_maker">Maker / brewery</label><input type="text" id="bf_maker" value="${escapeHtml(v.maker)}" placeholder="Optional" oninput="updateBottlePreview()">
+                    <label for="bf_notes">${t.id === 'wine' ? 'Vintage / notes' : 'Tasting notes'}</label><input type="text" id="bf_notes" value="${escapeHtml(v.notes)}" placeholder="Optional" oninput="updateBottlePreview()">
+                    <div class="units-box" id="bf_units"></div>
+                    ${chk('showUnits', 'Show UK alcohol units')}
+                    ${chk('showDate', 'Show bottled date')}
+                    ${chk('numbered', 'Number the bottles (Batch #01, #02… or "Bottle 1 of 3")')}
+                    ${t.id === 'wine' ? chk('sulphites', 'Add "Contains sulphites"') : ''}
+                    ${chk('responsibly', 'Add "Please drink responsibly"')}
+                </div>
+                <div>
+                    <div class="preview" id="bf_preview"></div>
+                    <div class="muted" style="margin-top:6px">${escapeHtml(t.size)} · you can fine-tune every line after applying.</div>
+                    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px">
+                        <button class="tbtn" onclick="openTemplates()">Back</button>
+                        <button class="tbtn primary" onclick="applyBottle()">Use this label</button>
+                    </div>
+                </div>
+            </div>`, true);
+        updateBottlePreview();
+    }
+    function bottleValues() {
+        const g = id => $('bf_' + id);
+        return {
+            name: g('name').value.trim() || 'Untitled', style: g('style').value.trim(), abv: num(g('abv').value, 0), ml: num(g('ml').value, 0),
+            maker: g('maker').value.trim(), notes: g('notes').value.trim(),
+            showUnits: g('showUnits').checked, showDate: g('showDate').checked, numbered: g('numbered').checked,
+            responsibly: g('responsibly').checked, sulphites: !!(g('sulphites') && g('sulphites').checked),
+        };
+    }
+    let bottlePreviewTimer = null;
+    function updateBottlePreview() {
+        const v = bottleValues();
+        $('bf_units').innerHTML = `<b>${unitsText(v.abv, v.ml)}</b> per ${volText(v.ml)} bottle at ${abvText(v.abv)} <span class="muted">(${v.abv} × ${v.ml} ÷ 1000)</span>`;
+        clearTimeout(bottlePreviewTimer);
+        bottlePreviewTimer = setTimeout(async () => {
+            const d = templateDoc(bottleTpl, v);
+            await preloadDocFonts(d);
+            const th = renderDocThumb(d);
+            if ($('bf_preview')) $('bf_preview').innerHTML = `<img class="${th.round ? 'round' : ''}" src="${th.url}" alt="">`;
+        }, 120);
+    }
+    function applyBottle() { applyTemplate(bottleTpl, templateDoc(bottleTpl, bottleValues())); }
+
+    // =====================================================================
     //  Print / save PNG
     // =====================================================================
     let printing = false;
@@ -1394,6 +2035,7 @@
         btn.textContent = on ? '✖ Cancel' : '🖨 Print';
         btn.classList.toggle('cancel-btn', on);
         btn.onclick = on ? cancelPrint : startPrint;
+        updatePrinterStatus();
     }
     function feedValue() {
         if (device.feed !== 'auto') return clampInt(device.feed, 0, 2000, 200);
@@ -1407,7 +2049,7 @@
         if (printing) return;
         if (!backendOnline) { toast('Printing needs the ORGBRO X3 Studio app.', 'error'); return; }
         const port = $('portSelect').value;
-        if (!port) { toast('Choose the Bluetooth COM port of your ORGBRO X3 first (try "Find printer").', 'error'); return; }
+        if (!port) { toast('Choose the Bluetooth COM port of your ORGBRO X3 first (try "Find printer").', 'error'); updatePrinterStatus(); return; }
         setPrinting(true);
         $('statusText').textContent = 'Preparing print job…';
         $('progressBar').style.width = '0%';
@@ -1422,7 +2064,7 @@
             pollStatus();
         } catch (e) {
             setPrinting(false);
-            $('statusText').textContent = 'Print failed.';
+            $('statusText').textContent = 'Print failed: ' + e.message;
             toast(e.message, 'error');
         }
     }
@@ -1503,6 +2145,9 @@
         doc.blocks.forEach(b => { if (b.type === 'text') normaliseFontStyle(b); });
         history = []; future = []; lastSnap = JSON.stringify(doc);
         currentPath = path; currentName = name;
+        selectedId = null;
+        openBlocks.clear();
+        if (doc.blocks.length <= 2) doc.blocks.forEach(b => openBlocks.add(b.id));
         afterDocReplaced();
         setDirty(false);
         if (!quiet) toast(`Opened ${name || 'layout'}.`, 'ok');
@@ -1515,6 +2160,8 @@
         doc = defaultDoc();
         history = []; future = []; lastSnap = JSON.stringify(doc);
         currentPath = null; currentName = null;
+        selectedId = null;
+        openBlocks.clear(); doc.blocks.forEach(b => openBlocks.add(b.id));
         afterDocReplaced(); setDirty(false); scheduleAutosave();
     }
 
@@ -1546,16 +2193,18 @@
         }
         $('openFileInput').click();
     }
-    function openFromFileInput(event) {
-        const file = event.target.files[0];
-        event.target.value = '';
-        if (!file) return;
+    function openProjectFile(file) {
         const reader = new FileReader();
         reader.onload = async () => {
             try { await loadProject(JSON.parse(reader.result), { name: file.name }); }
             catch (e) { toast('Open failed: ' + e.message, 'error'); }
         };
         reader.readAsText(file);
+    }
+    function openFromFileInput(event) {
+        const file = event.target.files[0];
+        event.target.value = '';
+        if (file) openProjectFile(file);
     }
     async function openRecent(path) {
         $('recentSelect').value = '';
@@ -1601,21 +2250,65 @@
     }
 
     // =====================================================================
-    //  Keyboard shortcuts + start-up
+    //  Paste, drag & drop, keyboard shortcuts
     // =====================================================================
+    document.addEventListener('paste', e => {
+        const items = [...(e.clipboardData?.items || [])].filter(i => i.kind === 'file' && i.type.startsWith('image/'));
+        if (!items.length) return;
+        e.preventDefault();
+        items.forEach(i => addImageFile(i.getAsFile()));
+        toast('Pasted image added.', 'ok');
+    });
+
+    let dragDepth = 0;
+    const isFileDrag = e => [...(e.dataTransfer?.types || [])].includes('Files');
+    window.addEventListener('dragenter', e => { if (isFileDrag(e)) { dragDepth++; $('dropVeil').classList.remove('hidden'); } });
+    window.addEventListener('dragleave', e => { if (isFileDrag(e) && --dragDepth <= 0) { dragDepth = 0; $('dropVeil').classList.add('hidden'); } });
+    window.addEventListener('dragover', e => { if (isFileDrag(e)) e.preventDefault(); });
+    window.addEventListener('drop', e => {
+        if (!isFileDrag(e)) return;
+        e.preventDefault();
+        dragDepth = 0; $('dropVeil').classList.add('hidden');
+        const files = [...e.dataTransfer.files];
+        const project = files.find(f => /\.(orgbro|json)$/i.test(f.name));
+        if (project) { if (confirmDiscard()) openProjectFile(project); return; }
+        const imgs = files.filter(f => f.type.startsWith('image/'));
+        if (!imgs.length) { toast('Drop image files or a .orgbro layout.', 'error'); return; }
+        imgs.forEach(f => addImageFile(f));
+    });
+
     document.addEventListener('keydown', e => {
-        if (!(e.ctrlKey || e.metaKey)) return;
         const k = e.key.toLowerCase();
         const inField = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName);
-        if (k === 's') { e.preventDefault(); saveLayout(e.shiftKey); }
-        else if (k === 'o') { e.preventDefault(); openLayout(); }
-        else if (k === 'p') { e.preventDefault(); startPrint(); }
-        else if (!inField && k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
-        else if (!inField && (k === 'y' || (k === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
+        if (k === 'escape') {
+            if (!$('fontPop').classList.contains('hidden')) closeFontPicker();
+            else if (!$('modalBack').classList.contains('hidden')) closeModal();
+            else selectBlock(null);
+            return;
+        }
+        if (e.ctrlKey || e.metaKey) {
+            if (k === 's') { e.preventDefault(); saveLayout(e.shiftKey); }
+            else if (k === 'o') { e.preventDefault(); openLayout(); }
+            else if (k === 'p') { e.preventDefault(); startPrint(); }
+            else if (k === 'd' && selectedId != null) { e.preventDefault(); duplicateBlock(selectedId); }
+            else if (!inField && k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+            else if (!inField && (k === 'y' || (k === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
+            return;
+        }
+        if (inField || selectedId == null) return;
+        const idx = doc.blocks.findIndex(b => b.id === selectedId);
+        if (k === 'delete' || k === 'backspace') { e.preventDefault(); deleteBlock(selectedId); }
+        else if (e.altKey && k === 'arrowup') { e.preventDefault(); moveBlock(idx, -1); }
+        else if (e.altKey && k === 'arrowdown') { e.preventDefault(); moveBlock(idx, 1); }
+        else if (k === 'enter') { e.preventDefault(); toggleOpen(selectedId); }
     });
     window.addEventListener('beforeunload', () => { if (commitTimer) commitNow(); });
 
+    // =====================================================================
+    //  Start-up
+    // =====================================================================
     (async function start() {
+        applyTheme();
         syncDeviceControls();
         syncDocControls();
         renderUI();

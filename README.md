@@ -58,6 +58,52 @@ with no saving and reloading of PNGs in between.
 * **Exact 1-bit preview** of what will print, with sticker outlines and the 57 mm paper edge
   shown on screen only.
 
+### Templates, including bottle labels
+* **✦ Templates** opens a gallery with live previews. Templates can be undone like any other
+  change.
+* **General templates:** price tag, address label, name badge, round QR sticker, "Fragile"
+  sticker and numbered batch label.
+* **🍺 Bottle labels:**
+  * **Beer bottle**: printed sideways on the 80 mm roll, 100 mm long
+  * **Wine bottle**: 80×100 mm
+  * **Gin / spirits**: 80×60 mm, optionally numbered "Bottle 1 of 3"
+  * **Cider / mead**: 57×50 mm
+  * **Neck band**: an 80×22 mm strip
+  * **Cap / cork top**: round Ø 30 mm, numbered #01, #02…
+* **Bottle form.** Each bottle template opens a short form for name, style, ABV, bottle size
+  (with common sizes: 330, 440, 500, 568 ml pint, 700, 750 ml, 1 L), maker and tasting notes.
+  * It works out **UK alcohol units** (ABV % × ml ÷ 1000) for you.
+  * You can add a bottled date, bottle numbering, "Contains sulphites" (wine) and "Please drink
+    responsibly".
+  * A live preview updates as you type.
+
+  These are for homebrew and gift labels. If you sell alcohol, check the labelling rules that
+  apply to you.
+
+### Interface
+* **Click the preview to select.** Clicking text, an image or a code in the preview opens and
+  highlights its block. Hovering a block outlines it on the preview.
+* **Preview controls:** zoom (Fit / 100% / 200%), *One copy / One label* view, and a 1-bit toggle.
+* **Collapsible blocks.** Each block collapses to a one-line summary, with Expand all /
+  Collapse all.
+* **Font picker** with search. Every font is shown in its own typeface, and installed system
+  fonts are grouped separately.
+* **Paste images** with Ctrl+V, or **drag and drop** image files (or a `.orgbro` layout) onto the
+  window.
+* **Image blocks** show a thumbnail and have **brightness and contrast** controls for better
+  dithering.
+* **Number boxes** next to every slider.
+* **Visual label-size picker** that draws each sticker to scale, round ones included.
+* **Pinned print bar** showing what will print ("3 × Ø40 mm round labels · ~129 mm") with
+  Print and PNG buttons. Rarely used printer settings sit under *Advanced print settings*.
+* **Printer status** in the top bar, plus a setup checklist when no printer is found.
+* **Shortcuts:**
+  * Del deletes the selected block, Ctrl+D duplicates it, Alt+↑/↓ moves it, and Enter expands or
+    collapses it.
+  * Esc closes pop-ups.
+  * Ctrl+S / Ctrl+Shift+S save, Ctrl+O opens and Ctrl+P prints.
+* **Light, dark or automatic theme**, plus visible keyboard focus outlines.
+
 ### Printing
 * COM-port picker and **Find printer**. Find printer sends the official app's status request to
   every port and selects the one that answers.
