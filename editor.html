@@ -5,94 +5,148 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="orgbro-token" content="__ORGBRO_TOKEN__">
     <title>ORGBRO X3 Studio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Caveat:wght@700&family=Courier+Prime:wght@700&family=Fira+Code:wght@700&family=Inter:wght@800&family=Libre+Baskerville:ital,wght@0,700;1,400&family=Montserrat:wght@900&family=Oswald:wght@700&family=Pacifico&family=Press+Start+2P&family=Roboto+Mono:wght@700&family=Special+Elite&family=VT323&display=swap" rel="stylesheet">
+    <link rel="icon" href="assets/icon.png">
+    <script src="vendor/qrcode.js"></script>
+    <script src="vendor/JsBarcode.all.min.js"></script>
 
     <style>
+        /* ---------- bundled fonts (offline; licenses in fonts/licenses) ---------- */
+        @font-face { font-family: 'Inter'; src: url(fonts/Inter.woff2) format('woff2'); font-weight: 100 900; font-style: normal; }
+        @font-face { font-family: 'Inter'; src: url(fonts/Inter-Italic.woff2) format('woff2'); font-weight: 100 900; font-style: italic; }
+        @font-face { font-family: 'Montserrat'; src: url(fonts/Montserrat.woff2) format('woff2'); font-weight: 100 900; font-style: normal; }
+        @font-face { font-family: 'Montserrat'; src: url(fonts/Montserrat-Italic.woff2) format('woff2'); font-weight: 100 900; font-style: italic; }
+        @font-face { font-family: 'Oswald'; src: url(fonts/Oswald.woff2) format('woff2'); font-weight: 200 700; }
+        @font-face { font-family: 'Bungee'; src: url(fonts/Bungee.woff2) format('woff2'); font-weight: 400; }
+        @font-face { font-family: 'Press Start 2P'; src: url(fonts/PressStart2P.woff2) format('woff2'); font-weight: 400; }
+        @font-face { font-family: 'VT323'; src: url(fonts/VT323.woff2) format('woff2'); font-weight: 400; }
+        @font-face { font-family: 'Courier Prime'; src: url(fonts/CourierPrime-Regular.woff2) format('woff2'); font-weight: 400; font-style: normal; }
+        @font-face { font-family: 'Courier Prime'; src: url(fonts/CourierPrime-Bold.woff2) format('woff2'); font-weight: 700; font-style: normal; }
+        @font-face { font-family: 'Courier Prime'; src: url(fonts/CourierPrime-Italic.woff2) format('woff2'); font-weight: 400; font-style: italic; }
+        @font-face { font-family: 'Courier Prime'; src: url(fonts/CourierPrime-BoldItalic.woff2) format('woff2'); font-weight: 700; font-style: italic; }
+        @font-face { font-family: 'Special Elite'; src: url(fonts/SpecialElite.woff2) format('woff2'); font-weight: 400; }
+        @font-face { font-family: 'Fira Code'; src: url(fonts/FiraCode.woff2) format('woff2'); font-weight: 300 700; }
+        @font-face { font-family: 'Roboto Mono'; src: url(fonts/RobotoMono.woff2) format('woff2'); font-weight: 100 700; font-style: normal; }
+        @font-face { font-family: 'Roboto Mono'; src: url(fonts/RobotoMono-Italic.woff2) format('woff2'); font-weight: 100 700; font-style: italic; }
+        @font-face { font-family: 'Libre Baskerville'; src: url(fonts/LibreBaskerville.woff2) format('woff2'); font-weight: 400 700; font-style: normal; }
+        @font-face { font-family: 'Libre Baskerville'; src: url(fonts/LibreBaskerville-Italic.woff2) format('woff2'); font-weight: 400 700; font-style: italic; }
+        @font-face { font-family: 'Pacifico'; src: url(fonts/Pacifico.woff2) format('woff2'); font-weight: 400; }
+        @font-face { font-family: 'Caveat'; src: url(fonts/Caveat.woff2) format('woff2'); font-weight: 400 700; }
+
         * { box-sizing: border-box; }
         body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; background: #0f172a; margin: 0; color: #f8fafc; }
 
-        .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; background: #1e293b; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 10; }
-        .topbar h1 { font-size: 1.15rem; margin: 0; color: #38bdf8; }
-        .topbar .subtitle { color: #94a3b8; font-size: 0.8rem; }
+        .topbar { display: flex; align-items: center; gap: 14px; padding: 10px 20px; background: #1e293b; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 10; flex-wrap: wrap; }
+        .brand { display: flex; align-items: center; gap: 10px; min-width: 230px; }
+        .brand img { width: 34px; height: 34px; }
+        .brand h1 { font-size: 1.05rem; margin: 0; color: #38bdf8; }
+        .brand h1 span { color: #64748b; font-weight: 600; font-size: 0.75rem; }
+        #docTitle { color: #94a3b8; font-size: 0.8rem; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .toolbar { display: flex; gap: 6px; align-items: center; flex: 1; flex-wrap: wrap; }
+        .toolbar .sep { width: 1px; height: 24px; background: #334155; margin: 0 4px; }
+        .tbtn { background: #0f172a; border: 1px solid #475569; color: #e2e8f0; padding: 6px 11px; border-radius: 6px; cursor: pointer; font-size: 0.82rem; font-weight: 600; font-family: inherit; }
+        .tbtn:hover:not(:disabled) { border-color: #38bdf8; }
+        .tbtn:disabled { opacity: 0.4; cursor: default; }
         .pill { font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; border: 1px solid #475569; color: #cbd5e1; white-space: nowrap; }
         .pill.on { background: #064e3b; border-color: #10b981; color: #6ee7b7; }
         .pill.off { background: #451a03; border-color: #f59e0b; color: #fcd34d; }
 
-        .layout { display: grid; grid-template-columns: minmax(420px, 1fr) minmax(420px, 1fr); gap: 18px; padding: 18px 20px; max-width: 1500px; margin: 0 auto; }
-        @media (max-width: 960px) { .layout { grid-template-columns: 1fr; } }
-        .side-col { position: sticky; top: 72px; align-self: start; max-height: calc(100vh - 90px); overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
-        @media (max-width: 960px) { .side-col { position: static; max-height: none; } }
+        .layout { display: grid; grid-template-columns: minmax(440px, 1fr) minmax(420px, 1fr); gap: 18px; padding: 18px 20px; max-width: 1560px; margin: 0 auto; }
+        @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+        .side-col { position: sticky; top: 70px; align-self: start; max-height: calc(100vh - 86px); overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+        @media (max-width: 980px) { .side-col { position: static; max-height: none; } }
 
         .panel { background: #1e293b; border: 1px solid #334155; padding: 12px 14px; border-radius: 10px; margin-bottom: 14px; }
         .side-col .panel { margin-bottom: 0; }
         .panel h3 { margin: 0 0 10px; font-size: 0.9rem; color: #38bdf8; }
-        .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 0.85rem; margin-bottom: 8px; }
+        .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 0.85rem; margin-bottom: 9px; }
         .row:last-child { margin-bottom: 0; }
-
-        .mode-btn { background: #0f172a; border: 1px solid #475569; color: white; padding: 8px 14px; font-weight: 600; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
-        .mode-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+        .row label { display: inline-flex; align-items: center; gap: 6px; }
+        .seg { display: inline-flex; border: 1px solid #475569; border-radius: 7px; overflow: hidden; }
+        .seg button { background: #0f172a; border: none; color: #e2e8f0; padding: 7px 13px; font-weight: 600; cursor: pointer; font-size: 0.83rem; font-family: inherit; }
+        .seg button + button { border-left: 1px solid #475569; }
+        .seg button.active { background: #38bdf8; color: #0f172a; }
+        .subtle-box { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-top: 4px; }
 
         .system-font-btn { background: #8b5cf6; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.85rem; }
         .system-font-btn:hover { background: #7c3aed; }
 
         .action-bar { display: flex; gap: 10px; margin-bottom: 14px; }
-        .add-btn { flex: 1; padding: 12px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; font-size: 0.95rem; }
-        .add-text-btn { background: #0284c7; color: white; }
-        .add-text-btn:hover { background: #0369a1; }
-        .add-img-btn { background: #475569; color: white; }
-        .add-img-btn:hover { background: #334155; }
+        .add-btn { flex: 1; padding: 11px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; font-size: 0.92rem; color: white; font-family: inherit; }
+        .add-text-btn { background: #0284c7; } .add-text-btn:hover { background: #0369a1; }
+        .add-img-btn { background: #475569; } .add-img-btn:hover { background: #334155; }
+        .add-code-btn { background: #0f766e; } .add-code-btn:hover { background: #115e59; }
 
         .blocks-container { display: flex; flex-direction: column; gap: 12px; }
         .block-item { background: #334155; border: 1px solid #475569; border-radius: 8px; padding: 12px; }
-        .block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.8rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; }
-        .controls-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+        .block-item.drag-over { border-color: #38bdf8; box-shadow: 0 0 0 2px #38bdf8 inset; }
+        .block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.8rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; gap: 6px; }
+        .block-header .handle { cursor: grab; color: #94a3b8; font-size: 1rem; padding: 0 4px; user-select: none; }
+        .controls-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; font-size: 0.85rem; }
+        .controls-row label { display: inline-flex; align-items: center; gap: 5px; color: #cbd5e1; }
 
         select, input[type="number"], input[type="text"] { padding: 6px; border: 1px solid #64748b; background: #0f172a; color: white; border-radius: 4px; font-size: 0.85rem; font-family: inherit; }
+        input[type="number"] { width: 70px; }
         input[type="range"] { accent-color: #38bdf8; }
         .toggle-btn { background: #1e293b; border: 1px solid #64748b; color: white; padding: 6px 10px; font-weight: 600; border-radius: 4px; cursor: pointer; font-size: 0.85rem; min-width: 34px; }
         .toggle-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
-        .btn-move, .btn-delete, .btn-small { border: none; cursor: pointer; padding: 5px 9px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
+        .toggle-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .btn-move, .btn-delete, .btn-small { border: none; cursor: pointer; padding: 5px 9px; border-radius: 4px; font-size: 0.82rem; font-weight: bold; font-family: inherit; }
         .btn-move, .btn-small { background: #475569; color: white; }
         .btn-small:hover, .btn-move:hover { background: #64748b; }
         .btn-delete { background: #ef4444; color: white; }
         textarea { width: 100%; padding: 8px; border: 1px solid #64748b; background: #0f172a; color: white; border-radius: 6px; font-size: 0.95rem; font-family: inherit; resize: vertical; }
         .muted { color: #94a3b8; font-size: 0.8rem; }
+        code { background: #0f172a; padding: 1px 5px; border-radius: 4px; color: #7dd3fc; font-size: 0.78rem; }
+        .exp { font-size: 0.68rem; color: #fbbf24; border: 1px solid #92400e; border-radius: 4px; padding: 0 4px; margin-left: 4px; }
 
-        .print-actions { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-top: 10px; }
-        .print-btn { background: #10b981; color: white; border: none; padding: 13px; font-weight: 800; font-size: 1rem; border-radius: 8px; cursor: pointer; }
+        .print-actions { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-top: 12px; }
+        .print-btn { background: #10b981; color: white; border: none; padding: 13px; font-weight: 800; font-size: 1rem; border-radius: 8px; cursor: pointer; font-family: inherit; }
         .print-btn:hover { background: #059669; }
         .print-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
-        .cancel-btn { background: #ef4444; }
-        .cancel-btn:hover { background: #dc2626; }
-        .save-btn { background: #475569; color: white; border: none; padding: 13px; font-weight: 700; border-radius: 8px; cursor: pointer; }
+        .cancel-btn { background: #ef4444; } .cancel-btn:hover { background: #dc2626; }
+        .save-btn { background: #475569; color: white; border: none; padding: 13px; font-weight: 700; border-radius: 8px; cursor: pointer; font-family: inherit; }
         .save-btn:hover { background: #64748b; }
-
         .progress { height: 8px; background: #0f172a; border-radius: 999px; overflow: hidden; margin-top: 12px; border: 1px solid #334155; }
         .progress > div { height: 100%; width: 0%; background: #10b981; transition: width 0.2s; }
         #statusText { margin-top: 8px; font-size: 0.85rem; color: #cbd5e1; }
         details { margin-top: 8px; }
-        summary { cursor: pointer; font-size: 0.8rem; color: #94a3b8; }
+        summary { cursor: pointer; font-size: 0.82rem; color: #94a3b8; }
         #logBox { background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 8px; font-family: Consolas, monospace; font-size: 0.75rem; color: #cbd5e1; max-height: 140px; overflow-y: auto; white-space: pre-wrap; margin-top: 6px; }
 
         .preview-box { text-align: center; }
-        #canvasLabel { display: block; font-weight: 600; font-size: 0.8rem; margin-bottom: 8px; color: #94a3b8; }
-        .canvas-wrap { max-height: 70vh; overflow-y: auto; border-radius: 4px; }
-        canvas#canvas { width: 100%; height: auto; background: #ffffff; border: 1px solid #cbd5e1; image-rendering: pixelated; display: block; }
+        #canvasLabel { display: block; font-weight: 600; font-size: 0.8rem; margin-bottom: 6px; color: #94a3b8; }
+        #previewInfo { font-size: 0.8rem; color: #cbd5e1; margin-bottom: 8px; }
+        #previewWarn { font-size: 0.8rem; color: #fbbf24; margin-bottom: 8px; }
+        .canvas-wrap { max-height: 72vh; overflow-y: auto; border-radius: 4px; background: #475569; padding: 6px; }
+        canvas#canvas { width: 100%; height: auto; background: #ffffff; image-rendering: pixelated; display: block; }
 
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #38bdf8; color: #f8fafc; padding: 10px 18px; border-radius: 8px; font-size: 0.9rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity 0.25s; max-width: 80vw; z-index: 50; }
         #toast.show { opacity: 1; }
         #toast.error { border-color: #ef4444; }
         #toast.ok { border-color: #10b981; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
 <header class="topbar">
-    <div>
-        <h1>ORGBRO X3 Studio</h1>
-        <div class="subtitle">Design stickers &amp; labels, then print straight to the ORGBRO X3 over Bluetooth</div>
+    <div class="brand">
+        <img src="assets/icon.png" alt="">
+        <div>
+            <h1>ORGBRO X3 Studio <span id="appVersion"></span></h1>
+            <div id="docTitle">Untitled layout</div>
+        </div>
+    </div>
+    <div class="toolbar">
+        <button class="tbtn" onclick="newLayout()" title="New layout">New</button>
+        <button class="tbtn" onclick="openLayout()" title="Open layout (Ctrl+O)">Open…</button>
+        <select id="recentSelect" class="hidden" onchange="openRecent(this.value)" style="max-width:170px"></select>
+        <button class="tbtn" onclick="saveLayout(false)" title="Save (Ctrl+S)">Save</button>
+        <button class="tbtn" onclick="saveLayout(true)">Save As…</button>
+        <input type="file" id="openFileInput" accept=".orgbro,.json" class="hidden" onchange="openFromFileInput(event)">
+        <span class="sep"></span>
+        <button id="undoBtn" class="tbtn" onclick="undo()" title="Undo (Ctrl+Z)" disabled>↶ Undo</button>
+        <button id="redoBtn" class="tbtn" onclick="redo()" title="Redo (Ctrl+Y)" disabled>↷ Redo</button>
     </div>
     <span id="backendPill" class="pill">Connecting…</span>
 </header>
@@ -101,37 +155,86 @@
     <!-- ================= LEFT: editor ================= -->
     <section>
         <div class="panel">
-            <h3>Print Layout Mode</h3>
+            <h3>Paper &amp; Stickers</h3>
             <div class="row">
-                <button id="btnRight57" class="mode-btn active" onclick="setLayoutMode('57_right')">57mm Roll (Right Zone of 80mm Canvas)</button>
-                <button id="btnFull80" class="mode-btn" onclick="setLayoutMode('80_full')">Standard Full 80mm Roll (864px)</button>
+                <span style="width:70px">Roll width</span>
+                <div class="seg">
+                    <button id="roll80" onclick="setDoc('roll','80')">80 mm</button>
+                    <button id="roll57" onclick="setDoc('roll','57')">57 mm</button>
+                </div>
             </div>
+            <div class="row">
+                <span style="width:70px">Media</span>
+                <div class="seg">
+                    <button id="mediaContinuous" onclick="setDoc('media','continuous')">Continuous roll</button>
+                    <button id="mediaLabels" onclick="setDoc('media','labels')">Sticker labels</button>
+                </div>
+            </div>
+
+            <div id="labelSettings" class="subtle-box">
+                <div class="row">
+                    <label>Label size
+                        <select id="labelPreset" onchange="chooseLabelPreset(this.value)"></select>
+                    </label>
+                </div>
+                <div class="row">
+                    <label>Width <input type="number" id="labelW" min="10" max="80" step="0.5" onchange="setLabelCustom()"> mm</label>
+                    <label id="labelHWrap">Height <input type="number" id="labelH" min="10" max="300" step="0.5" onchange="setLabelCustom()"> mm</label>
+                    <label>Shape
+                        <select id="labelShape" onchange="setLabelCustom()">
+                            <option value="rect">Rectangle</option>
+                            <option value="round">Round</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="row">
+                    <label>Gap between labels <input type="number" id="labelGap" min="0" max="30" step="0.5" onchange="setDoc('labelGap', num(this.value, 3))"> mm</label>
+                    <label title="Moves every label down (or up, negative) to line up with the stickers on your roll">Top offset <input type="number" id="topOffset" min="-50" max="50" step="0.5" onchange="setDoc('topOffset', num(this.value, 0))"> mm</label>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top:10px">
+                <label><input type="checkbox" id="rotate" onchange="setDoc('rotate', this.checked)"> Rotate design 90° (print sideways)</label>
+                <label id="bannerWrap">Length along roll <input type="number" id="bannerLength" min="10" max="1000" step="1" onchange="setDoc('bannerLength', num(this.value, 100))"> mm</label>
+            </div>
+            <div class="row">
+                <label><span id="repeatLabel">Repeat layout</span> <input type="number" id="repeats" min="1" max="100" onchange="setDoc('repeats', clampInt(this.value, 1, 100, 1))"> ×</label>
+                <label>Start number <input type="number" id="startNumber" onchange="setDoc('startNumber', clampInt(this.value, -999999, 9999999, 1))"></label>
+            </div>
+            <div class="row" id="continuousSettings">
+                <label><input type="checkbox" id="showCutLines" onchange="setDoc('showCutLines', this.checked)"> Cut-line dividers</label>
+                <label>Gap between copies <input type="number" id="stickerGap" min="0" max="500" onchange="setDoc('stickerGap', clampInt(this.value, 0, 500, 30))"> px</label>
+            </div>
+            <div class="muted">Fields you can type in text and codes: <code>{n}</code> number, <code>{n:3}</code> zero-padded (001), <code>{total}</code>, <code>{date}</code>, <code>{time}</code></div>
+
+            <details>
+                <summary>Calibration</summary>
+                <div class="subtle-box">
+                    <div class="row">
+                        <label title="Where the 57 mm paper starts on the 864 px print head">57 mm zone offset <input type="number" id="zoneOffset" min="0" max="249" onchange="setDevice('zoneOffset', clampInt(this.value, 0, 249, 249))"> px</label>
+                        <label title="Print-head resolution">Dots per mm <input type="number" id="dotsPerMm" min="7" max="13" step="0.01" onchange="setDevice('dotsPerMm', num(this.value, 10.8))"></label>
+                    </div>
+                    <div class="row">
+                        <button class="btn-small" onclick="printTest('calibration')">🖨 Print calibration sheet</button>
+                        <button class="btn-small" onclick="printTest('long')">🖨 Print long-print test</button>
+                    </div>
+                    <div class="muted">The calibration sheet has rulers and the 57 mm paper edges, so you can check the offset and dots-per-mm. The long-print test prints past the 256-packet mark; if it stops or garbles there, turn on <i>Split long prints</i>.</div>
+                </div>
+            </details>
         </div>
 
         <div class="panel">
             <h3>Fonts</h3>
             <div class="row">
-                <span class="muted" style="flex:1">Add every font installed on this PC to the font lists:</span>
+                <span class="muted" style="flex:1">13 fonts are built in and work offline. Add every font installed on this PC:</span>
                 <button class="system-font-btn" onclick="loadSystemFonts()">🔍 Scan System Fonts</button>
             </div>
         </div>
 
-        <div class="panel">
-            <h3>Sticker Roll Batch Settings</h3>
-            <div class="row">
-                <label>Repeat Layout:
-                    <input type="number" id="repeatCount" value="1" min="1" max="50" style="width: 64px;" onchange="renderCanvas()"> times
-                </label>
-                <label><input type="checkbox" id="showCutLines" checked onchange="renderCanvas()"> Add Cut-Line Dividers</label>
-                <label>Gap Between Stickers:
-                    <input type="number" id="stickerGap" value="30" min="0" max="200" style="width: 64px;" onchange="renderCanvas()"> px
-                </label>
-            </div>
-        </div>
-
         <div class="action-bar">
-            <button class="add-btn add-text-btn" onclick="addTextBlock()">+ Add Text Block</button>
-            <button class="add-btn add-img-btn" onclick="triggerImageUpload()">+ Add Image Block</button>
+            <button class="add-btn add-text-btn" onclick="addTextBlock()">+ Text</button>
+            <button class="add-btn add-img-btn" onclick="triggerImageUpload()">+ Image</button>
+            <button class="add-btn add-code-btn" onclick="addCodeBlock()">+ QR / Barcode</button>
             <input type="file" id="hiddenFileInput" accept="image/*" style="display: none;" onchange="addImageBlock(event)">
         </div>
 
@@ -143,32 +246,54 @@
         <div class="panel">
             <h3>Printer</h3>
             <div class="row">
-                <select id="portSelect" style="flex:1; min-width: 200px;" onchange="saveSetting('port', this.value)">
+                <select id="portSelect" style="flex:1; min-width: 200px;" onchange="setDevice('port', this.value)">
                     <option value="">No COM ports found</option>
                 </select>
-                <button class="btn-small" onclick="refreshPorts(true)">↻ Refresh</button>
+                <button class="btn-small" onclick="refreshPorts(true)" title="Refresh the list">↻</button>
+                <button class="btn-small" onclick="findPrinter()" title="Ask each port whether the printer answers">Find printer</button>
             </div>
             <div class="row">
-                <label>Images:
-                    <select id="ditherMode" onchange="saveSetting('dither', this.value); renderCanvas()">
+                <label>Images
+                    <select id="ditherMode" onchange="setDevice('dither', this.value)">
                         <option value="floyd">Floyd–Steinberg dithering</option>
                         <option value="threshold">Threshold (no dithering)</option>
                     </select>
                 </label>
-                <label><input type="checkbox" id="invertBW" onchange="renderCanvas()"> Invert black / white</label>
+                <label><input type="checkbox" id="invertBW" onchange="setDevice('invert', this.checked)"> Invert</label>
             </div>
             <div class="row">
-                <label style="display:flex; align-items:center; gap:8px; flex:1;">Threshold
-                    <input type="range" id="threshold" min="1" max="254" value="160" style="flex:1"
-                           oninput="document.getElementById('thresholdVal').innerText = this.value; saveSetting('threshold', this.value); renderCanvas()">
-                    <span id="thresholdVal" style="width:28px; text-align:right">160</span>
+                <label style="flex:1">Threshold
+                    <input type="range" id="threshold" min="1" max="254" style="flex:1"
+                           oninput="document.getElementById('thresholdVal').innerText = this.value; setDevice('threshold', +this.value)">
+                    <span id="thresholdVal" style="width:28px; text-align:right"></span>
                 </label>
             </div>
             <div class="row">
-                <label>Packet delay:
-                    <input type="number" id="packetDelay" value="0.02" min="0" max="0.5" step="0.01" style="width: 72px;" onchange="saveSetting('delay', this.value)"> s
+                <label>Density<span class="exp">experimental</span>
+                    <select id="density" onchange="setDevice('density', +this.value)">
+                        <option value="48">Light</option>
+                        <option value="69">Medium-light</option>
+                        <option value="85">Normal (app default)</option>
+                        <option value="106">Dark</option>
+                        <option value="128">Darker</option>
+                    </select>
                 </label>
-                <label><input type="checkbox" id="showMono" checked onchange="renderCanvas()"> Show exact 1-bit print preview</label>
+                <label>Feed after<span class="exp">experimental</span>
+                    <select id="feed" onchange="setDevice('feed', this.value)">
+                        <option value="auto">Auto</option>
+                        <option value="0">None</option>
+                        <option value="100">Short</option>
+                        <option value="200">Normal</option>
+                        <option value="350">Long</option>
+                    </select>
+                </label>
+            </div>
+            <div class="row">
+                <label>Packet delay <input type="number" id="packetDelay" min="0" max="0.5" step="0.01" onchange="setDevice('delay', num(this.value, 0.02))"> s</label>
+                <label title="Sends prints longer than ~9 cm as several jobs so the packet counter never wraps"><input type="checkbox" id="splitLong" onchange="setDevice('split', this.checked)"> Split long prints<span class="exp">experimental</span></label>
+            </div>
+            <div class="row">
+                <label><input type="checkbox" id="showMono" onchange="setDevice('showMono', this.checked)"> Show exact 1-bit print preview</label>
             </div>
 
             <div class="print-actions">
@@ -184,7 +309,9 @@
         </div>
 
         <div class="panel preview-box">
-            <label id="canvasLabel">864px Canvas Preview (Left 249px blank padding; content centered inside right 615px zone)</label>
+            <label id="canvasLabel">Preview</label>
+            <div id="previewInfo"></div>
+            <div id="previewWarn"></div>
             <div class="canvas-wrap"><canvas id="canvas" width="864" height="200"></canvas></div>
         </div>
     </aside>
@@ -193,34 +320,279 @@
 <div id="toast"></div>
 
 <script>
-    const CANVAS_WIDTH = 864;       // 80mm print head width
+    // =====================================================================
+    //  Constants
+    // =====================================================================
+    const HEAD_WIDTH = 864;          // print head width in dots
     const MAX_CANVAS_HEIGHT = 32000; // browser canvas limit safety margin
-    let currentMode = '57_right';
+    const FORMAT_ID = 'orgbro-x3-studio';
 
-    function getActiveWidth() { return currentMode === '57_right' ? 615 : 864; }       // 615px = 57mm paper
-    function getOffsetX()     { return currentMode === '57_right' ? (CANVAS_WIDTH - 615) : 0; }
+    const LABEL_PRESETS = [
+        { id: '80x40', roll: '80', w: 80, h: 40, shape: 'rect' },
+        { id: '80x50', roll: '80', w: 80, h: 50, shape: 'rect' },
+        { id: '80x60', roll: '80', w: 80, h: 60, shape: 'rect' },
+        { id: '80x80', roll: '80', w: 80, h: 80, shape: 'rect' },
+        { id: '76x51', roll: '80', w: 76, h: 51, shape: 'rect', note: '3 × 2 in' },
+        { id: '70x50', roll: '80', w: 70, h: 50, shape: 'rect' },
+        { id: '60x40', roll: '80', w: 60, h: 40, shape: 'rect' },
+        { id: 'r70', roll: '80', w: 70, h: 70, shape: 'round' },
+        { id: 'r60', roll: '80', w: 60, h: 60, shape: 'round' },
+        { id: 'r50-80', roll: '80', w: 50, h: 50, shape: 'round' },
+        { id: 'r40-80', roll: '80', w: 40, h: 40, shape: 'round' },
+        { id: '57x30', roll: '57', w: 57, h: 30, shape: 'rect' },
+        { id: '57x40', roll: '57', w: 57, h: 40, shape: 'rect' },
+        { id: '57x50', roll: '57', w: 57, h: 50, shape: 'rect' },
+        { id: '50x25', roll: '57', w: 50, h: 25, shape: 'rect' },
+        { id: '50x30', roll: '57', w: 50, h: 30, shape: 'rect' },
+        { id: '50x40', roll: '57', w: 50, h: 40, shape: 'rect' },
+        { id: '50x50', roll: '57', w: 50, h: 50, shape: 'rect' },
+        { id: '40x30', roll: '57', w: 40, h: 30, shape: 'rect' },
+        { id: '40x40', roll: '57', w: 40, h: 40, shape: 'rect' },
+        { id: 'r50', roll: '57', w: 50, h: 50, shape: 'round' },
+        { id: 'r40', roll: '57', w: 40, h: 40, shape: 'round' },
+        { id: 'r30', roll: '57', w: 30, h: 30, shape: 'round' },
+        { id: 'r25', roll: '57', w: 25, h: 25, shape: 'round' },
+    ];
 
-    // ------------------------------------------------------------------ helpers
+    // Built-in (bundled) fonts with the weights/styles actually available.
+    const BUNDLED_FONTS = [
+        { name: 'Inter (Sans-Serif)', family: 'Inter', w: [100, 900], italic: true },
+        { name: 'Montserrat (Geometric Bold)', family: 'Montserrat', w: [100, 900], italic: true },
+        { name: 'Oswald (Tall Display)', family: 'Oswald', w: [200, 700], italic: false },
+        { name: 'Bungee (Block Poster)', family: 'Bungee', w: [400, 400], italic: false },
+        { name: 'Press Start 2P (8-Bit Retro)', family: "'Press Start 2P'", w: [400, 400], italic: false },
+        { name: 'VT323 (Arcade Pixel)', family: 'VT323', w: [400, 400], italic: false },
+        { name: 'Courier Prime (Typewriter)', family: "'Courier Prime'", w: [400, 700], italic: true, steps: [400, 700] },
+        { name: 'Special Elite (Vintage Stamp)', family: "'Special Elite'", w: [400, 400], italic: false },
+        { name: 'Fira Code (Code Mono)', family: "'Fira Code'", w: [300, 700], italic: false },
+        { name: 'Roboto Mono (Clean Mono)', family: "'Roboto Mono'", w: [100, 700], italic: true },
+        { name: 'Libre Baskerville (Serif)', family: "'Libre Baskerville'", w: [400, 700], italic: true },
+        { name: 'Pacifico (Cursive Script)', family: 'Pacifico', w: [400, 400], italic: false },
+        { name: 'Caveat (Handwritten)', family: 'Caveat', w: [400, 700], italic: false },
+    ];
+    const WINDOWS_FONTS = ['Arial', 'Times New Roman', 'Courier New', 'Comic Sans MS', 'Impact', 'Georgia',
+        'Verdana', 'Tahoma', 'Trebuchet MS', 'Consolas', 'Segoe UI'];
+    const WEIGHTS = [[100, 'Thin'], [200, 'Extra-light'], [300, 'Light'], [400, 'Regular'], [500, 'Medium'],
+        [600, 'Semi-bold'], [700, 'Bold'], [800, 'Extra-bold'], [900, 'Black']];
+    const CODE_KINDS = [
+        ['qr', 'QR code'], ['CODE128', 'Code 128'], ['EAN13', 'EAN-13'], ['EAN8', 'EAN-8'],
+        ['UPC', 'UPC-A'], ['CODE39', 'Code 39'],
+    ];
+
+    // =====================================================================
+    //  Helpers
+    // =====================================================================
     function escapeHtml(s) {
         return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     }
     function cssFamily(name) { return `"${String(name).replace(/["\\]/g, '')}"`; }
     function clampInt(v, lo, hi, dflt) { v = parseInt(v, 10); if (isNaN(v)) v = dflt; return Math.min(hi, Math.max(lo, v)); }
+    function num(v, dflt) { v = parseFloat(v); return isNaN(v) ? dflt : v; }
+    function $(id) { return document.getElementById(id); }
 
     let toastTimer = null;
     function toast(msg, kind = '') {
-        const t = document.getElementById('toast');
+        const t = $('toast');
         t.textContent = msg;
         t.className = 'show ' + kind;
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => { t.className = kind; }, kind === 'error' ? 6000 : 3500);
+        toastTimer = setTimeout(() => { t.className = kind; }, kind === 'error' ? 6500 : 3500);
     }
-    function saveSetting(k, v) { try { localStorage.setItem('orgbro.' + k, v); } catch (e) {} }
-    function loadSetting(k) { try { return localStorage.getItem('orgbro.' + k); } catch (e) { return null; } }
+    function lsGet(k) { try { return localStorage.getItem('orgbro.' + k); } catch (e) { return null; } }
+    function lsSet(k, v) { try { localStorage.setItem('orgbro.' + k, v); return true; } catch (e) { return false; } }
 
-    // ------------------------------------------------------------------ backend (Python app)
+    // =====================================================================
+    //  Device settings (per PC, not saved in layout files)
+    // =====================================================================
+    const DEVICE_DEFAULTS = {
+        port: '', dither: 'floyd', invert: false, threshold: 160, density: 85, feed: 'auto',
+        delay: 0.02, split: false, showMono: true, zoneOffset: 249, dotsPerMm: 10.8,
+    };
+    let device = { ...DEVICE_DEFAULTS };
+    try { Object.assign(device, JSON.parse(lsGet('device') || '{}')); } catch (e) {}
+
+    function setDevice(key, value) {
+        device[key] = value;
+        lsSet('device', JSON.stringify(device));
+        if (key !== 'port' && key !== 'delay') renderCanvas();
+    }
+    function syncDeviceControls() {
+        $('ditherMode').value = device.dither;
+        $('invertBW').checked = !!device.invert;
+        $('threshold').value = device.threshold;
+        $('thresholdVal').innerText = device.threshold;
+        $('density').value = String(device.density);
+        if (!$('density').value) $('density').value = '85';
+        $('feed').value = String(device.feed);
+        $('packetDelay').value = device.delay;
+        $('splitLong').checked = !!device.split;
+        $('showMono').checked = !!device.showMono;
+        $('zoneOffset').value = device.zoneOffset;
+        $('dotsPerMm').value = device.dotsPerMm;
+    }
+
+    function dpm() { return Math.min(13, Math.max(7, num(device.dotsPerMm, 10.8))); }
+    function mm(v) { return Math.round(v * dpm()); }
+    function zone() {
+        if (doc.roll === '80') return { x: 0, w: Math.min(HEAD_WIDTH, Math.floor(80 * dpm())) };
+        const w = Math.min(HEAD_WIDTH, Math.floor(57 * dpm()));
+        return { x: Math.min(HEAD_WIDTH - w, Math.max(0, device.zoneOffset | 0)), w };
+    }
+
+    // =====================================================================
+    //  Document (the layout) + image store
+    // =====================================================================
+    let nextId = 1;
+    let images = {};   // imageId -> { src (data URL), el (HTMLImageElement) }
+
+    function defaultDoc() {
+        return {
+            roll: '57', media: 'continuous',
+            labelPreset: '57x40', labelW: 57, labelH: 40, labelShape: 'rect', labelGap: 3, topOffset: 0,
+            rotate: false, bannerLength: 100,
+            repeats: 1, startNumber: 1, showCutLines: true, stickerGap: 30,
+            blocks: [newText({ text: 'ORGBRO X3 STICKER', font: 'Montserrat', size: 32, weight: 900 })],
+        };
+    }
+    function newText(extra = {}) {
+        return { id: nextId++, type: 'text', text: 'Type text here...', font: 'Inter', customFontName: '',
+                 size: 28, weight: 400, isItalic: false, isUnderline: false, align: 'center', fit: false, spaceAfter: 15, ...extra };
+    }
+    let doc = defaultDoc();
+
+    // ---- undo / redo -----------------------------------------------------
+    let history = [], future = [], lastSnap = JSON.stringify(doc);
+    let commitTimer = null;
+    let dirty = false;
+
+    function commitNow() {
+        clearTimeout(commitTimer); commitTimer = null;
+        const s = JSON.stringify(doc);
+        if (s === lastSnap) return;
+        history.push(lastSnap);
+        if (history.length > 200) history.shift();
+        future = [];
+        lastSnap = s;
+        setDirty(true);
+        updateUndoButtons();
+        scheduleAutosave();
+    }
+    function commit(coalesce = false) {
+        if (!coalesce) return commitNow();
+        clearTimeout(commitTimer);
+        commitTimer = setTimeout(commitNow, 500);
+    }
+    function undo() {
+        commitNow();
+        if (!history.length) return;
+        future.push(lastSnap);
+        lastSnap = history.pop();
+        doc = JSON.parse(lastSnap);
+        afterDocReplaced(); setDirty(true); scheduleAutosave();
+    }
+    function redo() {
+        commitNow();
+        if (!future.length) return;
+        history.push(lastSnap);
+        lastSnap = future.pop();
+        doc = JSON.parse(lastSnap);
+        afterDocReplaced(); setDirty(true); scheduleAutosave();
+    }
+    function updateUndoButtons() {
+        $('undoBtn').disabled = !history.length;
+        $('redoBtn').disabled = !future.length;
+    }
+    function afterDocReplaced() {
+        nextId = Math.max(nextId, ...doc.blocks.map(b => b.id + 1), 1);
+        syncDocControls(); renderUI(); renderCanvas(); updateUndoButtons();
+    }
+
+    function setDoc(key, value) {
+        doc[key] = value;
+        if (key === 'roll') ensurePresetForRoll();
+        commit();
+        syncDocControls();
+        renderCanvas();
+    }
+
+    // ---- labels ------------------------------------------------------------
+    function presetLabel(p) {
+        return p.shape === 'round' ? `Round Ø ${p.w} mm` : `${p.w} × ${p.h} mm${p.note ? ' (' + p.note + ')' : ''}`;
+    }
+    function ensurePresetForRoll() {
+        const maxW = doc.roll === '80' ? 80 : 57;
+        if (doc.labelPreset !== 'custom') {
+            const p = LABEL_PRESETS.find(x => x.id === doc.labelPreset);
+            if (!p || p.roll !== doc.roll) {
+                const first = LABEL_PRESETS.find(x => x.roll === doc.roll);
+                Object.assign(doc, { labelPreset: first.id, labelW: first.w, labelH: first.h, labelShape: first.shape });
+            }
+        } else if (doc.labelW > maxW) {
+            doc.labelW = maxW;
+        }
+    }
+    function chooseLabelPreset(id) {
+        if (id === 'custom') { doc.labelPreset = 'custom'; }
+        else {
+            const p = LABEL_PRESETS.find(x => x.id === id);
+            if (p) Object.assign(doc, { labelPreset: p.id, labelW: p.w, labelH: p.h, labelShape: p.shape });
+        }
+        commit(); syncDocControls(); renderCanvas();
+    }
+    function setLabelCustom() {
+        const maxW = doc.roll === '80' ? 80 : 57;
+        doc.labelPreset = 'custom';
+        doc.labelW = Math.min(maxW, Math.max(10, num($('labelW').value, doc.labelW)));
+        doc.labelH = Math.min(300, Math.max(10, num($('labelH').value, doc.labelH)));
+        doc.labelShape = $('labelShape').value;
+        if (doc.labelShape === 'round') doc.labelH = doc.labelW;
+        commit(); syncDocControls(); renderCanvas();
+    }
+    function labelDims() {   // label size in mm (round labels are W × W)
+        const w = doc.labelW, h = doc.labelShape === 'round' ? doc.labelW : doc.labelH;
+        return { w, h };
+    }
+
+    function syncDocControls() {
+        ensurePresetForRoll();
+        $('roll80').classList.toggle('active', doc.roll === '80');
+        $('roll57').classList.toggle('active', doc.roll === '57');
+        const labels = doc.media === 'labels';
+        $('mediaContinuous').classList.toggle('active', !labels);
+        $('mediaLabels').classList.toggle('active', labels);
+        $('labelSettings').classList.toggle('hidden', !labels);
+        $('continuousSettings').classList.toggle('hidden', labels);
+        $('bannerWrap').classList.toggle('hidden', labels || !doc.rotate);
+        $('repeatLabel').textContent = labels ? 'Number of labels' : 'Repeat layout';
+
+        const presets = LABEL_PRESETS.filter(p => p.roll === doc.roll);
+        const opt = p => `<option value="${p.id}">${escapeHtml(presetLabel(p))}</option>`;
+        $('labelPreset').innerHTML =
+            `<optgroup label="Rectangle">${presets.filter(p => p.shape === 'rect').map(opt).join('')}</optgroup>` +
+            `<optgroup label="Round">${presets.filter(p => p.shape === 'round').map(opt).join('')}</optgroup>` +
+            `<option value="custom">Custom size…</option>`;
+        $('labelPreset').value = doc.labelPreset;
+        $('labelW').value = doc.labelW;
+        $('labelW').max = doc.roll === '80' ? 80 : 57;
+        $('labelH').value = doc.labelH;
+        $('labelHWrap').classList.toggle('hidden', doc.labelShape === 'round');
+        $('labelShape').value = doc.labelShape;
+        $('labelGap').value = doc.labelGap;
+        $('topOffset').value = doc.topOffset;
+        $('rotate').checked = !!doc.rotate;
+        $('bannerLength').value = doc.bannerLength;
+        $('repeats').value = doc.repeats;
+        $('startNumber').value = doc.startNumber;
+        $('showCutLines').checked = !!doc.showCutLines;
+        $('stickerGap').value = doc.stickerGap;
+    }
+
+    // =====================================================================
+    //  Backend (Python app)
+    // =====================================================================
     const API_TOKEN = document.querySelector('meta[name="orgbro-token"]').content;
     let backendOnline = false;
+    let backendNative = false;
 
     async function api(name, payload = {}) {
         const res = await fetch('/api/' + name, {
@@ -235,67 +607,80 @@
     }
 
     function setBackendPill(on) {
-        const p = document.getElementById('backendPill');
+        const p = $('backendPill');
         p.className = 'pill ' + (on ? 'on' : 'off');
         p.textContent = on ? 'Printer service ready' : 'Editor only — printing unavailable';
-        document.getElementById('printBtn').disabled = !on;
+        $('printBtn').disabled = !on;
     }
 
     async function initBackend() {
         if (!location.protocol.startsWith('http') || API_TOKEN.startsWith('__')) { setBackendPill(false); return; }
         try {
-            await api('ping');
+            const info = await api('ping');
             backendOnline = true;
+            backendNative = !!info.native;
+            $('appVersion').textContent = 'v' + info.version;
             setBackendPill(true);
             await refreshPorts(false);
+            refreshRecent();
         } catch (e) {
             setBackendPill(false);
         }
     }
 
+    let knownPrinters = new Set();
+    function fillPorts(ports) {
+        const sel = $('portSelect');
+        const saved = sel.value || device.port;
+        sel.innerHTML = ports.length
+            ? ports.map(p => `<option value="${escapeHtml(p.device)}">${knownPrinters.has(p.device) ? '✓ ' : ''}${escapeHtml(p.device)} — ${escapeHtml(p.description)}</option>`).join('')
+            : '<option value="">No COM ports found — pair the printer in Windows Bluetooth settings</option>';
+        if (saved && ports.some(p => p.device === saved)) sel.value = saved;
+        if (sel.value) setDevice('port', sel.value);
+    }
+
     async function refreshPorts(announce) {
         if (!backendOnline) { toast('Printing needs the ORGBRO X3 Studio app.', 'error'); return; }
-        const sel = document.getElementById('portSelect');
         try {
             const { ports } = await api('ports');
-            const saved = sel.value || loadSetting('port');
-            sel.innerHTML = ports.length
-                ? ports.map(p => `<option value="${escapeHtml(p.device)}">${escapeHtml(p.device)} — ${escapeHtml(p.description)}</option>`).join('')
-                : '<option value="">No COM ports found — pair the printer in Windows Bluetooth settings</option>';
-            if (saved && ports.some(p => p.device === saved)) sel.value = saved;
+            fillPorts(ports);
             if (announce) toast(`Found ${ports.length} COM port${ports.length === 1 ? '' : 's'}.`);
         } catch (e) {
             toast('Could not list COM ports: ' + e.message, 'error');
         }
     }
 
-    // ------------------------------------------------------------------ fonts
+    async function findPrinter() {
+        if (!backendOnline) { toast('Printing needs the ORGBRO X3 Studio app.', 'error'); return; }
+        $('statusText').textContent = 'Asking each COM port for the printer (this can take a few seconds)…';
+        try {
+            const { ports } = await api('probe');
+            const found = ports.filter(p => p.responded);
+            knownPrinters = new Set(found.map(p => p.device));
+            fillPorts(ports);
+            if (found.length) {
+                $('portSelect').value = found[0].device;
+                setDevice('port', found[0].device);
+                $('statusText').textContent = `Printer answered on ${found.map(p => p.device).join(', ')}.`;
+                toast(`Printer found on ${found[0].device}.`, 'ok');
+            } else {
+                $('statusText').textContent = 'No port answered. Make sure the printer is on and your phone is disconnected from it.';
+                toast('No printer answered.', 'error');
+            }
+            pollLogOnce();
+        } catch (e) {
+            $('statusText').textContent = 'Search failed.';
+            toast(e.message, 'error');
+        }
+    }
+
+    // =====================================================================
+    //  Fonts
+    // =====================================================================
     let availableFonts = [
-        { name: 'Inter (Sans-Serif)', family: 'Inter' },
-        { name: 'Montserrat (Ultra Bold)', family: 'Montserrat' },
-        { name: 'Oswald (Tall Display)', family: 'Oswald' },
-        { name: 'Bungee (Block Poster)', family: 'Bungee' },
-        { name: 'Press Start 2P (8-Bit Retro)', family: "'Press Start 2P'" },
-        { name: 'VT323 (Arcade Pixel)', family: 'VT323' },
-        { name: 'Courier Prime (Typewriter)', family: "'Courier Prime'" },
-        { name: 'Special Elite (Vintage Stamp)', family: "'Special Elite'" },
-        { name: 'Fira Code (Code Mono)', family: "'Fira Code'" },
-        { name: 'Roboto Mono (Clean Mono)', family: "'Roboto Mono'" },
-        { name: 'Libre Baskerville (Serif)', family: "'Libre Baskerville'" },
-        { name: 'Pacifico (Cursive Script)', family: 'Pacifico' },
-        { name: 'Caveat (Handwritten)', family: 'Caveat' },
-        { name: 'Arial (System)', family: 'Arial' },
-        { name: 'Times New Roman (System)', family: "'Times New Roman'" },
-        { name: 'Courier New (System)', family: "'Courier New'" },
-        { name: 'Comic Sans MS (System)', family: "'Comic Sans MS'" },
-        { name: 'Impact (System)', family: 'Impact' },
-        { name: 'Georgia (System)', family: 'Georgia' },
-        { name: 'Verdana (System)', family: 'Verdana' },
-        { name: 'Tahoma (System)', family: 'Tahoma' },
-        { name: 'Trebuchet MS (System)', family: "'Trebuchet MS'" },
-        { name: 'Consolas (System)', family: 'Consolas' },
-        { name: 'Segoe UI (System)', family: "'Segoe UI'" },
-        { name: 'CUSTOM (Type Name)', family: 'CUSTOM' }
+        ...BUNDLED_FONTS.map(f => ({ name: f.name, family: f.family, meta: f })),
+        ...WINDOWS_FONTS.map(f => ({ name: `${f} (Windows)`, family: cssFamily(f), meta: null })),
+        { name: 'CUSTOM (Type Name)', family: 'CUSTOM', meta: null },
     ];
     let systemFontsLoaded = false;
 
@@ -303,236 +688,320 @@
         if (systemFontsLoaded) { toast('System fonts are already in the font lists.'); return; }
         let names = [];
         try {
-            if (backendOnline) {
-                names = (await api('fonts')).fonts;
-            } else if ('queryLocalFonts' in window) {
-                names = [...new Set((await window.queryLocalFonts()).map(f => f.family))].sort();
-            } else {
-                toast('Font scanning is not available here. Choose "CUSTOM (Type Name)" and type a font name instead.', 'error');
-                return;
-            }
+            if (backendOnline) names = (await api('fonts')).fonts;
+            else if ('queryLocalFonts' in window) names = [...new Set((await window.queryLocalFonts()).map(f => f.family))].sort();
+            else { toast('Font scanning is not available here. Choose "CUSTOM (Type Name)" and type a font name instead.', 'error'); return; }
         } catch (e) {
             toast('Font scan failed: ' + e.message, 'error');
             return;
         }
-        const scanned = names.map(f => ({ name: `[System] ${f}`, family: cssFamily(f) }));
+        const existing = new Set(availableFonts.map(f => f.family));
+        const scanned = names.map(f => ({ name: `[System] ${f}`, family: cssFamily(f), meta: null })).filter(f => !existing.has(f.family));
         availableFonts = [...scanned, ...availableFonts];
         systemFontsLoaded = true;
         toast(`Added ${scanned.length} system fonts.`, 'ok');
         renderUI();
     }
 
-    function fontStringFor(block) {
-        let style = '';
-        if (block.isItalic) style += 'italic ';
-        if (block.isBold) style += 'bold ';
-        let family = block.font;
-        if (block.font === 'CUSTOM') {
-            family = block.customFontName ? `${cssFamily(block.customFontName)}, sans-serif` : 'sans-serif';
-        }
-        return `${style}${block.size}px ${family}`;
+    function fontMeta(block) { const f = availableFonts.find(x => x.family === block.font); return f ? f.meta : null; }
+    function weightOptions(block) {
+        const m = fontMeta(block);
+        if (!m) return WEIGHTS;
+        if (m.steps) return WEIGHTS.filter(([w]) => m.steps.includes(w));
+        return WEIGHTS.filter(([w]) => w >= m.w[0] && w <= m.w[1]);
+    }
+    function normaliseFontStyle(block) {
+        const opts = weightOptions(block).map(([w]) => w);
+        if (!opts.includes(block.weight)) block.weight = opts.reduce((a, b) => Math.abs(b - block.weight) < Math.abs(a - block.weight) ? b : a, opts[0]);
+        const m = fontMeta(block);
+        if (m && !m.italic) block.isItalic = false;
+    }
+    function familyFor(block) {
+        if (block.font === 'CUSTOM') return block.customFontName ? `${cssFamily(block.customFontName)}, sans-serif` : 'sans-serif';
+        return block.font;
+    }
+    function fontStringFor(block, size) {
+        return `${block.isItalic ? 'italic ' : ''}${block.weight || 400} ${size ?? block.size}px ${familyFor(block)}`;
     }
 
-    // Web fonts load lazily; make sure each font is fetched before it is drawn on the canvas.
     const requestedFonts = new Set();
     function ensureFontsLoaded() {
         const pending = [];
-        blocks.filter(b => b.type === 'text').forEach(b => {
-            const f = fontStringFor(b);
+        doc.blocks.filter(b => b.type === 'text').forEach(b => {
+            const f = fontStringFor(b, 20);
             if (!requestedFonts.has(f)) {
                 requestedFonts.add(f);
-                pending.push(document.fonts.load(f, b.text || 'A').catch(() => {}));
+                pending.push(document.fonts.load(f, 'AaBb').catch(() => {}));
             }
         });
         return pending.length ? Promise.all(pending).then(() => true) : Promise.resolve(false);
     }
 
-    // ------------------------------------------------------------------ blocks
-    let nextId = 1;
-    let blocks = [{
-        id: nextId++, type: 'text', text: 'ORGBRO X3 STICKER', font: 'Montserrat', customFontName: '',
-        size: 32, isBold: true, isItalic: false, isUnderline: false, align: 'center'
-    }];
-
-    function setLayoutMode(mode) {
-        currentMode = mode;
-        document.getElementById('btnRight57').classList.toggle('active', mode === '57_right');
-        document.getElementById('btnFull80').classList.toggle('active', mode === '80_full');
-        document.getElementById('canvasLabel').innerText = mode === '57_right'
-            ? '864px Canvas Preview (Left 249px blank padding; content centered inside right 615px zone)'
-            : '864px Canvas Preview (Standard full-width 80mm printing area)';
-        saveSetting('mode', mode);
-        renderUI();
-        renderCanvas();
-    }
-
-    function triggerImageUpload() { document.getElementById('hiddenFileInput').click(); }
+    // =====================================================================
+    //  Blocks
+    // =====================================================================
+    function findBlock(id) { return doc.blocks.find(b => b.id === id); }
 
     function addTextBlock() {
-        blocks.push({
-            id: nextId++, type: 'text', text: 'Type text here...', font: 'Inter', customFontName: '',
-            size: 28, isBold: false, isItalic: false, isUnderline: false, align: 'center'
-        });
-        renderUI();
-        renderCanvas();
+        doc.blocks.push(newText());
+        commit(); renderUI(); renderCanvas();
     }
+    function addCodeBlock() {
+        doc.blocks.push({ id: nextId++, type: 'code', kind: 'qr', data: 'https://example.com', ecc: 'M',
+                          scalePercent: 45, align: 'center', showText: true, barHeight: 70, spaceAfter: 15 });
+        commit(); renderUI(); renderCanvas();
+    }
+    function triggerImageUpload() { $('hiddenFileInput').click(); }
 
+    function registerImage(src) {
+        return new Promise((resolve, reject) => {
+            const el = new Image();
+            el.onload = () => {
+                const id = 'img' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+                images[id] = { src, el };
+                resolve(id);
+            };
+            el.onerror = reject;
+            el.src = src;
+        });
+    }
     function addImageBlock(event) {
         const file = event.target.files[0];
+        event.target.value = '';
         if (!file) return;
-        const img = new Image();
-        img.onload = () => {
-            blocks.push({ id: nextId++, type: 'image', imageElement: img, fileName: file.name, scalePercent: 100, align: 'center', repeatImage: 1 });
-            event.target.value = '';
-            renderUI();
-            renderCanvas();
+        const reader = new FileReader();
+        reader.onload = async () => {
+            try {
+                const imageId = await registerImage(reader.result);
+                doc.blocks.push({ id: nextId++, type: 'image', imageId, fileName: file.name, scalePercent: 100,
+                                  align: 'center', repeatImage: 1, spaceAfter: 15 });
+                commit(); renderUI(); renderCanvas();
+            } catch (e) { toast('That image could not be opened.', 'error'); }
         };
-        img.onerror = () => toast('That image could not be opened.', 'error');
-        img.src = URL.createObjectURL(file);
+        reader.readAsDataURL(file);
     }
 
-    function deleteBlock(id) { blocks = blocks.filter(b => b.id !== id); renderUI(); renderCanvas(); }
-
-    function moveBlock(index, direction) {
-        const newIndex = index + direction;
-        if (newIndex < 0 || newIndex >= blocks.length) return;
-        [blocks[index], blocks[newIndex]] = [blocks[newIndex], blocks[index]];
-        renderUI();
-        renderCanvas();
+    function deleteBlock(id) { doc.blocks = doc.blocks.filter(b => b.id !== id); commit(); renderUI(); renderCanvas(); }
+    function duplicateBlock(id) {
+        const i = doc.blocks.findIndex(b => b.id === id);
+        if (i < 0) return;
+        const copy = JSON.parse(JSON.stringify(doc.blocks[i]));
+        copy.id = nextId++;
+        doc.blocks.splice(i + 1, 0, copy);
+        commit(); renderUI(); renderCanvas();
     }
+    function moveBlockTo(from, to) {
+        if (from === to || from < 0 || to < 0 || from >= doc.blocks.length || to >= doc.blocks.length) return;
+        const [b] = doc.blocks.splice(from, 1);
+        doc.blocks.splice(to, 0, b);
+        commit(); renderUI(); renderCanvas();
+    }
+    function moveBlock(index, dir) { moveBlockTo(index, index + dir); }
 
-    function findBlock(id) { return blocks.find(b => b.id === id); }
-    function updateBlockText(id, value) { const b = findBlock(id); if (b) { b.text = value; renderCanvas(); } }
-    function updateCustomFont(id, value) { const b = findBlock(id); if (b) { b.customFontName = value; renderCanvas(); } }
-    function updateBlockProperty(id, key, value) {
+    function updateBlock(id, key, value, opts = {}) {
         const b = findBlock(id);
         if (!b) return;
         b[key] = value;
-        if (key === 'font') renderUI();
+        if (key === 'font') normaliseFontStyle(b);
+        commit(!!opts.coalesce);
+        if (opts.ui) renderUI();
         renderCanvas();
     }
-    function toggleStyle(id, prop) { const b = findBlock(id); if (b) { b[prop] = !b[prop]; renderUI(); renderCanvas(); } }
+    function toggleBlock(id, key) { const b = findBlock(id); if (b) updateBlock(id, key, !b[key], { ui: true }); }
 
+    // ---- block UI ----------------------------------------------------------
     function alignSelect(block) {
-        return `<select onchange="updateBlockProperty(${block.id}, 'align', this.value)">
-            <option value="center" ${block.align === 'center' ? 'selected' : ''}>Center Align</option>
-            <option value="left" ${block.align === 'left' ? 'selected' : ''}>Left Align</option>
-            <option value="right" ${block.align === 'right' ? 'selected' : ''}>Right Align</option>
+        return `<select onchange="updateBlock(${block.id}, 'align', this.value)">
+            ${[['center', 'Center'], ['left', 'Left'], ['right', 'Right']].map(([v, l]) =>
+                `<option value="${v}" ${block.align === v ? 'selected' : ''}>${l}</option>`).join('')}
         </select>`;
+    }
+    function spaceInput(block) {
+        return `<label title="Space below this block">Space after <input type="number" value="${block.spaceAfter ?? 15}" min="0" max="400" style="width:60px" onchange="updateBlock(${block.id}, 'spaceAfter', clampInt(this.value, 0, 400, 15))"> px</label>`;
     }
     function blockHeader(label, block, index) {
         return `<div class="block-header">
-            <span>${label} #${index + 1}</span>
+            <span><span class="handle" title="Drag to reorder" onmousedown="armDrag(this)">⠿</span>${label} #${index + 1}</span>
             <div>
                 <button class="btn-move" title="Move up" onclick="moveBlock(${index}, -1)">▲</button>
                 <button class="btn-move" title="Move down" onclick="moveBlock(${index}, 1)">▼</button>
+                <button class="btn-small" title="Duplicate" onclick="duplicateBlock(${block.id})">⧉</button>
                 <button class="btn-delete" onclick="deleteBlock(${block.id})">Delete</button>
             </div>
         </div>`;
     }
 
     function renderUI() {
-        const container = document.getElementById('blocksContainer');
+        const container = $('blocksContainer');
         container.innerHTML = '';
+        if (!doc.blocks.length) {
+            container.innerHTML = '<div class="muted" style="text-align:center; padding: 20px;">Add a text, image or QR/barcode block to start.</div>';
+        }
 
-        blocks.forEach((block, index) => {
+        doc.blocks.forEach((block, index) => {
             const item = document.createElement('div');
             item.className = 'block-item';
+            item.dataset.index = index;
 
             if (block.type === 'text') {
                 const fontOptions = availableFonts.map(f =>
-                    `<option value="${escapeHtml(f.family)}" ${block.font === f.family ? 'selected' : ''}>${escapeHtml(f.name)}</option>`
-                ).join('');
-                const customDisplay = block.font === 'CUSTOM' ? '' : 'display:none;';
-
+                    `<option value="${escapeHtml(f.family)}" ${block.font === f.family ? 'selected' : ''}>${escapeHtml(f.name)}</option>`).join('');
+                const m = fontMeta(block);
+                const weightOpts = weightOptions(block).map(([w, l]) => `<option value="${w}" ${block.weight === w ? 'selected' : ''}>${l}</option>`).join('');
+                const noItalic = m && !m.italic;
                 item.innerHTML = `
-                    ${blockHeader('Text Block', block, index)}
-                    <textarea rows="2" oninput="updateBlockText(${block.id}, this.value)">${escapeHtml(block.text)}</textarea>
+                    ${blockHeader('Text', block, index)}
+                    <textarea rows="2" oninput="updateBlock(${block.id}, 'text', this.value, {coalesce: true})">${escapeHtml(block.text)}</textarea>
                     <div class="controls-row">
-                        <select style="max-width: 240px;" onchange="updateBlockProperty(${block.id}, 'font', this.value)">${fontOptions}</select>
-                        <input type="text" placeholder="Font name (e.g. Segoe UI)" value="${escapeHtml(block.customFontName)}" style="${customDisplay} width: 160px;" oninput="updateCustomFont(${block.id}, this.value)">
-                        <input type="number" title="Font size (px)" value="${block.size}" min="10" max="300" style="width: 70px;" onchange="updateBlockProperty(${block.id}, 'size', clampInt(this.value, 6, 300, 28))">
-                        <button class="toggle-btn ${block.isBold ? 'active' : ''}" onclick="toggleStyle(${block.id}, 'isBold')"><b>B</b></button>
-                        <button class="toggle-btn ${block.isItalic ? 'active' : ''}" onclick="toggleStyle(${block.id}, 'isItalic')"><i>I</i></button>
-                        <button class="toggle-btn ${block.isUnderline ? 'active' : ''}" onclick="toggleStyle(${block.id}, 'isUnderline')"><u>U</u></button>
+                        <select style="max-width: 230px;" onchange="updateBlock(${block.id}, 'font', this.value, {ui: true})">${fontOptions}</select>
+                        <input type="text" placeholder="Font name (e.g. Segoe UI)" value="${escapeHtml(block.customFontName)}" class="${block.font === 'CUSTOM' ? '' : 'hidden'}" style="width: 160px;" oninput="updateBlock(${block.id}, 'customFontName', this.value, {coalesce: true})">
+                        <select title="Weight" onchange="updateBlock(${block.id}, 'weight', +this.value)" ${weightOptions(block).length < 2 ? 'disabled' : ''}>${weightOpts}</select>
+                        <input type="number" title="Font size (px)" value="${block.size}" min="6" max="400" style="width: 64px;" onchange="updateBlock(${block.id}, 'size', clampInt(this.value, 6, 400, 28))">
+                        <button class="toggle-btn ${block.isItalic ? 'active' : ''}" ${noItalic ? 'disabled title="This font has no italic style"' : 'title="Italic"'} onclick="toggleBlock(${block.id}, 'isItalic')"><i>I</i></button>
+                        <button class="toggle-btn ${block.isUnderline ? 'active' : ''}" title="Underline" onclick="toggleBlock(${block.id}, 'isUnderline')"><u>U</u></button>
                         ${alignSelect(block)}
+                    </div>
+                    <div class="controls-row">
+                        <label title="Shrinks the text so each line fits without wrapping"><input type="checkbox" ${block.fit ? 'checked' : ''} onchange="updateBlock(${block.id}, 'fit', this.checked)"> Shrink to fit width</label>
+                        ${spaceInput(block)}
                     </div>`;
             } else if (block.type === 'image') {
                 item.innerHTML = `
-                    ${blockHeader('Image Block', block, index)}
-                    <div class="muted">${escapeHtml(block.fileName || '')}</div>
+                    ${blockHeader('Image', block, index)}
+                    <div class="muted">${escapeHtml(block.fileName || '')}${images[block.imageId] ? '' : ' — image missing'}</div>
                     <div class="controls-row">
-                        <label style="font-size:0.85rem; color:#38bdf8;">Scale Width:
-                            <input type="range" min="10" max="100" value="${block.scalePercent || 100}" oninput="updateBlockProperty(${block.id}, 'scalePercent', parseInt(this.value, 10)); this.nextElementSibling.innerText=this.value+'%';">
+                        <label>Width
+                            <input type="range" min="5" max="100" value="${block.scalePercent || 100}" oninput="updateBlock(${block.id}, 'scalePercent', parseInt(this.value, 10), {coalesce: true}); this.nextElementSibling.innerText=this.value+'%';">
                             <span>${block.scalePercent || 100}%</span>
                         </label>
                         ${alignSelect(block)}
-                        <label style="font-size:0.85rem; color:#38bdf8;">Repeat Image:
-                            <input type="number" value="${block.repeatImage || 1}" min="1" max="50" style="width: 55px;" onchange="updateBlockProperty(${block.id}, 'repeatImage', clampInt(this.value, 1, 50, 1))"> x
+                        <label>Repeat <input type="number" value="${block.repeatImage || 1}" min="1" max="50" style="width: 55px;" onchange="updateBlock(${block.id}, 'repeatImage', clampInt(this.value, 1, 50, 1))"> ×</label>
+                        ${spaceInput(block)}
+                    </div>`;
+            } else if (block.type === 'code') {
+                const isQr = block.kind === 'qr';
+                item.innerHTML = `
+                    ${blockHeader(isQr ? 'QR code' : 'Barcode', block, index)}
+                    <div class="controls-row">
+                        <select onchange="updateBlock(${block.id}, 'kind', this.value, {ui: true})">
+                            ${CODE_KINDS.map(([v, l]) => `<option value="${v}" ${block.kind === v ? 'selected' : ''}>${l}</option>`).join('')}
+                        </select>
+                        <input type="text" style="flex:1; min-width: 200px" value="${escapeHtml(block.data)}" placeholder="${isQr ? 'Text or URL' : 'Barcode data'}" oninput="updateBlock(${block.id}, 'data', this.value, {coalesce: true})">
+                    </div>
+                    <div class="controls-row">
+                        <label>Size
+                            <input type="range" min="10" max="100" value="${block.scalePercent}" oninput="updateBlock(${block.id}, 'scalePercent', parseInt(this.value, 10), {coalesce: true}); this.nextElementSibling.innerText=this.value+'%';">
+                            <span>${block.scalePercent}%</span>
                         </label>
+                        ${isQr ? `<label title="Higher levels survive more damage but make the code denser">Error correction
+                            <select onchange="updateBlock(${block.id}, 'ecc', this.value)">
+                                ${['L', 'M', 'Q', 'H'].map(l => `<option ${block.ecc === l ? 'selected' : ''}>${l}</option>`).join('')}
+                            </select></label>`
+                        : `<label>Bar height <input type="number" value="${block.barHeight}" min="20" max="400" style="width:60px" onchange="updateBlock(${block.id}, 'barHeight', clampInt(this.value, 20, 400, 70))"> px</label>
+                           <label><input type="checkbox" ${block.showText ? 'checked' : ''} onchange="updateBlock(${block.id}, 'showText', this.checked)"> Show digits</label>`}
+                        ${alignSelect(block)}
+                        ${spaceInput(block)}
                     </div>`;
             }
+
+            // drag-to-reorder (armed from the ⠿ handle so text selection still works)
+            item.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', String(index)); e.dataTransfer.effectAllowed = 'move'; });
+            item.addEventListener('dragend', () => { item.draggable = false; });
+            item.addEventListener('dragover', e => { e.preventDefault(); item.classList.add('drag-over'); });
+            item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
+            item.addEventListener('drop', e => {
+                e.preventDefault();
+                item.classList.remove('drag-over');
+                moveBlockTo(parseInt(e.dataTransfer.getData('text/plain'), 10), index);
+            });
             container.appendChild(item);
         });
     }
+    function armDrag(handle) {
+        const item = handle.closest('.block-item');
+        item.draggable = true;
+        document.addEventListener('mouseup', () => { item.draggable = false; }, { once: true });
+    }
 
-    // ------------------------------------------------------------------ rendering
+    // =====================================================================
+    //  Rendering
+    // =====================================================================
+    function applyFields(str, n, total) {
+        return String(str ?? '').replace(/\{(n|total|date|time)(?::(\d{1,2}))?\}/g, (m, key, width) => {
+            if (key === 'n') { const s = String(Math.abs(n)); return (n < 0 ? '-' : '') + (width ? s.padStart(+width, '0') : s); }
+            if (key === 'total') return String(total);
+            const d = new Date();
+            if (key === 'date') return d.toLocaleDateString('en-GB');
+            return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        });
+    }
+    function docUsesFields() {
+        return doc.blocks.some(b => /\{(n|total|date|time)/.test(b.type === 'text' ? b.text : b.type === 'code' ? b.data : ''));
+    }
+
+    // Wraps on spaces; words wider than the line are broken character by character.
     function wrapText(ctx, text, maxWidth) {
         const lines = [];
-        text.split('\n').forEach(p => {
-            let currentLine = '';
-            p.split(' ').forEach(word => {
-                const testLine = currentLine ? `${currentLine} ${word}` : word;
-                if (ctx.measureText(testLine).width > maxWidth && currentLine !== '') {
-                    lines.push(currentLine);
-                    currentLine = word;
-                } else {
-                    currentLine = testLine;
+        for (const para of text.split('\n')) {
+            let cur = '';
+            for (const word of para.split(' ')) {
+                const test = cur ? `${cur} ${word}` : word;
+                if (ctx.measureText(test).width <= maxWidth) { cur = test; continue; }
+                if (cur) { lines.push(cur); cur = ''; }
+                let w = word;
+                while (w.length > 1 && ctx.measureText(w).width > maxWidth) {
+                    let i = 1;
+                    while (i < w.length && ctx.measureText(w.slice(0, i + 1)).width <= maxWidth) i++;
+                    lines.push(w.slice(0, i));
+                    w = w.slice(i);
                 }
-            });
-            lines.push(currentLine);
-        });
+                cur = w;
+            }
+            lines.push(cur);
+        }
         return lines;
     }
 
-    function getSettings() {
+    function renderSettings() {
         return {
-            repeats: clampInt(document.getElementById('repeatCount').value, 1, 50, 1),
-            showCutLines: document.getElementById('showCutLines').checked,
-            gap: clampInt(document.getElementById('stickerGap').value, 0, 500, 0),
-            dither: document.getElementById('ditherMode').value,
-            threshold: clampInt(document.getElementById('threshold').value, 1, 254, 160),
-            invert: document.getElementById('invertBW').checked,
-            showMono: document.getElementById('showMono').checked,
+            dither: device.dither,
+            threshold: clampInt(device.threshold, 1, 254, 160),
+            invert: !!device.invert,
+            showMono: !!device.showMono,
         };
     }
 
-    // Image block -> black/white canvas at target size (cached per render).
-    function processImage(block, w, h, settings) {
+    // ---- cached block bitmaps ---------------------------------------------
+    const bitmapCache = new Map();
+    function cacheGet(key, make) {
+        if (bitmapCache.has(key)) return bitmapCache.get(key);
+        const v = make();
+        bitmapCache.set(key, v);
+        if (bitmapCache.size > 80) bitmapCache.delete(bitmapCache.keys().next().value);
+        return v;
+    }
+
+    function processImage(el, w, h, settings) {
         const c = document.createElement('canvas');
         c.width = w; c.height = h;
-        const x = c.getContext('2d');
+        const x = c.getContext('2d', { willReadFrequently: true });
         x.fillStyle = '#ffffff';              // transparent PNG areas print as white, not black
         x.fillRect(0, 0, w, h);
-        x.drawImage(block.imageElement, 0, 0, w, h);
+        x.drawImage(el, 0, 0, w, h);
         const imgData = x.getImageData(0, 0, w, h);
         const d = imgData.data;
         const gray = new Float32Array(w * h);
         for (let i = 0, p = 0; p < gray.length; i += 4, p++) gray[p] = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-
         if (settings.dither === 'floyd') {
             for (let yy = 0; yy < h; yy++) {
                 for (let xx = 0; xx < w; xx++) {
-                    const p = yy * w + xx;
-                    const old = gray[p];
-                    const nv = old < 128 ? 0 : 255;
+                    const p = yy * w + xx, old = gray[p], nv = old < 128 ? 0 : 255, err = old - nv;
                     gray[p] = nv;
-                    const err = old - nv;
                     if (xx + 1 < w) gray[p + 1] += err * 7 / 16;
                     if (yy + 1 < h) {
                         if (xx > 0) gray[p + w - 1] += err * 3 / 16;
                         gray[p + w] += err * 5 / 16;
-                        if (xx + 1 < w) gray[p + w + 1] += err * 1 / 16;
+                        if (xx + 1 < w) gray[p + w + 1] += err / 16;
                     }
                 }
             }
@@ -544,90 +1013,146 @@
         return c;
     }
 
-    // Lays out every block. When draw=false only measures; returns total height.
-    function layout(ctx, draw, settings, imageCache) {
-        const printWidth = getActiveWidth();
-        const offsetX = getOffsetX();
-        const sideMargin = 15;
-        const maxTextWidth = printWidth - sideMargin * 2;
-        let y = 20;
-
-        for (let r = 0; r < settings.repeats; r++) {
-            blocks.forEach(block => {
-                if (block.type === 'image') {
-                    const img = block.imageElement;
-                    const count = block.repeatImage || 1;
-                    const tw = Math.max(1, Math.floor(printWidth * (block.scalePercent || 100) / 100));
-                    const th = Math.max(1, Math.floor(img.height * tw / img.width));
-                    let x = offsetX + (printWidth - tw) / 2;
-                    if (block.align === 'left') x = offsetX + sideMargin;
-                    if (block.align === 'right') x = offsetX + printWidth - sideMargin - tw;
-                    let processed = null;
-                    if (draw) {
-                        processed = imageCache.get(block.id);
-                        if (!processed) { processed = processImage(block, tw, th, settings); imageCache.set(block.id, processed); }
-                    }
-                    for (let i = 0; i < count; i++) {
-                        if (draw) ctx.drawImage(processed, Math.round(x), Math.round(y));
-                        y += th + 15;
-                    }
-                } else if (block.type === 'text') {
-                    ctx.font = fontStringFor(block);
-                    ctx.textBaseline = 'top';
-                    ctx.fillStyle = '#000000';
-                    const lines = wrapText(ctx, block.text, maxTextWidth);
-                    const lineHeight = block.size * 1.35;
-                    lines.forEach(line => {
-                        if (draw) {
-                            let x = offsetX + printWidth / 2;
-                            ctx.textAlign = 'center';
-                            if (block.align === 'left') { ctx.textAlign = 'left'; x = offsetX + sideMargin; }
-                            if (block.align === 'right') { ctx.textAlign = 'right'; x = offsetX + printWidth - sideMargin; }
-                            ctx.fillText(line, x, y);
-                            if (block.isUnderline) {
-                                const tw = ctx.measureText(line).width;
-                                let ux = x - tw / 2;
-                                if (block.align === 'left') ux = x;
-                                if (block.align === 'right') ux = x - tw;
-                                ctx.fillRect(ux, y + block.size + 3, tw, Math.max(2, block.size / 14));
-                            }
-                        }
-                        y += lineHeight;
-                    });
-                    y += 15;
-                }
-            });
-
-            if (r < settings.repeats - 1) {
-                y += Math.floor(settings.gap / 2);
-                if (draw && settings.showCutLines) {
-                    ctx.strokeStyle = '#000000';
-                    ctx.lineWidth = 2;
-                    ctx.setLineDash([8, 8]);
-                    ctx.beginPath();
-                    ctx.moveTo(offsetX + 10, y);
-                    ctx.lineTo(offsetX + printWidth - 10, y);
-                    ctx.stroke();
-                    ctx.setLineDash([]);
-                }
-                y += Math.floor(settings.gap / 2);
-            }
-        }
-        return y + 20;
+    function errorBitmap(w, msg) {
+        const c = document.createElement('canvas');
+        c.width = Math.max(120, w); c.height = 46;
+        const x = c.getContext('2d');
+        x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+        x.strokeStyle = '#000'; x.setLineDash([6, 4]); x.lineWidth = 2; x.strokeRect(1, 1, c.width - 2, c.height - 2);
+        x.fillStyle = '#000'; x.font = '600 18px Inter'; x.textAlign = 'center'; x.textBaseline = 'middle';
+        x.fillText(msg, c.width / 2, c.height / 2, c.width - 10);
+        return c;
     }
 
-    // Final pass: hard black/white (what the printer actually prints) + optional invert inside the paper zone.
-    function finalizePixels(ctx, w, h, settings, mono) {
+    // Returns { canvas, warn } with a crisp black/white QR code or barcode at about targetW px.
+    function renderCode(block, data, targetW) {
+        if (!data) return { canvas: errorBitmap(targetW, 'Enter code data'), warn: 'A QR/barcode block has no data.' };
+        if (block.kind === 'qr') {
+            try {
+                qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+                const q = qrcode(0, block.ecc || 'M');
+                q.addData(data, 'Byte');
+                q.make();
+                const n = q.getModuleCount(), quiet = 2;
+                const mod = Math.max(1, Math.floor(targetW / (n + quiet * 2)));
+                const size = mod * (n + quiet * 2);
+                const c = document.createElement('canvas');
+                c.width = c.height = size;
+                const x = c.getContext('2d');
+                x.fillStyle = '#fff'; x.fillRect(0, 0, size, size);
+                x.fillStyle = '#000';
+                for (let r = 0; r < n; r++) for (let col = 0; col < n; col++)
+                    if (q.isDark(r, col)) x.fillRect((col + quiet) * mod, (r + quiet) * mod, mod, mod);
+                return { canvas: c, warn: mod < 3 ? 'QR code modules are very small — make it larger so it scans reliably.' : '' };
+            } catch (e) {
+                return { canvas: errorBitmap(targetW, 'Too much data for a QR code'), warn: 'QR code data is too long.' };
+            }
+        }
+        const opts = barWidth => ({
+            format: block.kind, width: barWidth, height: block.barHeight || 70, margin: 6 * barWidth,
+            displayValue: !!block.showText, font: 'Roboto Mono', fontOptions: 'bold',
+            fontSize: Math.max(14, Math.round(9 * barWidth + 6)), textMargin: 2 * barWidth,
+            background: '#ffffff', lineColor: '#000000',
+        });
+        try {
+            let valid = true;
+            const probe = document.createElement('canvas');
+            JsBarcode(probe, data, { ...opts(1), valid: v => { valid = v; } });
+            if (!valid) throw new Error('invalid');
+            const bw = Math.max(1, Math.floor(targetW / probe.width));
+            const c = document.createElement('canvas');
+            JsBarcode(c, data, opts(bw));
+            return { canvas: c, warn: bw < 2 ? 'Barcode bars are only 1 dot wide — make it larger so it scans reliably.' : '' };
+        } catch (e) {
+            const label = (CODE_KINDS.find(k => k[0] === block.kind) || [, 'barcode'])[1];
+            return { canvas: errorBitmap(targetW, `Invalid ${label} data`), warn: `"${data}" is not valid ${label} data.` };
+        }
+    }
+
+    // Lays out the blocks top-to-bottom in a column designW wide.
+    // When draw=false only measures. Returns content height (without the last block's trailing space).
+    function layoutContent(ctx, designW, sideMargin, n, total, settings, draw, warns) {
+        const maxTextWidth = Math.max(10, designW - sideMargin * 2);
+        let y = 0, lastSpace = 0;
+        doc.blocks.forEach(block => {
+            const space = block.spaceAfter ?? 15;
+            if (block.type === 'image') {
+                const img = images[block.imageId];
+                if (!img) return;
+                const tw = Math.max(1, Math.floor(designW * (block.scalePercent || 100) / 100));
+                const th = Math.max(1, Math.floor(img.el.height * tw / img.el.width));
+                let x = (designW - tw) / 2;
+                if (block.align === 'left') x = Math.min(sideMargin, designW - tw);
+                if (block.align === 'right') x = Math.max(0, designW - sideMargin - tw);
+                const bmp = draw ? cacheGet(`img|${block.imageId}|${tw}|${th}|${settings.dither}|${settings.threshold}`,
+                                            () => processImage(img.el, tw, th, settings)) : null;
+                for (let i = 0; i < (block.repeatImage || 1); i++) {
+                    if (draw) ctx.drawImage(bmp, Math.round(x), Math.round(y));
+                    y += th + space; lastSpace = space;
+                }
+            } else if (block.type === 'code') {
+                const data = applyFields(block.data, n, total);
+                const tw = Math.max(20, Math.floor(designW * (block.scalePercent || 50) / 100));
+                const r = cacheGet(`code|${block.kind}|${block.ecc}|${block.barHeight}|${block.showText}|${tw}|${data}`,
+                                   () => renderCode(block, data, tw));
+                if (r.warn) warns.add(r.warn);
+                const c = r.canvas;
+                let x = (designW - c.width) / 2;
+                if (block.align === 'left') x = Math.min(sideMargin, designW - c.width);
+                if (block.align === 'right') x = Math.max(0, designW - sideMargin - c.width);
+                if (draw) ctx.drawImage(c, Math.round(x), Math.round(y));
+                if (c.width > designW) warns.add('A QR/barcode is wider than the label — reduce its size.');
+                y += c.height + space; lastSpace = space;
+            } else if (block.type === 'text') {
+                const text = applyFields(block.text, n, total);
+                let size = block.size;
+                ctx.font = fontStringFor(block, size);
+                let lines;
+                if (block.fit) {
+                    lines = text.split('\n');
+                    const widest = Math.max(1, ...lines.map(l => ctx.measureText(l).width));
+                    if (widest > maxTextWidth) { size = Math.max(4, Math.floor(size * maxTextWidth / widest)); ctx.font = fontStringFor(block, size); }
+                } else {
+                    lines = wrapText(ctx, text, maxTextWidth);
+                }
+                ctx.textBaseline = 'top';
+                ctx.fillStyle = '#000000';
+                const lineHeight = size * 1.35;
+                lines.forEach(line => {
+                    if (draw) {
+                        let x = designW / 2;
+                        ctx.textAlign = 'center';
+                        if (block.align === 'left') { ctx.textAlign = 'left'; x = sideMargin; }
+                        if (block.align === 'right') { ctx.textAlign = 'right'; x = designW - sideMargin; }
+                        ctx.fillText(line, x, y);
+                        if (block.isUnderline) {
+                            const lw = ctx.measureText(line).width;
+                            const ux = block.align === 'left' ? x : block.align === 'right' ? x - lw : x - lw / 2;
+                            ctx.fillRect(ux, y + size + 3, lw, Math.max(2, size / 14));
+                        }
+                    }
+                    y += lineHeight;
+                });
+                y += space; lastSpace = space;
+            }
+        });
+        return Math.max(0, y - lastSpace);
+    }
+
+    // Hard black/white (exactly what prints) + optional invert; circle limits the invert to a round label.
+    function finalizePixels(ctx, w, h, settings, mono, circle) {
         if (!mono && !settings.invert) return;
         const imgData = ctx.getImageData(0, 0, w, h);
         const d = imgData.data;
-        const x0 = getOffsetX(), x1 = x0 + getActiveWidth();
         for (let yy = 0; yy < h; yy++) {
             for (let xx = 0; xx < w; xx++) {
                 const i = (yy * w + xx) * 4;
                 let v = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
                 if (mono) v = v < settings.threshold ? 0 : 255;
-                if (settings.invert && xx >= x0 && xx < x1) v = 255 - v;
+                if (settings.invert) {
+                    const inside = !circle || ((xx - circle.cx) ** 2 + (yy - circle.cy) ** 2 <= circle.r * circle.r);
+                    v = inside ? 255 - v : 255;
+                }
                 d[i] = d[i + 1] = d[i + 2] = v;
                 d[i + 3] = 255;
             }
@@ -635,33 +1160,131 @@
         ctx.putImageData(imgData, 0, 0);
     }
 
-    // Renders the layout into a canvas. forPrint => exact 1-bit output with no guide lines.
-    function renderInto(canvas, forPrint) {
-        const settings = getSettings();
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        canvas.width = CANVAS_WIDTH;
+    const measureCtx = document.createElement('canvas').getContext('2d');
 
-        let height = Math.ceil(layout(ctx, false, settings, null));
-        let clipped = false;
-        if (height > MAX_CANVAS_HEIGHT) { height = MAX_CANVAS_HEIGHT; clipped = true; }
-        canvas.height = Math.max(100, height);
+    // One sticker / copy. Returns { canvas, round }.
+    function renderCell(n, total, settings, mono, warns) {
+        const z = zone();
+        const labels = doc.media === 'labels';
+        let outW, outH = null, round = false;
+        if (labels) {
+            const d = labelDims();
+            outW = mm(d.w); outH = mm(d.h); round = doc.labelShape === 'round';
+            if (outW > z.w) { warns.add(`The label is wider than the ${doc.roll} mm roll — it has been trimmed.`); outW = z.w; if (round) outH = outW; }
+        } else {
+            outW = z.w;
+            if (doc.rotate) outH = mm(Math.max(10, doc.bannerLength));
+        }
+        const designW = doc.rotate ? outH : outW;
+        let designH = doc.rotate ? outW : outH;      // null = grow to fit the content
 
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        layout(ctx, true, settings, new Map());
-        finalizePixels(ctx, canvas.width, canvas.height, settings, forPrint || settings.showMono);
+        const side = round ? Math.round(designW * 0.15) : labels ? Math.max(8, mm(2)) : 15;
+        const contentH = layoutContent(measureCtx, designW, side, n, total, settings, false, warns);
 
-        if (!forPrint && currentMode === '57_right') {   // on-screen paper edge guide only
-            ctx.strokeStyle = '#94a3b8';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([4, 4]);
-            ctx.beginPath();
-            ctx.moveTo(getOffsetX() + 0.5, 0);
-            ctx.lineTo(getOffsetX() + 0.5, canvas.height);
-            ctx.stroke();
+        let scale = 1, offY = 0;
+        if (designH == null) {
+            designH = Math.max(1, Math.ceil(contentH));
+        } else {
+            const vpad = round ? Math.round(designH * 0.1) : labels ? mm(1.5) : 10;
+            const avail = Math.max(1, designH - vpad * 2);
+            if (contentH > avail) {
+                scale = avail / contentH;
+                warns.add(`Content is too tall for the ${labels ? 'label' : 'length'} and was shrunk to ${Math.round(scale * 100)}%.`);
+            }
+            offY = (designH - contentH * scale) / 2;
+        }
+
+        const design = document.createElement('canvas');
+        design.width = designW; design.height = designH;
+        const ctx = design.getContext('2d', { willReadFrequently: true });
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, designW, designH);
+        const circle = round ? { cx: designW / 2, cy: designH / 2, r: Math.min(designW, designH) / 2 } : null;
+        ctx.save();
+        if (circle) { ctx.beginPath(); ctx.arc(circle.cx, circle.cy, circle.r, 0, Math.PI * 2); ctx.clip(); }
+        ctx.translate((designW - designW * scale) / 2, offY);
+        ctx.scale(scale, scale);
+        layoutContent(ctx, designW, side, n, total, settings, true, warns);
+        ctx.restore();
+        finalizePixels(ctx, designW, designH, settings, mono, circle);
+
+        if (!doc.rotate) return { canvas: design, round };
+        const out = document.createElement('canvas');
+        out.width = outW; out.height = designW;   // designW == outH when rotated
+        const o = out.getContext('2d');
+        o.translate(outW, 0);
+        o.rotate(Math.PI / 2);
+        o.drawImage(design, 0, 0);
+        return { canvas: out, round };
+    }
+
+    // Full print image. forPrint => exact 1-bit output with no on-screen guides.
+    function renderPage(target, forPrint) {
+        const settings = renderSettings();
+        const mono = forPrint || settings.showMono;
+        const warns = new Set();
+        const z = zone();
+        const labels = doc.media === 'labels';
+        const total = Math.max(1, doc.repeats | 0);
+
+        const cells = [];
+        const reuse = !docUsesFields();
+        for (let r = 0; r < total; r++) {
+            cells.push(reuse && r > 0 ? cells[0] : renderCell(doc.startNumber + r, total, settings, mono, warns));
+        }
+
+        let positions = [], height;
+        if (labels) {
+            const pitch = mm(labelDims().h) + mm(doc.labelGap);
+            const top = mm(doc.topOffset);
+            positions = cells.map((c, i) => top + i * pitch);
+            height = Math.max(total * pitch, positions[positions.length - 1] + cells[cells.length - 1].canvas.height);
+        } else {
+            let y = 20;
+            cells.forEach((c, i) => { positions.push(y); y += c.canvas.height + (i < total - 1 ? doc.stickerGap : 0); });
+            height = y + 20;
+        }
+        height = Math.ceil(height);
+        if (height > MAX_CANVAS_HEIGHT) { warns.add('This print is extremely long and was cut off — reduce the number of copies.'); height = MAX_CANVAS_HEIGHT; }
+
+        target.width = HEAD_WIDTH;
+        target.height = Math.max(60, height);
+        const ctx = target.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, target.width, target.height);
+
+        cells.forEach((c, i) => {
+            const x = z.x + Math.round((z.w - c.canvas.width) / 2);
+            ctx.drawImage(c.canvas, x, Math.round(positions[i]));
+        });
+
+        if (!labels && doc.showCutLines) {
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.setLineDash([8, 8]);
+            for (let i = 0; i < total - 1; i++) {
+                const y = Math.round(positions[i] + cells[i].canvas.height + doc.stickerGap / 2) + 0.5;
+                ctx.beginPath(); ctx.moveTo(z.x + 10, y); ctx.lineTo(z.x + z.w - 10, y); ctx.stroke();
+            }
             ctx.setLineDash([]);
         }
-        return { canvas, clipped };
+
+        if (!forPrint) {   // on-screen guides only
+            ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.setLineDash([6, 5]);
+            if (labels) {
+                cells.forEach((c, i) => {
+                    const x = z.x + Math.round((z.w - c.canvas.width) / 2), y = Math.round(positions[i]);
+                    ctx.beginPath();
+                    if (c.round) ctx.arc(x + c.canvas.width / 2, y + c.canvas.height / 2, c.canvas.width / 2 - 1, 0, Math.PI * 2);
+                    else ctx.rect(x + 1, y + 1, c.canvas.width - 2, c.canvas.height - 2);
+                    ctx.stroke();
+                });
+            }
+            if (z.x > 0) {
+                ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+                ctx.beginPath(); ctx.moveTo(z.x + 0.5, 0); ctx.lineTo(z.x + 0.5, target.height); ctx.stroke();
+            }
+            ctx.setLineDash([]);
+        }
+        return { canvas: target, warns: [...warns], total };
     }
 
     let renderQueued = false;
@@ -670,73 +1293,154 @@
         renderQueued = true;
         requestAnimationFrame(() => {
             renderQueued = false;
-            const { clipped } = renderInto(document.getElementById('canvas'), false);
-            if (clipped) toast('Layout is very long and was cut off — reduce repeats or image sizes.', 'error');
+            const { canvas, warns, total } = renderPage($('canvas'), false);
+            const labels = doc.media === 'labels';
+            const d = labelDims();
+            const lengthMm = (canvas.height / dpm()).toFixed(0);
+            const what = labels
+                ? `${total} × ${doc.labelShape === 'round' ? 'round Ø ' + d.w + ' mm' : d.w + ' × ' + d.h + ' mm'} label${total > 1 ? 's' : ''}`
+                : `${total} cop${total > 1 ? 'ies' : 'y'} on continuous paper`;
+            $('previewInfo').textContent = `${doc.roll} mm roll · ${what}${doc.rotate ? ' · rotated 90°' : ''} · about ${lengthMm} mm of paper`;
+            $('canvasLabel').textContent = doc.roll === '57'
+                ? `864 px print head — 57 mm paper starts at ${zone().x} px (dashed line)` : '864 px print head — full 80 mm width';
+            $('previewWarn').innerHTML = warns.map(w => '⚠ ' + escapeHtml(w)).join('<br>');
             ensureFontsLoaded().then(changed => { if (changed) renderCanvas(); });
         });
     }
 
-    async function buildPrintImage() {
+    async function buildPrintCanvas() {
         await ensureFontsLoaded();
         await document.fonts.ready;
-        return renderInto(document.createElement('canvas'), true).canvas;
+        return renderPage(document.createElement('canvas'), true).canvas;
     }
 
-    // ------------------------------------------------------------------ print / save
+    // ---- test prints ---------------------------------------------------------
+    function buildCalibrationCanvas() {
+        const D = dpm(), z57 = { x: Math.min(HEAD_WIDTH - Math.floor(57 * D), device.zoneOffset | 0), w: Math.floor(57 * D) };
+        const c = document.createElement('canvas');
+        c.width = HEAD_WIDTH; c.height = Math.round(75 * D);
+        const x = c.getContext('2d');
+        x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+        x.fillStyle = '#000'; x.strokeStyle = '#000';
+        // print-head edges and the 57 mm zone
+        x.fillRect(0, 0, 3, c.height); x.fillRect(HEAD_WIDTH - 3, 0, 3, c.height);
+        x.lineWidth = 3; x.strokeRect(z57.x + 1.5, Math.round(16 * D), z57.w - 3, Math.round(55 * D));
+        // horizontal ruler across the whole head
+        x.font = '700 18px Inter'; x.textAlign = 'center'; x.textBaseline = 'top';
+        for (let m = 0; m * D <= HEAD_WIDTH; m++) {
+            const px = Math.round(m * D), len = m % 10 === 0 ? 40 : m % 5 === 0 ? 26 : 14;
+            x.fillRect(px, 0, 2, len);
+            if (m % 10 === 0 && m > 0) x.fillText(String(m), px, 44);
+        }
+        // vertical 50 mm ruler inside the 57 mm zone
+        const vx = z57.x + 30, vy = Math.round(18 * D);
+        for (let m = 0; m <= 50; m++) {
+            const py = vy + Math.round(m * D), len = m % 10 === 0 ? 34 : m % 5 === 0 ? 22 : 12;
+            x.fillRect(vx, py, len, 2);
+        }
+        x.fillRect(vx, vy, 3, Math.round(50 * D));
+        x.textAlign = 'left';
+        x.font = '800 30px Inter';
+        x.fillText('ORGBRO X3 calibration', z57.x + 90, vy + 10);
+        x.font = '500 21px Inter';
+        [`Head: ${HEAD_WIDTH} dots · ${D} dots/mm`, `57 mm box starts at ${z57.x} px`,
+         'The 50 mm ruler on the left should', 'measure exactly 50 mm.', 'If not: dots/mm = ' + D + ' × 50 ÷ measured.',
+         'On 57 mm paper, the box edges should', 'sit on the paper edges. If they don\'t,', 'change the 57 mm zone offset.'
+        ].forEach((t, i) => x.fillText(t, z57.x + 90, vy + 60 + i * 30));
+        return c;
+    }
+    function buildLongTestCanvas() {
+        const D = dpm(), rows = 2600;
+        const c = document.createElement('canvas');
+        c.width = HEAD_WIDTH; c.height = rows;
+        const x = c.getContext('2d');
+        x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+        x.fillStyle = '#000'; x.font = '700 28px Inter'; x.textBaseline = 'middle'; x.textAlign = 'center';
+        for (let y = 0; y < rows; y += Math.round(10 * D)) {
+            x.fillRect(0, y, HEAD_WIDTH, 2);
+            x.fillText(`${Math.round(y / D)} mm · row ${y} · packet ${Math.floor(y / 4) + 1}`, HEAD_WIDTH / 2, y + 26);
+        }
+        for (const boundary of [1024, 2048]) {      // 256 packets × 4 rows: the sequence counter wraps here
+            x.fillRect(0, boundary - 12, HEAD_WIDTH, 24);
+            x.fillStyle = '#fff'; x.font = '800 20px Inter';
+            x.fillText(`SEQUENCE WRAP (row ${boundary}) — print should continue cleanly past this band`, HEAD_WIDTH / 2, boundary);
+            x.fillStyle = '#000'; x.font = '700 28px Inter';
+        }
+        return c;
+    }
+    async function printTest(kind) {
+        await document.fonts.load('700 20px Inter');
+        await sendToPrinter(kind === 'long' ? buildLongTestCanvas() : buildCalibrationCanvas(), { feed: 200 });
+    }
+
+    // =====================================================================
+    //  Print / save PNG
+    // =====================================================================
     let printing = false;
     let logIndex = 0;
 
     function appendLog(lines) {
-        if (!lines.length) return;
-        const box = document.getElementById('logBox');
+        if (!lines || !lines.length) return;
+        const box = $('logBox');
         box.textContent += lines.join('\n') + '\n';
         box.scrollTop = box.scrollHeight;
     }
-
+    async function pollLogOnce() {
+        try { const s = await api('status', { since: logIndex }); logIndex = s.next; appendLog(s.log); } catch (e) {}
+    }
     function setPrinting(on) {
         printing = on;
-        const btn = document.getElementById('printBtn');
+        const btn = $('printBtn');
         btn.textContent = on ? '✖ Cancel' : '🖨 Print';
         btn.classList.toggle('cancel-btn', on);
         btn.onclick = on ? cancelPrint : startPrint;
     }
+    function feedValue() {
+        if (device.feed !== 'auto') return clampInt(device.feed, 0, 2000, 200);
+        if (doc.media !== 'labels') return 200;
+        // keep sticker labels in step: advance a whole number of labels
+        const pitch = mm(labelDims().h) + mm(doc.labelGap);
+        return Math.ceil(150 / pitch) * pitch;
+    }
 
-    async function startPrint() {
+    async function sendToPrinter(canvas, overrides = {}) {
         if (printing) return;
         if (!backendOnline) { toast('Printing needs the ORGBRO X3 Studio app.', 'error'); return; }
-        const port = document.getElementById('portSelect').value;
-        if (!port) { toast('Choose the Bluetooth COM port of your ORGBRO X3 first.', 'error'); return; }
-
+        const port = $('portSelect').value;
+        if (!port) { toast('Choose the Bluetooth COM port of your ORGBRO X3 first (try "Find printer").', 'error'); return; }
         setPrinting(true);
-        document.getElementById('statusText').textContent = 'Preparing print job…';
-        document.getElementById('progressBar').style.width = '0%';
+        $('statusText').textContent = 'Preparing print job…';
+        $('progressBar').style.width = '0%';
         try {
-            const canvas = await buildPrintImage();
             await api('print', {
-                image: canvas.toDataURL('image/png'),
-                port,
-                delay: parseFloat(document.getElementById('packetDelay').value) || 0.02
+                image: canvas.toDataURL('image/png'), port,
+                delay: num(device.delay, 0.02),
+                density: clampInt(device.density, 0, 255, 85),
+                feed: overrides.feed ?? feedValue(),
+                split_packets: device.split ? 200 : 0,
             });
             pollStatus();
         } catch (e) {
             setPrinting(false);
-            document.getElementById('statusText').textContent = 'Print failed.';
+            $('statusText').textContent = 'Print failed.';
             toast(e.message, 'error');
         }
     }
-
+    async function startPrint() {
+        if (printing) return;
+        await sendToPrinter(await buildPrintCanvas());
+    }
     async function cancelPrint() {
         try { await api('cancel'); } catch (e) {}
-        document.getElementById('statusText').textContent = 'Cancelling…';
+        $('statusText').textContent = 'Cancelling…';
     }
-
     async function pollStatus() {
         try {
             const s = await api('status', { since: logIndex });
             logIndex = s.next;
             appendLog(s.log);
-            document.getElementById('progressBar').style.width = Math.round(s.progress) + '%';
-            document.getElementById('statusText').textContent = s.message;
+            $('progressBar').style.width = Math.round(s.progress) + '%';
+            $('statusText').textContent = s.message;
             if (s.state === 'printing') { setTimeout(pollStatus, 250); return; }
             setPrinting(false);
             if (s.state === 'done') toast('Print finished.', 'ok');
@@ -747,41 +1451,181 @@
         }
     }
 
+    function downloadData(dataUrl, filename) {
+        const a = document.createElement('a');
+        a.download = filename; a.href = dataUrl; a.click();
+    }
     async function downloadImage() {
-        const canvas = await buildPrintImage();
-        const filename = `orgbro_x3_${currentMode === '57_right' ? '57mm_right_zone' : '80mm_full'}_print.png`;
+        const canvas = await buildPrintCanvas();
+        const filename = `${(currentName || 'orgbro_x3').replace(/\.orgbro$/i, '')}_${doc.roll}mm_print.png`;
         const dataUrl = canvas.toDataURL('image/png');
         if (backendOnline) {
             try {
                 const r = await api('save_png', { image: dataUrl, filename });
                 if (r.saved) { toast('Saved: ' + r.saved, 'ok'); return; }
                 if (r.cancelled) return;
-            } catch (e) {
-                toast('Save failed: ' + e.message, 'error');
-                return;
-            }
+            } catch (e) { toast('Save failed: ' + e.message, 'error'); return; }
         }
-        const link = document.createElement('a');
-        link.download = filename;
-        link.href = dataUrl;
-        link.click();
+        downloadData(dataUrl, filename);
     }
 
-    // ------------------------------------------------------------------ start-up
-    (function restoreSettings() {
-        const th = loadSetting('threshold');
-        if (th) { document.getElementById('threshold').value = th; document.getElementById('thresholdVal').innerText = th; }
-        const dl = loadSetting('delay');
-        if (dl) document.getElementById('packetDelay').value = dl;
-        const dm = loadSetting('dither');
-        if (dm) document.getElementById('ditherMode').value = dm;
-        const mode = loadSetting('mode');
-        if (mode === '80_full' || mode === '57_right') currentMode = mode;
-    })();
+    // =====================================================================
+    //  Layout files (.orgbro), recent files, autosave
+    // =====================================================================
+    let currentPath = null, currentName = null;
 
-    setLayoutMode(currentMode);
-    document.fonts.ready.then(() => renderCanvas());
-    initBackend();
+    function setDirty(d) {
+        dirty = d;
+        $('docTitle').textContent = (currentName || 'Untitled layout') + (dirty ? ' •' : '');
+        document.title = `${currentName || 'Untitled'}${dirty ? ' •' : ''} — ORGBRO X3 Studio`;
+    }
+    function buildProject() {
+        commitNow();
+        const used = {};
+        doc.blocks.forEach(b => { if (b.type === 'image' && images[b.imageId]) used[b.imageId] = images[b.imageId].src; });
+        return { format: FORMAT_ID, version: 1, doc, images: used };
+    }
+    async function loadProject(project, { path = null, name = null, quiet = false } = {}) {
+        if (!project || project.format !== FORMAT_ID || !project.doc) throw new Error('This is not an ORGBRO X3 Studio layout file.');
+        const loaded = { ...defaultDoc(), ...project.doc };
+        loaded.blocks = (project.doc.blocks || []).map(b => {
+            if (b.type === 'text' && b.weight == null) b.weight = b.isBold ? 700 : 400;   // older layouts
+            return b;
+        });
+        for (const [id, src] of Object.entries(project.images || {})) {
+            if (!images[id]) {
+                try {
+                    await new Promise((res, rej) => { const el = new Image(); el.onload = () => { images[id] = { src, el }; res(); }; el.onerror = rej; el.src = src; });
+                } catch (e) { /* missing image shows a note on its block */ }
+            }
+        }
+        doc = loaded;
+        doc.blocks.forEach(b => { if (b.type === 'text') normaliseFontStyle(b); });
+        history = []; future = []; lastSnap = JSON.stringify(doc);
+        currentPath = path; currentName = name;
+        afterDocReplaced();
+        setDirty(false);
+        if (!quiet) toast(`Opened ${name || 'layout'}.`, 'ok');
+    }
+
+    function confirmDiscard() { return !dirty || confirm('You have unsaved changes. Discard them?'); }
+
+    function newLayout() {
+        if (!confirmDiscard()) return;
+        doc = defaultDoc();
+        history = []; future = []; lastSnap = JSON.stringify(doc);
+        currentPath = null; currentName = null;
+        afterDocReplaced(); setDirty(false); scheduleAutosave();
+    }
+
+    async function saveLayout(saveAs) {
+        const project = buildProject();
+        const filename = (currentName || 'layout.orgbro');
+        if (backendOnline) {
+            try {
+                const r = await api('project_save', { project, path: saveAs ? null : currentPath, save_as: saveAs, filename });
+                if (r.saved) { currentPath = r.saved; currentName = r.name; setDirty(false); refreshRecent(); toast('Saved ' + r.name, 'ok'); return; }
+                if (r.cancelled) return;
+            } catch (e) { toast('Save failed: ' + e.message, 'error'); return; }
+        }
+        const blob = new Blob([JSON.stringify(project)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        downloadData(url, filename);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        currentName = filename; setDirty(false);
+    }
+
+    async function openLayout() {
+        if (!confirmDiscard()) return;
+        if (backendOnline) {
+            try {
+                const r = await api('project_open', {});
+                if (r.project) { await loadProject(r.project, { path: r.path, name: r.name }); refreshRecent(); return; }
+                if (r.cancelled) return;
+            } catch (e) { toast('Open failed: ' + e.message, 'error'); return; }
+        }
+        $('openFileInput').click();
+    }
+    function openFromFileInput(event) {
+        const file = event.target.files[0];
+        event.target.value = '';
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async () => {
+            try { await loadProject(JSON.parse(reader.result), { name: file.name }); }
+            catch (e) { toast('Open failed: ' + e.message, 'error'); }
+        };
+        reader.readAsText(file);
+    }
+    async function openRecent(path) {
+        $('recentSelect').value = '';
+        if (!path || !confirmDiscard()) return;
+        try {
+            const r = await api('project_open', { path });
+            await loadProject(r.project, { path: r.path, name: r.name });
+            refreshRecent();
+        } catch (e) { toast('Open failed: ' + e.message, 'error'); }
+    }
+    async function refreshRecent() {
+        if (!backendOnline) return;
+        try {
+            const { recent } = await api('recent');
+            const sel = $('recentSelect');
+            sel.classList.toggle('hidden', !recent.length);
+            sel.innerHTML = '<option value="">Recent…</option>' +
+                recent.map(r => `<option value="${escapeHtml(r.path)}" title="${escapeHtml(r.path)}">${escapeHtml(r.name)}</option>`).join('');
+        } catch (e) {}
+    }
+
+    let autosaveTimer = null;
+    function scheduleAutosave() {
+        clearTimeout(autosaveTimer);
+        autosaveTimer = setTimeout(async () => {
+            const project = buildProject();
+            project.meta = { path: currentPath, name: currentName, dirty };
+            if (backendOnline) { try { await api('autosave', { project }); } catch (e) {} }
+            else lsSet('autosave', JSON.stringify(project));
+        }, 2000);
+    }
+    async function restoreAutosave() {
+        let project = null;
+        if (backendOnline) { try { project = (await api('autoload')).project; } catch (e) {} }
+        else { try { project = JSON.parse(lsGet('autosave') || 'null'); } catch (e) {} }
+        if (!project) return;
+        try {
+            const meta = project.meta || {};
+            await loadProject(project, { path: meta.path || null, name: meta.name || null, quiet: true });
+            setDirty(!!meta.dirty);
+            toast('Restored your last layout.');
+        } catch (e) {}
+    }
+
+    // =====================================================================
+    //  Keyboard shortcuts + start-up
+    // =====================================================================
+    document.addEventListener('keydown', e => {
+        if (!(e.ctrlKey || e.metaKey)) return;
+        const k = e.key.toLowerCase();
+        const inField = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName);
+        if (k === 's') { e.preventDefault(); saveLayout(e.shiftKey); }
+        else if (k === 'o') { e.preventDefault(); openLayout(); }
+        else if (k === 'p') { e.preventDefault(); startPrint(); }
+        else if (!inField && k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+        else if (!inField && (k === 'y' || (k === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
+    });
+    window.addEventListener('beforeunload', () => { if (commitTimer) commitNow(); });
+
+    (async function start() {
+        syncDeviceControls();
+        syncDocControls();
+        renderUI();
+        renderCanvas();
+        await initBackend();
+        await restoreAutosave();
+        updateUndoButtons();
+        document.fonts.load("700 20px 'Roboto Mono'").then(() => { bitmapCache.clear(); renderCanvas(); });
+        document.fonts.ready.then(() => renderCanvas());
+    })();
 </script>
 </body>
 </html>

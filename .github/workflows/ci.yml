@@ -1,0 +1,13 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: ["**"]
+    paths-ignore: ["**/*.md", "LICENSE", "fonts/licenses/**"]
+  pull_request:
+    paths-ignore: ["**/*.md", "LICENSE", "fonts/licenses/**"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml

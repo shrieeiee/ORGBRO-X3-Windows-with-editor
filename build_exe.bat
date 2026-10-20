@@ -1,4 +1,7 @@
 @echo off
+rem ORGBRO X3 Studio - Windows 11 x64 builder
+rem   build_exe.bat           -> dist\ORGBRO_X3_Studio\ORGBRO_X3_Studio.exe (folder build, recommended)
+rem   build_exe.bat onefile   -> dist\ORGBRO_X3_Studio.exe (single portable file, slower to start)
 setlocal EnableExtensions
 cd /d "%~dp0"
 
@@ -7,13 +10,16 @@ echo   ORGBRO X3 Studio - Windows 11 x64 Builder
 echo ==========================================
 echo.
 
-for %%F in (orgbro_x3_studio.py orgbro_x3_protocol.py editor.html) do (
+for %%F in (orgbro_x3_studio.py orgbro_x3_protocol.py editor.html fonts vendor assets\icon.ico) do (
     if not exist "%%F" (
         echo ERROR: %%F was not found next to this BAT file.
         pause
         exit /b 1
     )
 )
+
+set "MODE=--onedir"
+if /i "%~1"=="onefile" set "MODE=--onefile"
 
 rem ---- Pick a 64-bit Python (3.12 preferred; pythonnet/pywebview support it best)
 set "PY="
@@ -33,7 +39,7 @@ echo Using: %PY%
 %PY% --version
 
 echo.
-echo [1/4] Creating build environment (.venv)...
+echo [1/5] Creating build environment (.venv)...
 if not exist ".venv\Scripts\python.exe" (
     %PY% -m venv .venv
     if errorlevel 1 goto :error
@@ -41,26 +47,36 @@ if not exist ".venv\Scripts\python.exe" (
 set "VPY=%CD%\.venv\Scripts\python.exe"
 
 echo.
-echo [2/4] Installing packages...
+echo [2/5] Installing packages...
 "%VPY%" -m pip install --upgrade pip
 "%VPY%" -m pip install --upgrade pyinstaller -r requirements.txt
 if errorlevel 1 goto :error
 
 echo.
-echo [3/4] Cleaning old build...
+echo [3/5] Running tests...
+"%VPY%" -m unittest discover -s tests
+if errorlevel 1 goto :error
+
+echo.
+echo [4/5] Cleaning old build...
 if exist build rmdir /s /q build
+if exist dist\ORGBRO_X3_Studio rmdir /s /q dist\ORGBRO_X3_Studio
 if exist dist\ORGBRO_X3_Studio.exe del /q dist\ORGBRO_X3_Studio.exe
 if exist ORGBRO_X3_Studio.spec del /q ORGBRO_X3_Studio.spec
 
 echo.
-echo [4/4] Building EXE...
+echo [5/5] Building (%MODE%)...
 "%VPY%" -m PyInstaller ^
   --noconfirm ^
   --clean ^
-  --onefile ^
+  %MODE% ^
   --windowed ^
   --name "ORGBRO_X3_Studio" ^
+  --icon "assets\icon.ico" ^
   --add-data "editor.html;." ^
+  --add-data "fonts;fonts" ^
+  --add-data "vendor;vendor" ^
+  --add-data "assets;assets" ^
   --hidden-import serial.tools.list_ports ^
   --collect-all PIL ^
   --collect-all webview ^
@@ -72,7 +88,12 @@ if errorlevel 1 goto :error
 echo.
 echo ==========================================
 echo   Finished!
-echo   %CD%\dist\ORGBRO_X3_Studio.exe
+if "%MODE%"=="--onefile" (
+    echo   %CD%\dist\ORGBRO_X3_Studio.exe
+) else (
+    echo   %CD%\dist\ORGBRO_X3_Studio\ORGBRO_X3_Studio.exe
+    echo   Keep the whole ORGBRO_X3_Studio folder together.
+)
 echo ==========================================
 explorer "%CD%\dist"
 pause

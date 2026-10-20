@@ -1,82 +1,141 @@
 # ORGBRO X3 Studio — fork of ORGBRO X3 Windows Printer
 
-> ⚠️ **This fork is vibe coded.** The additions in this fork were written with AI
-> assistance (Claude, building on a layout editor originally drafted with Gemini) and
-> have **not** been carefully hand-reviewed. They were tested in a browser against a
-> simulated COM port, but not yet confirmed on every Windows PC / printer combination.
-> Use at your own risk, and please open an issue if something breaks.
+> ⚠️ **This fork is vibe coded.** Everything this fork adds was written with AI assistance
+> (Claude, building on a layout editor first drafted with Gemini) and has **not** been
+> carefully hand-reviewed. It is tested automatically (unit tests, plus browser tests against
+> a simulated printer on a virtual COM port), but it has **not yet been confirmed on real
+> ORGBRO X3 hardware** for every feature. Settings marked *experimental* are educated guesses
+> about the printer protocol. Use at your own risk, and please open an issue if something breaks.
 
 This is a fork of **[isma-co/ORGBRO-X3-Windows](https://github.com/isma-co/ORGBRO-X3-Windows)**,
-which reverse engineered the ORGBRO X3's Bluetooth protocol and provides a simple
-Windows app for printing a single image. All credit for the protocol work goes to the
-original author.
+which reverse engineered the ORGBRO X3's Bluetooth protocol and provides a simple Windows app
+for printing a single image. All credit for the protocol work goes to the original author.
 
 ## What this fork adds
 
-The original app prints an existing image file. This fork adds **ORGBRO X3 Studio**, a
-single Windows 11 x64 program where you **design** a sticker or label and **print** it,
-without saving and reloading a PNG in between.
+The original app prints an existing image file. This fork adds **ORGBRO X3 Studio**: one
+Windows 11 x64 program where you **design** stickers, labels and receipts and **print** them,
+with no saving and reloading of PNGs in between.
 
-What was done:
+### Paper and stickers
+* **80 mm and 57 mm rolls.** 57 mm paper is printed in the right-hand 615 px of the 864 px head
+  (the offset is adjustable).
+* **Continuous paper** with repeats, a gap between copies and dashed cut lines.
+* **Sticker label presets:**
+  * 80 mm rolls: 80×40, 80×50, 80×60, 80×80, 76×51 (3×2 in), 70×50, 60×40 mm, plus **round**
+    Ø 70, 60, 50 and 40 mm
+  * 57 mm rolls: 57×30, 57×40, 57×50, 50×25, 50×30, 50×40, 50×50, 40×30, 40×40 mm, plus
+    **round** Ø 50, 40, 30 and 25 mm
+  * **Custom** width, height and shape
+* **Labels:** content is centred on each label and shrunk if it doesn't fit. Round labels clip
+  to the circle. The gap between labels and a top offset are adjustable, so the print can line
+  up with your roll.
+* **Rotate 90°** to print a design sideways along the roll. On continuous paper, choose the
+  length along the roll.
+* **Automatic numbering and dates:** `{n}`, `{n:3}` (001, 002…), `{total}`, `{date}` and `{time}`
+  work in text and in QR/barcode data. There is also a start-number setting.
 
-* **Merged a layout editor into the printer app.** The HTML/canvas sticker editor
-  (`editor.html`) now runs in a native window (Edge WebView2 via pywebview), with a Python
-  backend (`orgbro_x3_studio.py`) that talks to the printer.
-* **Shared protocol module.** The raster/packet code from `orgbro_x3_ui.py` was moved into
-  `orgbro_x3_protocol.py` (output verified byte-for-byte against the original) and gained
-  cancel support.
-* **Printer panel in the editor:** COM-port picker, packet delay, Print / Cancel, progress
-  bar and log.
-* **Exact 1-bit preview** of what the printer will produce, with threshold, invert and a
-  choice of Floyd–Steinberg dithering or plain threshold for images.
-* **System font scanning** via the Windows font list, alongside Google Fonts and a
-  custom-font-name option.
-* **Fixes to the editor:** transparent PNG areas printed as solid black (now white), web
-  fonts not loaded before drawing, text containing `<` or quotes breaking the editor, and
-  the on-screen 57 mm guide line being included in the print.
-* **Fallback window:** if WebView2 can't start, the same editor opens in an Edge app window
-  and printing still works.
-* **Build tooling:** `build_exe.bat` (venv + PyInstaller), `run_studio.bat`, and a GitHub
-  Actions workflow that builds the EXE on every push.
+### Content blocks
+* **Text:**
+  * 13 **bundled fonts** that work offline, with their real weights (Thin → Black) and real
+    italics. Styles a font doesn't have are disabled rather than faked.
+  * Windows fonts, **every installed system font** (Scan System Fonts) or any font typed by name.
+  * Long words and URLs wrap instead of running off the edge.
+  * Optional **shrink to fit** keeps each line from wrapping.
+* **Images:** scale, alignment and repeat. Images are converted to black and white with
+  Floyd–Steinberg dithering or a threshold. Transparent areas print white.
+* **QR codes** (error-correction L/M/Q/H) and **barcodes** (Code 128, EAN-13, EAN-8, UPC-A,
+  Code 39). Bars and modules are drawn crisply at whole-dot widths, with a warning when they're
+  too small to scan or the data is invalid.
+* **For every block:** per-block spacing, duplicate, drag to reorder (⠿) and ▲/▼ buttons.
 
-The local API between the editor and the printer backend only listens on `127.0.0.1` and
-requires a random per-launch token.
+### Editing and files
+* **Undo / redo** (Ctrl+Z / Ctrl+Y).
+* **Save / open layouts** as `.orgbro` files, with images embedded. There's a **Recent** list
+  and **autosave**, which restores your last layout when the app reopens. Ctrl+S, Ctrl+O and
+  Ctrl+P work.
+* **Exact 1-bit preview** of what will print, with sticker outlines and the 57 mm paper edge
+  shown on screen only.
 
-## ORGBRO X3 Studio features
+### Printing
+* COM-port picker and **Find printer**. Find printer sends the official app's status request to
+  every port and selects the one that answers.
+* Progress bar, **cancel**, log and **Save PNG**.
+* **Split long prints** *(experimental)*. The protocol's packet counter is one byte, so it wraps
+  after 256 packets (about 9–10 cm). This option sends longer prints as back-to-back parts with
+  no paper feed between them.
+* **Density** *(experimental)*. This sets the byte in the start-up command that is believed to
+  control heat or darkness. The app's own value is "Normal".
+* **Feed after print** *(experimental)*. *Auto* feeds a whole number of labels in sticker mode,
+  so consecutive prints stay in step with the labels.
+* **Test prints:**
+  * a **calibration sheet**, with mm rulers and the 57 mm paper box, to check the zone offset
+    and dots per mm
+  * a **long-print test** that prints across the packet-counter wrap points
 
-`orgbro_x3_studio.py` combines the sticker/label layout editor (`editor.html`) with this
-project's Bluetooth printing, so you can design and print from one window on Windows 11 x64.
+### Under the hood
+* `editor.html` runs in a native window (Edge WebView2 via pywebview). If WebView2 can't start,
+  it falls back to an Edge app window.
+* `orgbro_x3_studio.py` provides a local API that **only listens on 127.0.0.1** and requires a
+  random per-launch token.
+* `orgbro_x3_protocol.py` is the protocol code from the original `orgbro_x3_ui.py`, moved into its
+  own module and extended. It has been verified byte-for-byte against the original.
+* `tests/` holds unit tests for the protocol and the API. They run in CI and in `build_exe.bat`.
+* GitHub Actions builds the app on every code push (documentation-only changes are skipped).
+  Pushing a `studio-v*` tag publishes a **Release** with the zip and the portable .exe.
 
-* Text blocks with Google Fonts, built-in Windows fonts, **every installed system font**
-  (Scan System Fonts) or a custom font name; bold / italic / underline / alignment
-* Image blocks with scale, alignment, repeat, Floyd–Steinberg dithering or threshold
-* 57 mm roll (right 615 px zone of the 864 px head) or full 80 mm layout
-* Repeat the layout as a sticker roll with gaps and cut lines
-* Exact 1-bit preview of what will print, threshold and invert controls
-* COM-port picker, packet delay, progress bar, cancel, log, Save PNG
+## Download
 
-### Build the EXE (Windows 11 x64)
+Get the latest build from **[Releases](../../releases)**:
 
-1. Install **Python 3.12 (64-bit)** from python.org (tick *Add python.exe to PATH*).
-2. Double-click **`build_exe.bat`**. It creates a private `.venv`, installs
-   Pillow, pyserial, pywebview and PyInstaller, then builds
-   `dist\ORGBRO_X3_Studio.exe` (a single file, no Python needed to run it).
+* **ORGBRO_X3_Studio-win-x64.zip** (recommended): unzip it and run `ORGBRO_X3_Studio.exe` inside
+  the folder.
+* **ORGBRO_X3_Studio-portable.exe**: a single file. It starts more slowly and is more likely to
+  trigger antivirus false positives.
 
-To run from source instead, double-click **`run_studio.bat`**.
+The app isn't code-signed, so Windows SmartScreen may warn you. Click *More info → Run anyway*.
 
-The window uses Microsoft Edge WebView2, which is built into Windows 11. If it can't
-start, the app automatically opens the same editor in an Edge app window instead
-(force this with `ORGBRO_X3_Studio.exe --browser`). Errors are logged to
-`%LOCALAPPDATA%\ORGBRO_X3_Studio\error.log`.
+## First-time setup
 
-Google Fonts need an internet connection; system fonts work offline.
+1. Pair the ORGBRO X3 in **Settings → Bluetooth & devices**, and disconnect your phone from it.
+2. Open the app and click **Find printer**, or pick the Bluetooth COM port yourself.
+3. Choose **Paper & Stickers → Calibration → Print calibration sheet**.
+   * If the 50 mm ruler doesn't measure 50 mm, set *Dots per mm* to `10.8 × 50 ÷ measured`.
+   * On 57 mm paper, if the printed box doesn't sit on the paper edges, adjust the
+     *57 mm zone offset*.
+4. For sticker rolls, print a couple of labels. Then adjust **Gap between labels** and **Top
+   offset** until the print lines up with the stickers.
+5. Optionally run the **long-print test**. If the print stops or garbles at the black
+   "sequence wrap" band, turn on **Split long prints**.
 
-Pushing this repository to GitHub also builds the EXE automatically
-(`.github/workflows/build-windows.yml`, download it from the run's *Artifacts*).
+## Build it yourself (Windows 11 x64)
+
+1. Install **Python 3.12 (64-bit)** from python.org, ticking *Add python.exe to PATH*.
+2. Double-click **`build_exe.bat`**. It creates a private `.venv`, installs the requirements,
+   runs the tests and builds `dist\ORGBRO_X3_Studio\ORGBRO_X3_Studio.exe`.
+   * Run `build_exe.bat onefile` for a single portable .exe instead.
+3. To run from source without building, double-click **`run_studio.bat`**.
+
+Errors are logged to `%LOCALAPPDATA%\ORGBRO_X3_Studio\error.log`. Autosave and recent files are
+kept in the same folder. To force the Edge app window instead of WebView2, run
+`ORGBRO_X3_Studio.exe --browser`.
+
+## Credits and licenses
+
+* Protocol research and the original app: [isma-co](https://github.com/isma-co/ORGBRO-X3-Windows)
+  (MIT).
+* Fonts from [Google Fonts](https://github.com/google/fonts), subset to Latin. They're under the
+  SIL Open Font License 1.1, except Special Elite, which is Apache 2.0. See `fonts/licenses/`.
+* [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (MIT, Kazuhiko Arase).
+* [JsBarcode](https://github.com/lindell/JsBarcode) (MIT, Johan Lindell). See
+  `vendor/THIRD_PARTY_NOTICES.txt`.
 
 ---
 
-The original single-image printer UI (`orgbro_x3_ui.py`) is still included and documented below.
+# Original project README
+
+*The text below is the upstream README by isma-co, kept unchanged. The original
+single-image printer UI (`orgbro_x3_ui.py`) is still included in this fork.*
 
 A simple Windows application for printing images directly to the **ORGBRO X3 thermal printer over Bluetooth**.
 

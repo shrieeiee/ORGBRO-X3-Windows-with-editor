@@ -4,6 +4,14 @@ ORGBRO X3 printer protocol helpers (shared by ORGBRO X3 Studio).
 Raster format (see README):
   * 864 px wide, 1-bit, MSB-first, black = 1
   * 108 bytes per row, 432-byte payloads (4 rows per packet)
+
+Frame layout (as captured from the official app):
+  64 <cmd> <seq> <len lo> <len hi> <payload...> 00 00 00 00 9b
+
+  cmd 0x0a  payload 1 byte  (0x55 in the capture - believed to be print density/heat)
+  cmd 0x09  payload 1 byte  (0x0c in the capture)
+  cmd 0x00  payload 432 bytes of raster (4 rows)
+  cmd 0x02  payload 2 bytes, little-endian (200 in the capture - believed to be feed in dots)
 """
 
 import base64
@@ -14,10 +22,46 @@ from PIL import Image
 
 WIDTH = 864
 BYTES_PER_ROW = WIDTH // 8
-PAYLOAD_SIZE = 432  # 4 raster rows per packet
+ROWS_PER_PACKET = 4
+PAYLOAD_SIZE = BYTES_PER_ROW * ROWS_PER_PACKET  # 432
 
-INIT_1 = bytes.fromhex("640a03010055000000009b")
-INIT_2 = bytes.fromhex("64090401000c000000009b")
+DEFAULT_DENSITY = 0x55
+DEFAULT_FEED = 200
+FIRST_DATA_SEQ = 5
+
+# Status requests the Android app sends before printing; the printer answers them.
+STATUS_REQUESTS = (
+    bytes.fromhex("641101000000000000"),
+    bytes.fromhex("641202000000000000"),
+)
+
+
+def frame(cmd, seq, payload):
+    return (
+        b"\x64" + bytes([cmd & 0xFF, seq & 0xFF])
+        + len(payload).to_bytes(2, "little")
+        + payload
+        + b"\x00\x00\x00\x00\x9b"
+    )
+
+
+def init_frames(density=DEFAULT_DENSITY):
+    return [frame(0x0A, 3, bytes([int(density) & 0xFF])), frame(0x09, 4, b"\x0c")]
+
+
+INIT_1, INIT_2 = init_frames()
+
+
+def data_frame(seq, payload):
+    return frame(0x00, seq, payload)
+
+
+def end_frame(seq, feed=DEFAULT_FEED):
+    return frame(0x02, seq, int(max(0, min(feed, 65535))).to_bytes(2, "little"))
+
+
+def is_data_frame(fr):
+    return len(fr) > 2 and fr[1] == 0x00
 
 
 def decode_data_url(data_url):
@@ -47,7 +91,7 @@ def load_print_image(png_bytes, threshold=128):
 
     bw = img.point(lambda p: 255 if p >= threshold else 0, mode="1")
 
-    padded_h = ((bw.height + 3) // 4) * 4
+    padded_h = ((bw.height + ROWS_PER_PACKET - 1) // ROWS_PER_PACKET) * ROWS_PER_PACKET
     if padded_h != bw.height:
         padded = Image.new("1", (WIDTH, padded_h), 1)
         padded.paste(bw, (0, 0))
@@ -65,27 +109,31 @@ def image_to_raster(img):
     return bytes(b ^ 0xFF for b in img.tobytes())
 
 
-def data_frame(seq, payload):
-    return (
-        b"\x64\x00"
-        + bytes([seq & 0xFF])
-        + len(payload).to_bytes(2, "little")
-        + payload
-        + b"\x00\x00\x00\x00\x9b"
-    )
+def build_frames(raster, density=DEFAULT_DENSITY, feed=DEFAULT_FEED, split_packets=None):
+    """
+    Build the frame list for a job.
 
+    split_packets: if set, the image is sent as several back-to-back jobs of at most
+    this many packets (so the 1-byte sequence counter never wraps). Intermediate jobs
+    use feed 0 so the paper does not advance between parts.
+    """
+    payloads = [raster[p:p + PAYLOAD_SIZE] for p in range(0, len(raster), PAYLOAD_SIZE)]
+    if not payloads:
+        payloads = [bytes(PAYLOAD_SIZE)]
+    if split_packets:
+        split_packets = max(1, min(int(split_packets), 250))
+        groups = [payloads[i:i + split_packets] for i in range(0, len(payloads), split_packets)]
+    else:
+        groups = [payloads]
 
-def end_frame(seq):
-    return b"\x64\x02" + bytes([seq & 0xFF]) + b"\x02\x00\xc8\x00\x00\x00\x00\x00\x9b"
-
-
-def build_frames(raster):
-    frames = [INIT_1, INIT_2]
-    seq = 5
-    for pos in range(0, len(raster), PAYLOAD_SIZE):
-        frames.append(data_frame(seq, raster[pos:pos + PAYLOAD_SIZE]))
-        seq = (seq + 1) & 0xFF
-    frames.append(end_frame(seq))
+    frames = []
+    for gi, group in enumerate(groups):
+        frames += init_frames(density)
+        seq = FIRST_DATA_SEQ
+        for payload in group:
+            frames.append(data_frame(seq, payload))
+            seq = (seq + 1) & 0xFF
+        frames.append(end_frame(seq, feed if gi == len(groups) - 1 else 0))
     return frames
 
 
@@ -97,18 +145,36 @@ def list_com_ports():
     ]
 
 
+def probe_port(port, timeout=0.6):
+    """Send the app's status requests; returns the printer's reply bytes (b'' if none)."""
+    import serial
+    reply = b""
+    with serial.Serial(port=port, baudrate=115200, timeout=timeout, write_timeout=2.0) as ser:
+        try:
+            ser.reset_input_buffer()
+        except Exception:
+            pass
+        for req in STATUS_REQUESTS:
+            ser.write(req)
+            ser.flush()
+            time.sleep(0.15)
+            reply += ser.read(512)
+    return reply
+
+
 def send_frames(port, frames, delay=0.02, progress=None, log=None, cancel_event=None):
     """
     Send frames to the printer. progress(percent, message) and log(text) are optional
     callbacks. If cancel_event is set mid-job, the remaining image data is skipped and
-    the end/feed frame is still sent so the printer finishes cleanly.
+    an end-of-job frame is sent so the printer finishes cleanly.
     Returns True if completed, False if cancelled.
     """
     import serial
 
     progress = progress or (lambda pct, msg: None)
     log = log or (lambda text: None)
-    total_packets = max(1, len(frames) - 3)
+    total_packets = max(1, sum(1 for f in frames if is_data_frame(f)))
+    sent_packets = 0
     cancelled = False
 
     with serial.Serial(port=port, baudrate=115200, timeout=0.25, write_timeout=4.0) as ser:
@@ -117,27 +183,25 @@ def send_frames(port, frames, delay=0.02, progress=None, log=None, cancel_event=
         except Exception:
             pass
 
-        last = len(frames) - 1
-        for i, frame in enumerate(frames):
-            if cancel_event is not None and cancel_event.is_set() and 1 < i < last:
+        for i, fr in enumerate(frames):
+            if cancel_event is not None and cancel_event.is_set() and is_data_frame(fr):
                 cancelled = True
                 log("Cancelled - sending end-of-job frame.")
-                ser.write(frames[last])
+                ser.write(end_frame(fr[2], DEFAULT_FEED))
                 ser.flush()
                 break
 
-            ser.write(frame)
+            ser.write(fr)
             ser.flush()
 
-            if i == 0:
-                progress(0, "Sending init 1...")
-            elif i == 1:
-                progress(0, "Sending init 2...")
-            elif i == last:
-                progress(100, "Sending final feed...")
+            if is_data_frame(fr):
+                sent_packets += 1
+                progress(sent_packets / total_packets * 100,
+                         f"Printing... packet {sent_packets}/{total_packets}")
+            elif fr[1] == 0x02:
+                progress(sent_packets / total_packets * 100, "Feeding paper...")
             else:
-                current = i - 1
-                progress(current / total_packets * 100, f"Printing... packet {current}/{total_packets}")
+                progress(sent_packets / total_packets * 100, "Starting job...")
 
             time.sleep(delay)
             if ser.in_waiting:

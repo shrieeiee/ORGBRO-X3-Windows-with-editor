@@ -1,0 +1,49 @@
+name: Build (reusable)
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller -r requirements.txt
+
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Build folder version (recommended)
+        shell: pwsh
+        run: |
+          $common = @(
+            '--noconfirm', '--clean', '--windowed', '--name', 'ORGBRO_X3_Studio',
+            '--icon', 'assets\icon.ico',
+            '--add-data', 'editor.html;.', '--add-data', 'fonts;fonts',
+            '--add-data', 'vendor;vendor', '--add-data', 'assets;assets',
+            '--hidden-import', 'serial.tools.list_ports',
+            '--collect-all', 'PIL', '--collect-all', 'webview',
+            '--collect-all', 'clr_loader', '--collect-all', 'pythonnet'
+          )
+          python -m PyInstaller --onedir @common orgbro_x3_studio.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          Compress-Archive -Path dist\ORGBRO_X3_Studio -DestinationPath ORGBRO_X3_Studio-win-x64.zip
+          python -m PyInstaller --onefile @common --distpath dist-onefile orgbro_x3_studio.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          Copy-Item dist-onefile\ORGBRO_X3_Studio.exe ORGBRO_X3_Studio-portable.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ORGBRO_X3_Studio-win-x64
+          path: |
+            ORGBRO_X3_Studio-win-x64.zip
+            ORGBRO_X3_Studio-portable.exe

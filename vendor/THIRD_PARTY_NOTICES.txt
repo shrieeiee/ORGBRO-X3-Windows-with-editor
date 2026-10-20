@@ -1,0 +1,10 @@
+Third-party libraries bundled with ORGBRO X3 Studio
+
+qrcode.js - QR Code Generator for JavaScript, v2.0.4
+  Copyright (c) 2009 Kazuhiko Arase. MIT License. https://github.com/kazuhikoarase/qrcode-generator
+
+JsBarcode.all.min.js - JsBarcode v3.12.3
+  Copyright (c) Johan Lindell. MIT License. https://github.com/lindell/JsBarcode
+
+Fonts in ../fonts are from Google Fonts (github.com/google/fonts), subset to Latin,
+under the SIL Open Font License 1.1 (Special Elite: Apache License 2.0). See fonts/licenses.
