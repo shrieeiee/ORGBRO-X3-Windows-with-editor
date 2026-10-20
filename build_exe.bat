@@ -74,6 +74,7 @@ echo [5/5] Building (%MODE%)...
   --name "ORGBRO_X3_Studio" ^
   --icon "assets\icon.ico" ^
   --add-data "editor.html;." ^
+  --add-data "VERSION;." ^
   --add-data "fonts;fonts" ^
   --add-data "vendor;vendor" ^
   --add-data "assets;assets" ^

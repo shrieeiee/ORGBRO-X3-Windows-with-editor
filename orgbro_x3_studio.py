@@ -34,7 +34,17 @@ if sys.stderr is None:
 import orgbro_x3_protocol as proto
 
 APP_NAME = "ORGBRO X3 Studio"
-APP_VERSION = "1.1.0"
+def _read_version():
+    for base in (getattr(sys, "_MEIPASS", None), os.path.dirname(os.path.abspath(__file__))):
+        try:
+            with open(os.path.join(base or "", "VERSION"), encoding="utf-8") as f:
+                return f.read().strip()
+        except OSError:
+            pass
+    return "dev"
+
+
+APP_VERSION = _read_version()
 MAX_BODY = 160 * 1024 * 1024  # projects embed images; rendered rolls can be large
 STATIC_DIRS = ("fonts", "vendor", "assets")
 PROJECT_EXT = ".orgbro"

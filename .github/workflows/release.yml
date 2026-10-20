@@ -1,8 +1,12 @@
 name: Release
 
+# Publishes a GitHub Release when VERSION changes on main (or a studio-v* tag is pushed).
 on:
   push:
+    branches: [main]
+    paths: ["VERSION"]
     tags: ["studio-v*"]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,9 +22,19 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: ORGBRO_X3_Studio-win-x64
+      - uses: actions/checkout@v4
+        with:
+          path: src
+      - name: Work out the version tag
+        id: ver
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT";
+          else echo "tag=studio-v$(tr -d '[:space:]' < src/VERSION)" >> "$GITHUB_OUTPUT"; fi
       - uses: softprops/action-gh-release@v2
         with:
-          name: ORGBRO X3 Studio ${{ github.ref_name }}
+          tag_name: ${{ steps.ver.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: ORGBRO X3 Studio ${{ steps.ver.outputs.tag }}
           generate_release_notes: true
           body: |
             **ORGBRO X3 Studio** for Windows 11 x64 — design stickers & labels and print them to an ORGBRO X3 over Bluetooth.

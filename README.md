@@ -82,7 +82,8 @@ with no saving and reloading of PNGs in between.
   own module and extended. It has been verified byte-for-byte against the original.
 * `tests/` holds unit tests for the protocol and the API. They run in CI and in `build_exe.bat`.
 * GitHub Actions builds the app on every code push (documentation-only changes are skipped).
-  Pushing a `studio-v*` tag publishes a **Release** with the zip and the portable .exe.
+  Bumping the number in `VERSION` on `main` (or pushing a `studio-v*` tag) publishes a
+  **Release** with the zip and the portable .exe.
 
 ## Download
 

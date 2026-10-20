@@ -28,7 +28,7 @@ jobs:
           $common = @(
             '--noconfirm', '--clean', '--windowed', '--name', 'ORGBRO_X3_Studio',
             '--icon', 'assets\icon.ico',
-            '--add-data', 'editor.html;.', '--add-data', 'fonts;fonts',
+            '--add-data', 'editor.html;.', '--add-data', 'VERSION;.', '--add-data', 'fonts;fonts',
             '--add-data', 'vendor;vendor', '--add-data', 'assets;assets',
             '--hidden-import', 'serial.tools.list_ports',
             '--collect-all', 'PIL', '--collect-all', 'webview',
