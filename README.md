@@ -1,6 +1,48 @@
-# ORGBRO X3 Windows Printer
+# ORGBRO X3 Studio — fork of ORGBRO X3 Windows Printer
 
-## ORGBRO X3 Studio (layout editor + printing in one app)
+> ⚠️ **This fork is vibe coded.** The additions in this fork were written with AI
+> assistance (Claude, building on a layout editor originally drafted with Gemini) and
+> have **not** been carefully hand-reviewed. They were tested in a browser against a
+> simulated COM port, but not yet confirmed on every Windows PC / printer combination.
+> Use at your own risk, and please open an issue if something breaks.
+
+This is a fork of **[isma-co/ORGBRO-X3-Windows](https://github.com/isma-co/ORGBRO-X3-Windows)**,
+which reverse engineered the ORGBRO X3's Bluetooth protocol and provides a simple
+Windows app for printing a single image. All credit for the protocol work goes to the
+original author.
+
+## What this fork adds
+
+The original app prints an existing image file. This fork adds **ORGBRO X3 Studio**, a
+single Windows 11 x64 program where you **design** a sticker or label and **print** it,
+without saving and reloading a PNG in between.
+
+What was done:
+
+* **Merged a layout editor into the printer app.** The HTML/canvas sticker editor
+  (`editor.html`) now runs in a native window (Edge WebView2 via pywebview), with a Python
+  backend (`orgbro_x3_studio.py`) that talks to the printer.
+* **Shared protocol module.** The raster/packet code from `orgbro_x3_ui.py` was moved into
+  `orgbro_x3_protocol.py` (output verified byte-for-byte against the original) and gained
+  cancel support.
+* **Printer panel in the editor:** COM-port picker, packet delay, Print / Cancel, progress
+  bar and log.
+* **Exact 1-bit preview** of what the printer will produce, with threshold, invert and a
+  choice of Floyd–Steinberg dithering or plain threshold for images.
+* **System font scanning** via the Windows font list, alongside Google Fonts and a
+  custom-font-name option.
+* **Fixes to the editor:** transparent PNG areas printed as solid black (now white), web
+  fonts not loaded before drawing, text containing `<` or quotes breaking the editor, and
+  the on-screen 57 mm guide line being included in the print.
+* **Fallback window:** if WebView2 can't start, the same editor opens in an Edge app window
+  and printing still works.
+* **Build tooling:** `build_exe.bat` (venv + PyInstaller), `run_studio.bat`, and a GitHub
+  Actions workflow that builds the EXE on every push.
+
+The local API between the editor and the printer backend only listens on `127.0.0.1` and
+requires a random per-launch token.
+
+## ORGBRO X3 Studio features
 
 `orgbro_x3_studio.py` combines the sticker/label layout editor (`editor.html`) with this
 project's Bluetooth printing, so you can design and print from one window on Windows 11 x64.
