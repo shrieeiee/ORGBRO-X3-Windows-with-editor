@@ -9,7 +9,8 @@
 
 This is a fork of **[isma-co/ORGBRO-X3-Windows](https://github.com/isma-co/ORGBRO-X3-Windows)**,
 which reverse engineered the ORGBRO X3's Bluetooth protocol and provides a simple Windows app
-for printing a single image. All credit for the protocol work goes to the original author.
+for printing a single image. All credit for the protocol work goes to the original author. 
+I am utterly incapable of writing something like this by myself, I just wanted a thing.
 
 ## What this fork adds
 
