@@ -1,2 +1,3 @@
 Pillow
 pyserial
+pywebview>=5.0

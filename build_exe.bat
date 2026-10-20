@@ -1,49 +1,79 @@
 @echo off
-setlocal
+setlocal EnableExtensions
 cd /d "%~dp0"
 
 echo ==========================================
-echo   ORGBRO X3 - Windows EXE Builder
+echo   ORGBRO X3 Studio - Windows 11 x64 Builder
 echo ==========================================
 echo.
 
-if not exist "orgbro_x3_ui.py" (
-    echo ERROR: orgbro_x3_ui.py was not found in this folder.
-    echo Put this BAT file next to orgbro_x3_ui.py and run it again.
+for %%F in (orgbro_x3_studio.py orgbro_x3_protocol.py editor.html) do (
+    if not exist "%%F" (
+        echo ERROR: %%F was not found next to this BAT file.
+        pause
+        exit /b 1
+    )
+)
+
+rem ---- Pick a 64-bit Python (3.12 preferred; pythonnet/pywebview support it best)
+set "PY="
+for %%V in (3.12-64 3.13-64 3.11-64 3.10-64) do (
+    if not defined PY (
+        py -%%V -c "import sys" >nul 2>&1 && set "PY=py -%%V"
+    )
+)
+if not defined PY (
+    echo ERROR: No 64-bit Python 3.10 - 3.13 found.
+    echo Install Python 3.12 x64 from https://www.python.org/downloads/windows/
+    echo and tick "Add python.exe to PATH" during setup, then run this again.
     pause
     exit /b 1
 )
+echo Using: %PY%
+%PY% --version
 
-echo [1/4] Installing/updating required packages...
-py -m pip install --upgrade pyinstaller pillow pyserial
+echo.
+echo [1/4] Creating build environment (.venv)...
+if not exist ".venv\Scripts\python.exe" (
+    %PY% -m venv .venv
+    if errorlevel 1 goto :error
+)
+set "VPY=%CD%\.venv\Scripts\python.exe"
+
+echo.
+echo [2/4] Installing packages...
+"%VPY%" -m pip install --upgrade pip
+"%VPY%" -m pip install --upgrade pyinstaller -r requirements.txt
 if errorlevel 1 goto :error
 
 echo.
-echo [2/4] Cleaning old build...
+echo [3/4] Cleaning old build...
 if exist build rmdir /s /q build
-if exist dist rmdir /s /q dist
-if exist ORGBRO_X3_Printer.spec del /q ORGBRO_X3_Printer.spec
+if exist dist\ORGBRO_X3_Studio.exe del /q dist\ORGBRO_X3_Studio.exe
+if exist ORGBRO_X3_Studio.spec del /q ORGBRO_X3_Studio.spec
 
 echo.
-echo [3/4] Building EXE...
-py -m PyInstaller ^
+echo [4/4] Building EXE...
+"%VPY%" -m PyInstaller ^
   --noconfirm ^
   --clean ^
   --onefile ^
   --windowed ^
-  --name "ORGBRO_X3_Printer" ^
-  --collect-all PIL ^
+  --name "ORGBRO_X3_Studio" ^
+  --add-data "editor.html;." ^
   --hidden-import serial.tools.list_ports ^
-  orgbro_x3_ui.py
-
+  --collect-all PIL ^
+  --collect-all webview ^
+  --collect-all clr_loader ^
+  --collect-all pythonnet ^
+  orgbro_x3_studio.py
 if errorlevel 1 goto :error
 
 echo.
-echo [4/4] Finished!
-echo.
-echo Your EXE is here:
-echo %CD%\dist\ORGBRO_X3_Printer.exe
-echo.
+echo ==========================================
+echo   Finished!
+echo   %CD%\dist\ORGBRO_X3_Studio.exe
+echo ==========================================
 explorer "%CD%\dist"
 pause
 exit /b 0
@@ -51,8 +81,7 @@ exit /b 0
 :error
 echo.
 echo ==========================================
-echo BUILD FAILED
+echo BUILD FAILED - scroll up for the first error.
 echo ==========================================
-echo Copy the error text and send it to ChatGPT.
 pause
 exit /b 1

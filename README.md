@@ -1,5 +1,41 @@
 # ORGBRO X3 Windows Printer
 
+## ORGBRO X3 Studio (layout editor + printing in one app)
+
+`orgbro_x3_studio.py` combines the sticker/label layout editor (`editor.html`) with this
+project's Bluetooth printing, so you can design and print from one window on Windows 11 x64.
+
+* Text blocks with Google Fonts, built-in Windows fonts, **every installed system font**
+  (Scan System Fonts) or a custom font name; bold / italic / underline / alignment
+* Image blocks with scale, alignment, repeat, Floyd–Steinberg dithering or threshold
+* 57 mm roll (right 615 px zone of the 864 px head) or full 80 mm layout
+* Repeat the layout as a sticker roll with gaps and cut lines
+* Exact 1-bit preview of what will print, threshold and invert controls
+* COM-port picker, packet delay, progress bar, cancel, log, Save PNG
+
+### Build the EXE (Windows 11 x64)
+
+1. Install **Python 3.12 (64-bit)** from python.org (tick *Add python.exe to PATH*).
+2. Double-click **`build_exe.bat`**. It creates a private `.venv`, installs
+   Pillow, pyserial, pywebview and PyInstaller, then builds
+   `dist\ORGBRO_X3_Studio.exe` (a single file, no Python needed to run it).
+
+To run from source instead, double-click **`run_studio.bat`**.
+
+The window uses Microsoft Edge WebView2, which is built into Windows 11. If it can't
+start, the app automatically opens the same editor in an Edge app window instead
+(force this with `ORGBRO_X3_Studio.exe --browser`). Errors are logged to
+`%LOCALAPPDATA%\ORGBRO_X3_Studio\error.log`.
+
+Google Fonts need an internet connection; system fonts work offline.
+
+Pushing this repository to GitHub also builds the EXE automatically
+(`.github/workflows/build-windows.yml`, download it from the run's *Artifacts*).
+
+---
+
+The original single-image printer UI (`orgbro_x3_ui.py`) is still included and documented below.
+
 A simple Windows application for printing images directly to the **ORGBRO X3 thermal printer over Bluetooth**.
 
 The ORGBRO X3 works well with its mobile application, but I could not find a usable Windows driver or desktop application for printing directly from a PC.
