@@ -1,3 +1,4 @@
 Pillow
 pyserial
 pywebview>=5.0
+bleak>=1.0

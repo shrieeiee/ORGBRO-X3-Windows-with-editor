@@ -120,14 +120,43 @@ with no saving and reloading of PNGs in between.
     and dots per mm
   * a **long-print test** that prints across the packet-counter wrap points
 
+### Cat printers (Bluetooth LE)
+Studio can also print to the cheap **"cat printers"**: the GB01, GB02, GB03, MX05, MX06, MX08,
+MX10, YT01 and similar mini printers that use the iPrint / Fun Print style app.
+
+* **Choosing a printer:** under **Printer**, pick **🐱 Cat printer (Bluetooth LE)**, then click
+  **🔍 Scan** and choose your printer.
+* **No Windows pairing needed:** cat printers connect over Bluetooth LE, so you don't pair them
+  in Windows Settings. Just close the phone app if it's connected.
+* **Paper size:** the layout switches automatically to the 384-dot head, which gives 48 mm of
+  print width on 57/58 mm paper. Sticker presets, templates (including the bottle labels),
+  rotate, numbering and QR codes all work.
+* **Print settings:** you can choose **Darkness** (heating energy), **Speed** and *Feed after
+  printing*.
+* **Calibration:** there's a cat-printer calibration sheet with a 40 mm ruler.
+* **Printing behaviour:** the app respects the printer's pause/resume signals. Blank space is fed
+  quickly rather than printed line by line. Cancelling still finishes the job cleanly.
+  "Out of paper" and "cover open" stop the print with a message.
+* **Unsupported models:** printers that use a different protocol (for example MXW01) won't work.
+
+The protocol was implemented from the public-domain description in NaitLee's
+[Cat-Printer](https://github.com/NaitLee/Cat-Printer) /
+[kitty-printer](https://github.com/NaitLee/kitty-printer) projects, which power
+print.unseen-site.fun. Its command stream is tested byte-for-byte against that reference. No code
+from those (AGPL/GPL) apps is included.
+
 ### Under the hood
+* `cat_printer.py` contains the cat printer protocol and the Bluetooth LE transport. It uses
+  [bleak](https://github.com/hbldh/bleak) with Windows' built-in WinRT Bluetooth API.
 * `editor.html` runs in a native window (Edge WebView2 via pywebview). If WebView2 can't start,
   it falls back to an Edge app window.
 * `orgbro_x3_studio.py` provides a local API that **only listens on 127.0.0.1** and requires a
   random per-launch token.
 * `orgbro_x3_protocol.py` is the protocol code from the original `orgbro_x3_ui.py`, moved into its
   own module and extended. It has been verified byte-for-byte against the original.
-* `tests/` holds unit tests for the protocol and the API. They run in CI and in `build_exe.bat`.
+* `tests/` holds unit tests for both printer protocols, a simulated Bluetooth LE printer, and the
+  API. They run in CI and in `build_exe.bat`. CI also launches the built .exe in `--selftest`
+  mode to check that Bluetooth LE support and the data files were bundled.
 * GitHub Actions builds the app on every code push (documentation-only changes are skipped).
   Bumping the number in `VERSION` on `main` (or pushing a `studio-v*` tag) publishes a
   **Release** with the zip and the portable .exe.
@@ -156,6 +185,12 @@ The app isn't code-signed, so Windows SmartScreen may warn you. Click *More info
 5. Optionally run the **long-print test**. If the print stops or garbles at the black
    "sequence wrap" band, turn on **Split long prints**.
 
+**Cat printer instead?**
+1. Switch the printer on and make sure Windows Bluetooth is on.
+2. Choose **Printer → 🐱 Cat printer**, click **🔍 Scan** and pick it from the list.
+3. Print the calibration sheet. If the 40 mm ruler doesn't measure 40 mm, set *Dots per mm* to
+   `8 × 40 ÷ measured`.
+
 ## Build it yourself (Windows 11 x64)
 
 1. Install **Python 3.12 (64-bit)** from python.org, ticking *Add python.exe to PATH*.
@@ -177,6 +212,9 @@ kept in the same folder. To force the Edge app window instead of WebView2, run
 * [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (MIT, Kazuhiko Arase).
 * [JsBarcode](https://github.com/lindell/JsBarcode) (MIT, Johan Lindell). See
   `vendor/THIRD_PARTY_NOTICES.txt`.
+* Cat printer protocol description: [NaitLee](https://github.com/NaitLee/Cat-Printer)
+  (the protocol file is CC0 / public domain).
+* [bleak](https://github.com/hbldh/bleak) Bluetooth LE library (MIT).
 
 ---
 

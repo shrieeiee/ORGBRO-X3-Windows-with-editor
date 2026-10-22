@@ -10,7 +10,7 @@ echo   ORGBRO X3 Studio - Windows 11 x64 Builder
 echo ==========================================
 echo.
 
-for %%F in (orgbro_x3_studio.py orgbro_x3_protocol.py editor.html fonts vendor assets\icon.ico) do (
+for %%F in (orgbro_x3_studio.py orgbro_x3_protocol.py cat_printer.py editor.html fonts vendor assets\icon.ico) do (
     if not exist "%%F" (
         echo ERROR: %%F was not found next to this BAT file.
         pause
@@ -83,6 +83,8 @@ echo [5/5] Building (%MODE%)...
   --collect-all webview ^
   --collect-all clr_loader ^
   --collect-all pythonnet ^
+  --collect-all bleak ^
+  --collect-all winrt ^
   orgbro_x3_studio.py
 if errorlevel 1 goto :error
 

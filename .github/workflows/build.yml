@@ -32,13 +32,21 @@ jobs:
             '--add-data', 'vendor;vendor', '--add-data', 'assets;assets',
             '--hidden-import', 'serial.tools.list_ports',
             '--collect-all', 'PIL', '--collect-all', 'webview',
-            '--collect-all', 'clr_loader', '--collect-all', 'pythonnet'
+            '--collect-all', 'clr_loader', '--collect-all', 'pythonnet',
+            '--collect-all', 'bleak', '--collect-all', 'winrt'
           )
           python -m PyInstaller --onedir @common orgbro_x3_studio.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          # Self-test the frozen app: bundled modules (incl. Bluetooth LE) and data files.
+          $p = Start-Process -FilePath dist\ORGBRO_X3_Studio\ORGBRO_X3_Studio.exe -ArgumentList '--selftest', "$PWD\selftest.txt" -Wait -PassThru
+          Get-Content selftest.txt
+          if ($p.ExitCode -ne 0) { Write-Error "Self-test failed"; exit 1 }
           Compress-Archive -Path dist\ORGBRO_X3_Studio -DestinationPath ORGBRO_X3_Studio-win-x64.zip
           python -m PyInstaller --onefile @common --distpath dist-onefile orgbro_x3_studio.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          $p = Start-Process -FilePath dist-onefile\ORGBRO_X3_Studio.exe -ArgumentList '--selftest', "$PWD\selftest-onefile.txt" -Wait -PassThru
+          Get-Content selftest-onefile.txt
+          if ($p.ExitCode -ne 0) { Write-Error "Portable self-test failed"; exit 1 }
           Copy-Item dist-onefile\ORGBRO_X3_Studio.exe ORGBRO_X3_Studio-portable.exe
 
       - uses: actions/upload-artifact@v4

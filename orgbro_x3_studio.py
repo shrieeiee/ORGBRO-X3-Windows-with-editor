@@ -31,6 +31,7 @@ if sys.stdout is None:
 if sys.stderr is None:
     sys.stderr = open(os.devnull, "w")
 
+import cat_printer as cat
 import orgbro_x3_protocol as proto
 
 APP_NAME = "ORGBRO X3 Studio"
@@ -145,6 +146,13 @@ class StudioApi:
         self._cancel = threading.Event()
         self._state = {"state": "idle", "progress": 0, "message": "Ready"}
         self._log = []
+        self._ble = None
+        self.ble_client_factory = None   # tests can inject a simulated printer
+
+    def _ble_worker(self):
+        if self._ble is None:
+            self._ble = cat.BleWorker()
+        return self._ble
 
     # -- helpers
     def _add_log(self, text):
@@ -234,10 +242,32 @@ class StudioApi:
         self._cancel.set()
         return {"ok": True}
 
+    def ble_scan(self, payload):
+        """Scan for Bluetooth LE cat printers."""
+        if self._state["state"] == "printing":
+            return {"error": "Can't scan while printing."}
+        try:
+            import bleak  # noqa: F401
+        except ImportError:
+            return {"error": "Bluetooth LE support (bleak) is not installed."}
+        timeout = min(max(float(payload.get("timeout", 6) or 6), 2), 20)
+        try:
+            devices = self._ble_worker().run(cat.scan(timeout), timeout + 10)
+        except Exception as e:
+            msg = str(e) or e.__class__.__name__
+            if "adapter" in msg.lower() or "radio" in msg.lower() or "not available" in msg.lower():
+                msg = "Bluetooth seems to be off or missing. Turn it on in Windows Settings > Bluetooth & devices."
+            return {"error": msg}
+        likely = [d for d in devices if d["likely"]]
+        self._add_log(f"Bluetooth LE scan: {len(devices)} devices, {len(likely)} look like cat printers")
+        return {"devices": devices}
+
     def print(self, payload):
         with self._lock:
             if self._state["state"] == "printing":
                 return {"error": "A print job is already running."}
+        if payload.get("printer") == "cat":
+            return self._print_cat(payload)
         port = (payload.get("port") or "").strip()
         if not port:
             return {"error": "Choose the printer's Bluetooth COM port first."}
@@ -291,6 +321,56 @@ class StudioApi:
 
         threading.Thread(target=worker, daemon=True).start()
         return {"ok": True, "packets": packets, "height": bw.height}
+
+    def _print_cat(self, payload):
+        address = (payload.get("address") or "").strip()
+        if not address:
+            return {"error": "Choose your cat printer first (click Scan)."}
+
+        def num(key, default, lo, hi, cast=int):
+            try:
+                return min(max(cast(payload.get(key, default)), lo), hi)
+            except (TypeError, ValueError):
+                return default
+
+        speed = num("speed", cat.DEFAULT_SPEED, 1, 255)
+        energy = num("energy", cat.DEFAULT_ENERGY, 1000, 65535)
+        feed = num("feed", cat.DEFAULT_FEED, 0, 2000)
+        delay = num("delay", 0.02, 0.0, 0.5, float)
+        name = payload.get("name") or address
+
+        bw = cat.load_print_image(proto.decode_data_url(payload.get("image", "")))
+        rows = cat.image_to_rows(bw)
+        self._cancel.clear()
+        self._set(state="printing", progress=0, message=f"Connecting to {name}...")
+        self._add_log(f"Cat printer {name} ({address}): {bw.width} x {bw.height} px, "
+                      f"speed {speed}, energy {energy}, feed {feed}")
+
+        def worker():
+            try:
+                done = self._ble_worker().run(cat.print_rows(
+                    address, rows, speed=speed, energy=energy, feed=feed, delay=delay,
+                    progress=lambda pct, msg: self._set(progress=pct, message=msg),
+                    log=self._add_log, cancel_event=self._cancel,
+                    client_factory=self.ble_client_factory,
+                ))
+                if done:
+                    self._set(state="done", progress=100, message="Print finished.")
+                    self._add_log("Done.")
+                else:
+                    self._set(state="cancelled", message="Print cancelled.")
+            except Exception as e:
+                msg = str(e) or e.__class__.__name__
+                low = msg.lower()
+                if "not found" in low or "was not found" in low or "timeout" in low or "timed out" in low:
+                    msg = (f"Couldn't connect to {name}. Make sure it's switched on, close any phone app "
+                           "that is connected to it, and try Scan again.")
+                self._set(state="error", message=msg)
+                self._add_log("ERROR: " + msg)
+                write_crash_log(traceback.format_exc())
+
+        threading.Thread(target=worker, daemon=True).start()
+        return {"ok": True, "rows": len(rows), "height": bw.height}
 
     def save_png(self, payload):
         """Native Save dialog when running in the app window; browser download otherwise."""
@@ -367,7 +447,7 @@ def make_server(api, token, host="127.0.0.1", port=0):
     html_template = Path(resource_path("editor.html")).read_text(encoding="utf-8")
     html = html_template.replace("__ORGBRO_TOKEN__", token).encode("utf-8")
     endpoints = {name: getattr(api, name) for name in (
-        "ping", "ports", "probe", "fonts", "status", "cancel", "print", "save_png",
+        "ping", "ports", "probe", "ble_scan", "fonts", "status", "cancel", "print", "save_png",
         "project_save", "project_open", "recent", "autosave", "autoload",
     )}
     static_roots = {d: os.path.realpath(resource_path(d)) for d in STATIC_DIRS}
@@ -480,7 +560,28 @@ def run_browser_window(url):
     root.mainloop()
 
 
+def selftest(out_path):
+    """Used by CI on the frozen EXE: check bundled modules import, write the result to a file."""
+    results = []
+    for mod in ("serial.tools.list_ports", "PIL.Image", "webview", "bleak", "cat_printer",
+                "bleak.backends.winrt.scanner", "bleak.backends.winrt.client"):
+        try:
+            __import__(mod)
+            results.append(f"ok {mod}")
+        except Exception as e:
+            results.append(f"FAIL {mod}: {e!r}")
+    for name in ("editor.html", "VERSION", os.path.join("fonts", "Inter.woff2"), os.path.join("vendor", "qrcode.js")):
+        results.append(("ok " if os.path.isfile(resource_path(name)) else "FAIL missing ") + name)
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(results) + "\n")
+    return 1 if any(r.startswith("FAIL") for r in results) else 0
+
+
 def main():
+    if "--selftest" in sys.argv:
+        i = sys.argv.index("--selftest")
+        out = sys.argv[i + 1] if len(sys.argv) > i + 1 else "selftest.txt"
+        sys.exit(selftest(out))
     api = StudioApi()
     token = secrets.token_urlsafe(24)
     server = make_server(api, token)

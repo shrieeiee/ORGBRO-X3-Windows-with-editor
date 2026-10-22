@@ -8,3 +8,4 @@ JsBarcode.all.min.js - JsBarcode v3.12.3
 
 Fonts in ../fonts are from Google Fonts (github.com/google/fonts), subset to Latin,
 under the SIL Open Font License 1.1 (Special Elite: Apache License 2.0). See fonts/licenses.
+bleak (Bluetooth LE) is installed from PyPI at build time: MIT License, https://github.com/hbldh/bleak
